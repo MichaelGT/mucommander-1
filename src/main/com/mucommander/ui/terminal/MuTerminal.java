@@ -135,7 +135,7 @@ public class MuTerminal {
 
     public int loadHeight() {
         WindowsStorage.Record rec = WindowsStorage.getInstance().get(STORAGE_KEY);
-        return rec != null ? rec.height : -1;
+        return rec != null ? rec.getHeight() : -1;
     }
 
 
