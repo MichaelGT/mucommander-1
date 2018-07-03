@@ -76,17 +76,20 @@ public class MuPreferences implements MuPreferencesAPI {
 	public static final String  LOOK_AND_FEEL                     = "lookAndFeel";
 	/** All registered custom Look and feels. */
 	public static final String  CUSTOM_LOOK_AND_FEELS             = "custom_look_and_feels";
-	/** Separator used to tokenise the custom look and feels variable. */
+	/** Separator used to tokenize the custom look and feels variable. */
 	public static final String  CUSTOM_LOOK_AND_FEELS_SEPARATOR   = ";";
 	/** Controls whether system notifications are enabled. */
 	public static final String  ENABLE_SYSTEM_NOTIFICATIONS       = "enable_system_notifications";
 	/** System notifications are enabled by default on platforms where a notifier is available and works well enough.
 	 * In particular, the system tray notifier is available under Linux+Java 1.6, but it doesn't work well so it is not
 	 * enabled by default. */
-	public static final boolean DEFAULT_ENABLE_SYSTEM_NOTIFICATIONS = OsFamily.MAC_OS_X.isCurrent() ||
-			(OsFamily.WINDOWS.isCurrent() && JavaVersion.JAVA_1_6.isCurrentOrHigher());
+	public static final boolean DEFAULT_ENABLE_SYSTEM_NOTIFICATIONS = OsFamily.MAC_OS_X.isCurrent() || (OsFamily.WINDOWS.isCurrent() && JavaVersion.JAVA_1_6.isCurrentOrHigher());
 	/** List of encodings that are displayed in encoding selection components. */
 	public static final String  PREFERRED_ENCODINGS               = "preferred_encodings";
+	/** Whether to store windows sizes and locations */
+	public static final String STORE_WINDOWS_SIZES_AND_LOCATIONS  = "store_windows_sizes_and_locations";
+	/** Default value for 'Store windows sizes and locations' */
+	public static final boolean DEFAULT_STORE_WINDOWS_SIZES_AND_LOCATIONS = false;
 
 
 	// - Log variables -------------------------------------------------------
@@ -319,7 +322,7 @@ public class MuPreferences implements MuPreferencesAPI {
 	// - Folder monitoring variables -----------------------------------------
 	// -----------------------------------------------------------------------
 	/** Section describing the automatic folder refresh behavior. */
-	static final String REFRESH_SECTION                    = "auto_refresh";
+	private static final String REFRESH_SECTION                    = "auto_refresh";
 	/** Frequency at which the current folder is checked for updates, -1 to disable auto refresh. */
 	public static final String REFRESH_CHECK_PERIOD               = REFRESH_SECTION + '.' + "check_period";
 	/** Default folder refresh frequency. */
@@ -333,7 +336,7 @@ public class MuPreferences implements MuPreferencesAPI {
 	// - Quick search variables -----------------------------------------
 	// -----------------------------------------------------------------------
 
-	static final String QUICK_SEARCH_SECTION = "quick_search";
+	private static final String QUICK_SEARCH_SECTION = "quick_search";
 	/** Controls whether matched files are displayed first in the FileTable or mixed with other files on quick search operation. */
 	static final String SHOW_QUICK_SEARCH_MATCHES_FIRST     = QUICK_SEARCH_SECTION + '.' + "show_quick_search_matches_first";
 	/** Default value for 'Show matches first' option. */
@@ -422,7 +425,7 @@ public class MuPreferences implements MuPreferencesAPI {
 
     // - File group masks ----------------------------------------------------
     // -----------------------------------------------------------------------
-    static final String FILE_GROUP_SECTION                 = "file_groups";
+    private static final String FILE_GROUP_SECTION                 = "file_groups";
     static final String FILE_GROUP_1_MASK                  = FILE_GROUP_SECTION + ".files1";
     static final String FILE_GROUP_2_MASK                  = FILE_GROUP_SECTION + ".files2";
     static final String FILE_GROUP_3_MASK                  = FILE_GROUP_SECTION + ".files3";
@@ -436,7 +439,7 @@ public class MuPreferences implements MuPreferencesAPI {
 
 	// - Find file dialog ----------------------------------------------------
 	// -----------------------------------------------------------------------
-	static final String FIND_FILE_SECTION				  = "find_file";
+	private static final String FIND_FILE_SECTION          = "find_file";
 	static final String FIND_FILE_ENCODING                 = FIND_FILE_SECTION + ".encoding";
 	static final String FIND_FILE_SUBDIRECTORIES           = FIND_FILE_SECTION + ".subdirectories";
 	static final String FIND_FILE_ARCHIVES                 = FIND_FILE_SECTION + ".archives";
