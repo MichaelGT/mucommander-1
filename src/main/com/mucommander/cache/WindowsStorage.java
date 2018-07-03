@@ -19,9 +19,19 @@ package com.mucommander.cache;
 
 import com.mucommander.PlatformManager;
 import com.mucommander.commons.file.AbstractFile;
+import com.mucommander.conf.MuConfigurations;
+import com.mucommander.conf.MuPreference;
+import com.mucommander.conf.MuPreferences;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.Window;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,14 +41,15 @@ import java.util.Map;
  */
 public class WindowsStorage {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(WindowsStorage.class);
     private static final String STORAGE_FILE_NAME = "windows.list";
-
-    private static WeakReference<WindowsStorage> instance;
+    private static Reference<WindowsStorage> instance;
 
     private Map<String, Record> records;
 
     public static class Record {
-        public final int left, top, width, height;
+
+        private final int left, top, width, height;
 
         public Record(String s) {
             String[] val = s.split(",");
@@ -55,15 +66,31 @@ public class WindowsStorage {
             this.height = height;
         }
 
+        public int getLeft() {
+            return left;
+        }
+
+        public int getTop() {
+            return top;
+        }
+
+        public int getWidth() {
+            return width;
+        }
+
+        public int getHeight() {
+            return height;
+        }
+
         @Override
         public boolean equals(Object obj) {
             if (obj == this) {
                 return true;
             }
-            if (obj == null || !(obj instanceof Record)) {
+            if (!(obj instanceof Record)) {
                 return false;
             }
-            Record rec = (Record)obj;
+            Record rec = (Record) obj;
             return left == rec.left && top == rec.top && width == rec.width && height == rec.height;
         }
 
@@ -72,14 +99,15 @@ public class WindowsStorage {
             return String.valueOf(left) + ',' + top + ',' + width + ',' + height;
         }
 
-        public void apply(Window window) {
-            window.setLocation(left, top);
+        private void apply(Window window) {
+            applyPos(window);
             window.setSize(width, height);
         }
 
-        public void applyPos(Window window) {
+        private void applyPos(Window window) {
             window.setLocation(left, top);
         }
+
     }
 
     public static WindowsStorage getInstance() {
@@ -95,50 +123,53 @@ public class WindowsStorage {
         return getRecords().get(key);
     }
 
-    public Record get(Window window, String suffix) {
-        String key = getKey(window, suffix);
-        return getRecords().get(key);
-    }
-
-    public Record get(Window frame) {
-        return get(frame, null);
-    }
-
     public void put(String key, Record rec) {
-        Record prev = getRecords().put(key, rec);
-        if (prev == null || !prev.equals(rec)) {
-            try {
-                save(getHistoryFile());
-            } catch (IOException e) {
-                e.printStackTrace();
+        if (isStoreData()) {
+            Record prev = getRecords().put(key, rec);
+            if (prev == null || !prev.equals(rec)) {
+                save();
             }
         }
     }
 
-    public void put(Window window) {
-        put(window, null);
+    private void save() {
+        try {
+            save(getHistoryFile());
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
     }
 
     public void put(Window window, String suffix) {
-        Record rec = new Record(window.getLocation().x, window.getLocation().y, window.getWidth(), window.getHeight());
-        String key = getKey(window, suffix);
-        put(key, rec);
+        if (isStoreData()) {
+            Record rec = new Record(window.getLocation().x, window.getLocation().y, window.getWidth(), window.getHeight());
+            String key = getKey(window, suffix);
+            put(key, rec);
+        }
     }
 
     public boolean init(Window window, String suffix, boolean storeSizes) {
-        String key = getKey(window, suffix);
-        Record rec = getRecords().get(key);
-        if (rec != null && rec.width > 0 && rec.height > 40) {
-            if (storeSizes) {
-                rec.apply(window);
-            } else {
-                rec.applyPos(window);
+        if (isStoreData()) {
+            String key = getKey(window, suffix);
+            Record rec = get(key);
+            if (rec != null && rec.width > 0 && rec.height > 40) {
+                if (storeSizes) {
+                    rec.apply(window);
+                } else {
+                    rec.applyPos(window);
+                }
+                return true;
             }
-            return true;
         }
         return false;
     }
 
+    public void clear() {
+        if (records != null) {
+            records.clear();
+        }
+        save();
+    }
 
     private String getKey(Window window, String suffix) {
         Class c = window.getClass();
@@ -152,30 +183,22 @@ public class WindowsStorage {
         return key;
     }
 
-    public boolean init(Window window) {
-        return init(window, null, true);
-    }
-
-
     private Map<String, Record> getRecords() {
         if (records == null) {
             records = new HashMap<>();
             try {
                 load(getHistoryFile());
             } catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.error(e.getMessage(), e);
             }
         }
         return records;
     }
 
-
-    private void load(AbstractFile file) throws IOException {
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new InputStreamReader(file.getInputStream()));
+    private void load(AbstractFile file) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
             String line;
-            while ( (line = reader.readLine() ) != null) {
+            while ((line = reader.readLine()) != null) {
                 line = line.trim();
                 if (line.isEmpty() || line.startsWith("#")) {
                     continue;
@@ -189,23 +212,17 @@ public class WindowsStorage {
                 try {
                     records.put(key, new Record(val));
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    LOGGER.error(e.getMessage(), e);
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (reader != null) {
-                reader.close();
-            }
+            LOGGER.error(e.getMessage(), e);
         }
     }
 
-    private void save(AbstractFile file) throws  IOException {
-        BufferedWriter writer = null;
-        try {
-            writer = new BufferedWriter(new OutputStreamWriter(file.getOutputStream()));
-            for (String key : records.keySet()) {
+    private void save(AbstractFile file) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(file.getOutputStream()))) {
+            for (String key : getRecords().keySet()) {
                 if (key == null) {
                     continue;
                 }
@@ -214,32 +231,15 @@ public class WindowsStorage {
                 writer.write(records.get(key).toString());
                 writer.write('\n');
             }
-        } finally {
-            if (writer != null) {
-                writer.close();
-            }
         }
     }
 
-    /**
-     * Returns the path to the history file.
-     * <p>
-     * Will return the default, system dependant bookmarks file.
-     *
-     * @return             the path to the bookmark file.
-     * @throws java.io.IOException if there was a problem locating the default history file.
-     */
     private static synchronized AbstractFile getHistoryFile() throws IOException {
         return PlatformManager.getPreferencesFolder().getChild(STORAGE_FILE_NAME);
     }
 
-
-    public void clear() {
-        if (records != null) {
-            records.clear();
-        }
-        records = null;
-        instance = null;
+    private boolean isStoreData() {
+        return MuConfigurations.getPreferences().getVariable(MuPreference.STORE_WINDOWS_SIZES_AND_LOCATIONS, MuPreferences.DEFAULT_STORE_WINDOWS_SIZES_AND_LOCATIONS);
     }
 
 }

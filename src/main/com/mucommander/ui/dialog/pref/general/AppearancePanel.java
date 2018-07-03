@@ -18,6 +18,7 @@
 
 package com.mucommander.ui.dialog.pref.general;
 
+import com.mucommander.cache.WindowsStorage;
 import com.mucommander.commons.file.AbstractFile;
 import com.mucommander.commons.file.FileFactory;
 import com.mucommander.commons.runtime.OsVersion;
@@ -78,103 +79,166 @@ import java.util.Vector;
 
 /**
  * 'Appearance' preferences panel.
+ *
  * @author Maxence Bernard, Nicolas Rinaudo
  */
 class AppearancePanel extends PreferencesPanel implements ActionListener, Runnable {
-	private static final Logger LOGGER = LoggerFactory.getLogger(AppearancePanel.class);
-	
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppearancePanel.class);
+
     // - Look and feel fields ------------------------------------------------------------
     // -----------------------------------------------------------------------------------
-    /** Combo box containing the list of available look&feels. */
+    /**
+     * Combo box containing the list of available look&feels.
+     */
     private PrefComboBox<String> lookAndFeelComboBox;
-    /** All available look&feels. */
+    /**
+     * All available look&feels.
+     */
     private UIManager.LookAndFeelInfo lookAndFeels[];
-    /** 'Use brushed metal look' checkbox */
-    private PrefCheckBox              brushedMetalCheckBox;
-    /** 'Use screen menu bar' checkbox */
-    private PrefCheckBox              screenMenuBarCheckBox;
-    /** Triggers look and feel importing. */
-    private JButton                   importLookAndFeelButton;
-    /** Triggers look and feel deletion. */
-    private JButton                   deleteLookAndFeelButton;
-    /** Used to notify the user that the system is working. */
-    private SpinningDial              dial;
-    /** File from which to import looks and feels. */
-    private AbstractFile              lookAndFeelLibrary;
-
+    /**
+     * 'Use brushed metal look' checkbox
+     */
+    private PrefCheckBox brushedMetalCheckBox;
+    /**
+     * 'Use screen menu bar' checkbox
+     */
+    private PrefCheckBox screenMenuBarCheckBox;
+    /**
+     * Triggers look and feel importing.
+     */
+    private JButton importLookAndFeelButton;
+    /**
+     * Triggers look and feel deletion.
+     */
+    private JButton deleteLookAndFeelButton;
+    /**
+     * Used to notify the user that the system is working.
+     */
+    private SpinningDial dial;
+    /**
+     * File from which to import looks and feels.
+     */
+    private AbstractFile lookAndFeelLibrary;
 
 
     // - Icon size fields ----------------------------------------------------------------
     // -----------------------------------------------------------------------------------
-    /** Displays the list of available sizes for toolbar icons. */
+    /**
+     * Displays the list of available sizes for toolbar icons.
+     */
     private PrefComboBox<String> toolbarIconsSizeComboBox;
-    /** Displays the list of available sizes for command bar icons. */
+    /**
+     * Displays the list of available sizes for command bar icons.
+     */
     private PrefComboBox<String> commandBarIconsSizeComboBox;
-    /** Displays the list of available sizes for file icons. */
-    private PrefComboBox<String>fileIconsSizeComboBox;
-    /** All icon sizes label. */
-    private final static String ICON_SIZES[]                = {"100%", "125%", "150%", "175%", "200%", "300%"};
-    /** All icon sizes scale factors. */
-    private final static float  ICON_SCALE_FACTORS[]        = {1.0f, 1.25f, 1.5f, 1.75f, 2.0f, 3.0f};
-
-
+    /**
+     * Displays the list of available sizes for file icons.
+     */
+    private PrefComboBox<String> fileIconsSizeComboBox;
+    /**
+     * All icon sizes label.
+     */
+    private final static String ICON_SIZES[] = {"100%", "125%", "150%", "175%", "200%", "300%"};
+    /**
+     * All icon sizes scale factors.
+     */
+    private final static float ICON_SCALE_FACTORS[] = {1.0f, 1.25f, 1.5f, 1.75f, 2.0f, 3.0f};
 
     // - Icons ---------------------------------------------------------------------------
     // -----------------------------------------------------------------------------------
-    /** Icon used to identify 'locked' themes. */
+    /**
+     * Icon used to identify 'locked' themes.
+     */
     private ImageIcon lockIcon;
-    /** Transparent icon used to align non-locked themes with the others. */
+    /**
+     * Transparent icon used to align non-locked themes with the others.
+     */
     private ImageIcon transparentIcon;
-
-
 
     // - Theme fields --------------------------------------------------------------------
     // -----------------------------------------------------------------------------------
-    /** Lists all available themes. */
+    /**
+     * Lists all available themes.
+     */
     private PrefComboBox<Theme> themeComboBox;
-    /** Triggers the theme editor. */
-    private JButton      editThemeButton;
-    /** Triggers the theme duplication dialog. */
-    private JButton      duplicateThemeButton;
-    /** Triggers the theme import dialog. */
-    private JButton      importThemeButton;
-    /** Triggers the theme export dialog. */
-    private JButton      exportThemeButton;
-    /** Triggers the theme rename dialog. */
-    private JButton      renameThemeButton;
-    /** Triggers the theme delete dialog. */
-    private JButton      deleteThemeButton;
-    /** Used to display the currently selected theme's type. */
-    private JLabel       typeLabel;
-    /** Whether or not to ignore theme combobox related events. */
-    private boolean      ignoreComboChanges;
-    /** Last folder that was selected in import or export operations. */
+    /**
+     * Triggers the theme editor.
+     */
+    private JButton editThemeButton;
+    /**
+     * Triggers the theme duplication dialog.
+     */
+    private JButton duplicateThemeButton;
+    /**
+     * Triggers the theme import dialog.
+     */
+    private JButton importThemeButton;
+    /**
+     * Triggers the theme export dialog.
+     */
+    private JButton exportThemeButton;
+    /**
+     * Triggers the theme rename dialog.
+     */
+    private JButton renameThemeButton;
+    /**
+     * Triggers the theme delete dialog.
+     */
+    private JButton deleteThemeButton;
+    /**
+     * Used to display the currently selected theme's type.
+     */
+    private JLabel typeLabel;
+    /**
+     * Whether or not to ignore theme combobox related events.
+     */
+    private boolean ignoreComboChanges;
+    /**
+     * Last folder that was selected in import or export operations.
+     */
     private AbstractFile lastSelectedFolder;
 
     // - Editor Theme fields --------------------------------------------------------------------
     // -----------------------------------------------------------------------------------
-    /** Lists all available editor themes. */
+    /**
+     * Lists all available editor themes.
+     */
     private PrefComboBox<String> syntaxThemeComboBox;
-
-
 
     // - Misc. fields --------------------------------------------------------------------
     // -----------------------------------------------------------------------------------
-    /** System icon combobox. */
+    /**
+     * System icon combobox.
+     */
     private PrefComboBox<String> useSystemFileIconsComboBox;
-    /** Identifier of 'yes' actions in question dialogs. */
-    private final static int       YES_ACTION = 0;
-    /** Identifier of 'no' actions in question dialogs. */
-    private final static int       NO_ACTION = 1;
-    /** All known custom look and feels. */
+    /**
+     * Identifier of 'yes' actions in question dialogs.
+     */
+    private final static int YES_ACTION = 0;
+    /**
+     * Identifier of 'no' actions in question dialogs.
+     */
+    private final static int NO_ACTION = 1;
+    /**
+     * All known custom look and feels.
+     */
     private List<String> customLookAndFeels;
-
-
+    /**
+     * Store windows sizes and locations?
+     */
+    private PrefCheckBox cbStoreSizesAndLocations;
+    /**
+     * Triggers the clear stored window's sizes and locations dialog.
+     */
+    private JButton clearStoredSizesAndLocationsButton;
 
     // - Initialisation ---------------------------------------------------------
     // --------------------------------------------------------------------------
+
     /**
      * Creates a new appearance panel with the specified parent.
+     *
      * @param parent dialog in which this panel is placed.
      */
     AppearancePanel(PreferencesDialog parent) {
@@ -184,8 +248,6 @@ class AppearancePanel extends PreferencesPanel implements ActionListener, Runnab
         // Initialises the known custom look and feels
         initializeCustomLookAndFeels();
     }
-
-
 
     // - UI initialisation ------------------------------------------------------
     // --------------------------------------------------------------------------
@@ -214,9 +276,20 @@ class AppearancePanel extends PreferencesPanel implements ActionListener, Runnab
         mainPanel.add(createIconSizePanel());
         mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
+        YBoxPanel pnlStoreSizesAndLocations = new YBoxPanel();
+        cbStoreSizesAndLocations = new PrefCheckBox(Translator.get("prefs_dialog.store_windows_sizes_and_locations"),
+                checkBox -> checkBox.isSelected() != getVariable(MuPreference.STORE_WINDOWS_SIZES_AND_LOCATIONS, MuPreferences.DEFAULT_STORE_WINDOWS_SIZES_AND_LOCATIONS));
+        cbStoreSizesAndLocations.setSelected(getVariable(MuPreference.STORE_WINDOWS_SIZES_AND_LOCATIONS, MuPreferences.DEFAULT_STORE_WINDOWS_SIZES_AND_LOCATIONS));
+        pnlStoreSizesAndLocations.add(cbStoreSizesAndLocations);
+        clearStoredSizesAndLocationsButton = new JButton(Translator.get("prefs_dialog.clear_stored_windows_sizes_and_locations") + "...");
+        clearStoredSizesAndLocationsButton.addActionListener(this);
+        pnlStoreSizesAndLocations.add(clearStoredSizesAndLocationsButton, 20);
+        mainPanel.add(pnlStoreSizesAndLocations);
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+
         setLayout(new BorderLayout());
         add(mainPanel, BorderLayout.NORTH);
-        
+
         lookAndFeelComboBox.addDialogListener(parent);
         themeComboBox.addDialogListener(parent);
         syntaxThemeComboBox.addDialogListener(parent);
@@ -224,8 +297,9 @@ class AppearancePanel extends PreferencesPanel implements ActionListener, Runnab
         toolbarIconsSizeComboBox.addDialogListener(parent);
         commandBarIconsSizeComboBox.addDialogListener(parent);
         fileIconsSizeComboBox.addDialogListener(parent);
+        cbStoreSizesAndLocations.addDialogListener(parent);
         if (brushedMetalCheckBox != null) {
-        	brushedMetalCheckBox.addDialogListener(parent);
+            brushedMetalCheckBox.addDialogListener(parent);
         }
         if (screenMenuBarCheckBox != null) {
             screenMenuBarCheckBox.addDialogListener(parent);
@@ -259,6 +333,7 @@ class AppearancePanel extends PreferencesPanel implements ActionListener, Runnab
 
     /**
      * Creates the look and feel panel.
+     *
      * @return the look and feel panel.
      */
     private JPanel createLookAndFeelPanel() {
@@ -269,24 +344,24 @@ class AppearancePanel extends PreferencesPanel implements ActionListener, Runnab
 
         // Creates the look and feel combo box.
         lookAndFeelComboBox = new PrefComboBox<String>() {
-			public boolean hasChanged() {
+            public boolean hasChanged() {
                 String lnf = getVariable(MuPreference.LOOK_AND_FEEL);
-				int selectedIndex = getSelectedIndex();
+                int selectedIndex = getSelectedIndex();
                 return selectedIndex >= 0 && !lookAndFeels[selectedIndex].getClassName().equals(lnf);
-                }
-			};
+            }
+        };
         lookAndFeelComboBox.setRenderer(new BasicComboBoxRenderer<String>() {
-                @Override
-                public Component getListCellRendererComponent(JList<? extends String> list, String value, int index, boolean isSelected, boolean cellHasFocus) {
-                    JLabel label = (JLabel)super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                    if (index < 0) {
-                        return label;
-                    }
-                    // All look and feels that are not modifiable must be flagged with a lock icon.
-                    label.setIcon(isLookAndFeelModifiable(lookAndFeels[index]) ? transparentIcon : lockIcon);
+            @Override
+            public Component getListCellRendererComponent(JList<? extends String> list, String value, int index, boolean isSelected, boolean cellHasFocus) {
+                JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (index < 0) {
                     return label;
                 }
-            });
+                // All look and feels that are not modifiable must be flagged with a lock icon.
+                label.setIcon(isLookAndFeelModifiable(lookAndFeels[index]) ? transparentIcon : lockIcon);
+                return label;
+            }
+        });
 
         // Populates the look and feel combo box.
         populateLookAndFeels();
@@ -332,6 +407,7 @@ class AppearancePanel extends PreferencesPanel implements ActionListener, Runnab
 
     /**
      * Creates the icon size panel.
+     *
      * @return the icon size panel.
      */
     private JPanel createIconSizePanel() {
@@ -355,17 +431,18 @@ class AppearancePanel extends PreferencesPanel implements ActionListener, Runnab
 
     /**
      * Creates the themes panel.
+     *
      * @return the themes panel.
      */
     private JPanel createThemesPanel() {
         JPanel gridPanel = new ProportionalGridPanel(4);
 
         // Creates the various panel's buttons.
-        editThemeButton      = new JButton(Translator.get("edit") + "...");
-        importThemeButton    = new JButton(Translator.get("prefs_dialog.import") + "...");
-        exportThemeButton    = new JButton(Translator.get("prefs_dialog.export") + "...");
-        renameThemeButton    = new JButton(Translator.get("rename"));
-        deleteThemeButton    = new JButton(Translator.get("delete"));
+        editThemeButton = new JButton(Translator.get("edit") + "...");
+        importThemeButton = new JButton(Translator.get("prefs_dialog.import") + "...");
+        exportThemeButton = new JButton(Translator.get("prefs_dialog.export") + "...");
+        renameThemeButton = new JButton(Translator.get("rename") + "...");
+        deleteThemeButton = new JButton(Translator.get("delete") + "...");
         duplicateThemeButton = new JButton(Translator.get("duplicate"));
         editThemeButton.addActionListener(this);
         importThemeButton.addActionListener(this);
@@ -379,9 +456,10 @@ class AppearancePanel extends PreferencesPanel implements ActionListener, Runnab
 
         // Creates the theme combo box.
         themeComboBox = new PrefComboBox<Theme>() {
-			public boolean hasChanged() {
-				return !ThemeManager.isCurrentTheme(getSelectedItem());
-			}
+            @Override
+            public boolean hasChanged() {
+                return !ThemeManager.isCurrentTheme(getSelectedItem());
+            }
         };
         themeComboBox.addActionListener(this);
 
@@ -389,19 +467,19 @@ class AppearancePanel extends PreferencesPanel implements ActionListener, Runnab
         lockIcon = IconManager.getIcon(IconManager.IconSet.PREFERENCES, "lock.png");
         transparentIcon = new ImageIcon(new BufferedImage(lockIcon.getIconWidth(), lockIcon.getIconHeight(), BufferedImage.TYPE_INT_ARGB));
         themeComboBox.setRenderer(new BasicComboBoxRenderer<Theme>() {
-                @Override
-                public Component getListCellRendererComponent(JList<? extends Theme> list, Theme theme, int index, boolean isSelected, boolean cellHasFocus) {
-                    JLabel label = (JLabel)super.getListCellRendererComponent(list, theme, index, isSelected, cellHasFocus);
-                    if(ThemeManager.isCurrentTheme(theme))
-                        label.setText(theme.getName() +  " (" + Translator.get("theme.current") + ")");
-                    else
-                        label.setText(theme.getName());
+            @Override
+            public Component getListCellRendererComponent(JList<? extends Theme> list, Theme theme, int index, boolean isSelected, boolean cellHasFocus) {
+                JLabel label = (JLabel) super.getListCellRendererComponent(list, theme, index, isSelected, cellHasFocus);
+                if (ThemeManager.isCurrentTheme(theme))
+                    label.setText(theme.getName() + " (" + Translator.get("theme.current") + ")");
+                else
+                    label.setText(theme.getName());
 
-                    label.setIcon(theme.getType() == Theme.Type.PREDEFINED ? lockIcon : transparentIcon);
+                label.setIcon(theme.getType() == Theme.Type.PREDEFINED ? lockIcon : transparentIcon);
 
-                    return label;
-                }
-            });
+                return label;
+            }
+        });
 
         // Initialises the content of the combo box.
         populateThemes(ThemeManager.getCurrentTheme());
@@ -444,44 +522,46 @@ class AppearancePanel extends PreferencesPanel implements ActionListener, Runnab
         return flowPanel;
     }
 
-	private void populateThemes(Theme selectedTheme) {
+    private void populateThemes(Theme selectedTheme) {
         ignoreComboChanges = true;
 
         themeComboBox.removeAllItems();
 
-		// Creates new theme instances for all but the currentTheme (current as the currently active one - not
-		// the currently selected one!) so we might need to find the new instance of our previously selected theme.
+        // Creates new theme instances for all but the currentTheme (current as the currently active one - not
+        // the currently selected one!) so we might need to find the new instance of our previously selected theme.
         Iterator<Theme> themes = ThemeManager.availableThemes();
-		Theme selectedThemeAvailableInstance = null;
+        Theme selectedThemeAvailableInstance = null;
 
         while (themes.hasNext()) {
-			final Theme availableTheme = themes.next();
-			themeComboBox.addItem(availableTheme);
-			if (availableTheme.equals(selectedTheme)) {
-				selectedThemeAvailableInstance = availableTheme;
-			}
+            final Theme availableTheme = themes.next();
+            themeComboBox.addItem(availableTheme);
+            if (availableTheme.equals(selectedTheme)) {
+                selectedThemeAvailableInstance = availableTheme;
+            }
         }
 
         ignoreComboChanges = false;
 
-		if (selectedThemeAvailableInstance != null) {
-			themeComboBox.setSelectedItem(selectedThemeAvailableInstance);
-		} else {
-			LOGGER.warn("selected theme not available anymore");
-			themeComboBox.setSelectedIndex(0);
-		}
+        if (selectedThemeAvailableInstance != null) {
+            themeComboBox.setSelectedItem(selectedThemeAvailableInstance);
+        } else {
+            LOGGER.warn("selected theme not available anymore");
+            themeComboBox.setSelectedIndex(0);
+        }
     }
 
     /**
      * Creates the system icons panel.
+     *
      * @return the system icons panel.
      */
     private JPanel createSystemIconsPanel() {
         // 'Use system file icons' combo box
         this.useSystemFileIconsComboBox = new PrefComboBox<String>() {
-			public boolean hasChanged() {
-				String systemIconsPolicy;
-				switch (useSystemFileIconsComboBox.getSelectedIndex()) {
+            @Override
+            public boolean hasChanged() {
+                String systemIconsPolicy;
+                switch (useSystemFileIconsComboBox.getSelectedIndex()) {
                     case 0:
                         systemIconsPolicy = FileIcons.USE_SYSTEM_ICONS_NEVER;
                         break;
@@ -490,9 +570,9 @@ class AppearancePanel extends PreferencesPanel implements ActionListener, Runnab
                         break;
                     default:
                         systemIconsPolicy = FileIcons.USE_SYSTEM_ICONS_ALWAYS;
-				}
-				return !systemIconsPolicy.equals(getVariable(MuPreference.USE_SYSTEM_FILE_ICONS, systemIconsPolicy));
-			}
+                }
+                return !systemIconsPolicy.equals(getVariable(MuPreference.USE_SYSTEM_FILE_ICONS, systemIconsPolicy));
+            }
         };
         useSystemFileIconsComboBox.addItem(Translator.get("prefs_dialog.use_system_file_icons.never"));
         useSystemFileIconsComboBox.addItem(Translator.get("prefs_dialog.use_system_file_icons.applications"));
@@ -511,16 +591,17 @@ class AppearancePanel extends PreferencesPanel implements ActionListener, Runnab
      * Creates a combo box that allows to choose a size for a certain type of icon. The returned combo box is filled
      * with allowed choices, and the current configuration value is selected.
      *
-     * @param preference
+     * @param preference   preference to process
      * @param defaultValue the default value for the icon scale factor if the configuration variable has no value
      * @return a combo box that allows to choose a size for a certain type of icon
      */
     private PrefComboBox<String> createIconSizeCombo(final MuPreference preference, float defaultValue) {
-    	PrefComboBox<String> iconSizeCombo = new PrefComboBox<String>(ICON_SIZES) {
-			public boolean hasChanged() {
-				return !String.valueOf(ICON_SCALE_FACTORS[getSelectedIndex()]).equals(getVariable(preference));
-			}
-    	};
+        PrefComboBox<String> iconSizeCombo = new PrefComboBox<String>(ICON_SIZES) {
+            @Override
+            public boolean hasChanged() {
+                return !String.valueOf(ICON_SCALE_FACTORS[getSelectedIndex()]).equals(getVariable(preference));
+            }
+        };
         float scaleFactor = getVariable(preference, defaultValue);
         int index = 0;
         for (int i = 0; i < ICON_SCALE_FACTORS.length; i++) {
@@ -533,7 +614,6 @@ class AppearancePanel extends PreferencesPanel implements ActionListener, Runnab
 
         return iconSizeCombo;
     }
-
 
     ///////////////////////
     // PrefPanel methods //
@@ -561,14 +641,14 @@ class AppearancePanel extends PreferencesPanel implements ActionListener, Runnab
 
         // Set CommandBar's icon size
         scaleFactor = ICON_SCALE_FACTORS[commandBarIconsSizeComboBox.getSelectedIndex()];
-        pref.setVariable(MuPreference.COMMAND_BAR_ICON_SCALE , scaleFactor);
+        pref.setVariable(MuPreference.COMMAND_BAR_ICON_SCALE, scaleFactor);
 
         // Set file icon size
         scaleFactor = ICON_SCALE_FACTORS[fileIconsSizeComboBox.getSelectedIndex()];
         // Set scale factor in FileIcons first so that it has the new value when ConfigurationListener instances call it
         FileIcons.setScaleFactor(scaleFactor);
         FileIconsCache.getInstance().clear();
-        pref.setVariable(MuPreference.TABLE_ICON_SCALE , scaleFactor);
+        pref.setVariable(MuPreference.TABLE_ICON_SCALE, scaleFactor);
 
         // Sets the current theme.
         if (!ThemeManager.isCurrentTheme(themeComboBox.getSelectedItem())) {
@@ -589,12 +669,13 @@ class AppearancePanel extends PreferencesPanel implements ActionListener, Runnab
         String systemIconsPolicy = comboIndex == 0 ? FileIcons.USE_SYSTEM_ICONS_NEVER : comboIndex == 1 ? FileIcons.USE_SYSTEM_ICONS_APPLICATIONS : FileIcons.USE_SYSTEM_ICONS_ALWAYS;
         FileIcons.setSystemIconsPolicy(systemIconsPolicy);
         pref.setVariable(MuPreference.USE_SYSTEM_FILE_ICONS, systemIconsPolicy);
+
+        pref.setVariable(MuPreference.STORE_WINDOWS_SIZES_AND_LOCATIONS, cbStoreSizesAndLocations.isSelected());
     }
-
-
 
     // - Look and feel actions --------------------------------------------------
     // --------------------------------------------------------------------------
+
     /**
      * Initialises the list of custom look&feels.
      */
@@ -611,13 +692,21 @@ class AppearancePanel extends PreferencesPanel implements ActionListener, Runnab
 
         // Sorts them.
         Arrays.sort(lookAndFeels, new Comparator<UIManager.LookAndFeelInfo>() {
-                public int compare(UIManager.LookAndFeelInfo a, UIManager.LookAndFeelInfo b) {return a.getName().compareTo(b.getName());}
-                public boolean equals(Object a) {return false;}
-            });
+            @Override
+            public int compare(UIManager.LookAndFeelInfo a, UIManager.LookAndFeelInfo b) {
+                return a.getName().compareTo(b.getName());
+            }
+
+            @Override
+            public boolean equals(Object a) {
+                return false;
+            }
+        });
     }
 
     /**
      * Returns <code>true</code> if the specified class name is that of a custom look and feel.
+     *
      * @return <code>true</code> if the specified class name is that of a custom look and feel, <code>false</code> otherwise.
      */
     private boolean isCustomLookAndFeel(String className) {
@@ -629,8 +718,8 @@ class AppearancePanel extends PreferencesPanel implements ActionListener, Runnab
      * <p>
      * To be modifiable, a look and feel must meet all of the following conditions:
      * <ul>
-     *   <li>It must be a custom look and feel.</li>
-     *   <li>It cannot be the application's current look and feel.</li>
+     * <li>It must be a custom look and feel.</li>
+     * <li>It cannot be the application's current look and feel.</li>
      * </ul>
      *
      * @return <code>true</code> if the specified look and feel is modifiable, <code>false</code> otherwise.
@@ -654,14 +743,15 @@ class AppearancePanel extends PreferencesPanel implements ActionListener, Runnab
 
     /**
      * Uninstalls the specified look and feel.
+     *
      * @param selection look and feel to uninstall.
      */
     private void uninstallLookAndFeel(UIManager.LookAndFeelInfo selection) {
         UIManager.LookAndFeelInfo[] buffer;      // New array of installed look and feels.
-        int                         bufferIndex; // Current index in buffer.
+        int bufferIndex; // Current index in buffer.
 
         // Copies the content of lookAndFeels into buffer, skipping over the look and feel to uninstall.
-        buffer      = new UIManager.LookAndFeelInfo[lookAndFeels.length - 1];
+        buffer = new UIManager.LookAndFeelInfo[lookAndFeels.length - 1];
         bufferIndex = 0;
         for (UIManager.LookAndFeelInfo lookAndFeel : lookAndFeels) {
             if (!selection.getClassName().equals(lookAndFeel.getClassName())) {
@@ -676,6 +766,7 @@ class AppearancePanel extends PreferencesPanel implements ActionListener, Runnab
 
     /**
      * Deletes the specified look and feel from the list of custom look and feels.
+     *
      * @param selection currently selection look and feel.
      */
     private void deleteCustomLookAndFeel(UIManager.LookAndFeelInfo selection) {
@@ -691,9 +782,9 @@ class AppearancePanel extends PreferencesPanel implements ActionListener, Runnab
      * <p>
      * After receiving user confirmation, this method will:
      * <ul>
-     *   <li>Remove the look and feel from the combobox.</li>
-     *   <li>Remove the look and feel from <code>UIManager</code>'s list of installed look and feels.</li>
-     *   <li>Remove the look and feel from the list of custom look and feels.</li>
+     * <li>Remove the look and feel from the combobox.</li>
+     * <li>Remove the look and feel from <code>UIManager</code>'s list of installed look and feels.</li>
+     * <li>Remove the look and feel from the list of custom look and feels.</li>
      * </ul>
      */
     private void deleteSelectedLookAndFeel() {
@@ -703,9 +794,9 @@ class AppearancePanel extends PreferencesPanel implements ActionListener, Runnab
 
         // Asks the user whether he's sure he wants to delete the selected look and feel.
         if (new QuestionDialog(parent, null, Translator.get("prefs_dialog.delete_look_and_feel", selection.getName()), parent,
-                              new String[] {Translator.get("yes"), Translator.get("no")},
-                              new int[]  {YES_ACTION, NO_ACTION},
-                              0).getActionValue() != YES_ACTION)
+                new String[]{Translator.get("yes"), Translator.get("no")},
+                new int[]{YES_ACTION, NO_ACTION},
+                0).getActionValue() != YES_ACTION)
             return;
 
         // Removes the selected look and feel from the combo box.
@@ -720,6 +811,7 @@ class AppearancePanel extends PreferencesPanel implements ActionListener, Runnab
 
     /**
      * Updates the different look&feel related UI widgets depending on whether they are busy or not.
+     *
      * @param loading whether look&feels are loading.
      */
     private void setLookAndFeelsLoading(boolean loading) {
@@ -746,8 +838,8 @@ class AppearancePanel extends PreferencesPanel implements ActionListener, Runnab
      * If there is already a file with the same name in the extensions folder,
      * this method will ask the user for confirmation before overwriting it.
      *
-     * @param  library     library to import in the extensions folder.
-     * @return             <code>true</code> if the library was imported, <code>false</code> if the user cancelled the operation.
+     * @param library library to import in the extensions folder.
+     * @return <code>true</code> if the library was imported, <code>false</code> if the user cancelled the operation.
      * @throws IOException if an I/O error occurred while importing the library
      */
     private boolean importLookAndFeelLibrary(AbstractFile library) throws IOException {
@@ -764,7 +856,7 @@ class AppearancePanel extends PreferencesPanel implements ActionListener, Runnab
             // User chose to overwrite the file
             if (action == FileCollisionDialog.OVERWRITE_ACTION) {
                 // Simply continue and file will be overwritten
-            } else if (action==FileCollisionDialog.OVERWRITE_IF_OLDER_ACTION) {
+            } else if (action == FileCollisionDialog.OVERWRITE_IF_OLDER_ACTION) {
                 // Overwrite if the source is more recent than the destination
                 if (library.getLastModifiedDate() <= destFile.getLastModifiedDate())
                     return false;
@@ -777,6 +869,7 @@ class AppearancePanel extends PreferencesPanel implements ActionListener, Runnab
         return ExtensionManager.importLibrary(library, true);
     }
 
+    @Override
     public void run() {
         List<Class<?>> newLookAndFeels;
 
@@ -808,12 +901,12 @@ class AppearancePanel extends PreferencesPanel implements ActionListener, Runnab
                 if (customLookAndFeels.isEmpty())
                     customLookAndFeels = null;
                 else
-                	MuConfigurations.getPreferences().setVariable(MuPreference.CUSTOM_LOOK_AND_FEELS, customLookAndFeels, MuPreferences.CUSTOM_LOOK_AND_FEELS_SEPARATOR);
+                    MuConfigurations.getPreferences().setVariable(MuPreference.CUSTOM_LOOK_AND_FEELS, customLookAndFeels, MuPreferences.CUSTOM_LOOK_AND_FEELS_SEPARATOR);
 
                 populateLookAndFeels();
             }
-        } catch(Exception e) {
-        	LOGGER.debug("Exception caught", e);
+        } catch (Exception e) {
+            LOGGER.debug("Exception caught", e);
             InformationDialog.showErrorDialog(this);
         }
         setLookAndFeelsLoading(false);
@@ -846,8 +939,6 @@ class AppearancePanel extends PreferencesPanel implements ActionListener, Runnab
         }
     }
 
-
-
     // - Theme actions ----------------------------------------------------------
     // --------------------------------------------------------------------------
     private void setTypeLabel(Theme theme) {
@@ -855,7 +946,7 @@ class AppearancePanel extends PreferencesPanel implements ActionListener, Runnab
 
         if (theme.getType() == Theme.Type.USER) {
             label = Translator.get("theme.custom");
-        } else if(theme.getType() == Theme.Type.PREDEFINED) {
+        } else if (theme.getType() == Theme.Type.PREDEFINED) {
             label = Translator.get("theme.built_in");
         } else {
             label = Translator.get("theme.add_on");
@@ -882,6 +973,7 @@ class AppearancePanel extends PreferencesPanel implements ActionListener, Runnab
 
     /**
      * Renames the specified theme.
+     *
      * @param theme theme to rename.
      */
     private void renameTheme(Theme theme) {
@@ -893,7 +985,7 @@ class AppearancePanel extends PreferencesPanel implements ActionListener, Runnab
                 ThemeManager.renameCustomTheme(theme, dialog.getText());
                 themeComboBox.removeItem(theme);
                 insertTheme(theme);
-            } catch(Exception e) {
+            } catch (Exception e) {
                 // Otherwise, notifies the user.
                 InformationDialog.showErrorDialog(this, Translator.get("prefs_dialog.rename_failed", theme.getName()));
             }
@@ -902,36 +994,51 @@ class AppearancePanel extends PreferencesPanel implements ActionListener, Runnab
 
     /**
      * Deletes the specified theme.
+     *
      * @param theme theme to delete.
      */
     private void deleteTheme(Theme theme) {
         // Asks the user whether he's sure he wants to delete the selected theme.
         if (new QuestionDialog(parent, null, Translator.get("prefs_dialog.delete_theme", theme.getName()), parent,
-                              new String[] {Translator.get("yes"), Translator.get("no")},
-                              new int[]  {YES_ACTION, NO_ACTION},
-                              0).getActionValue() != YES_ACTION)
+                new String[]{Translator.get("yes"), Translator.get("no")},
+                new int[]{YES_ACTION, NO_ACTION},
+                0).getActionValue() != YES_ACTION)
             return;
 
         // Deletes the selected theme and removes it from the list.
         try {
             ThemeManager.deleteCustomTheme(theme.getName());
             themeComboBox.removeItem(theme);
-        } catch(Exception e) {
+        } catch (Exception e) {
             InformationDialog.showErrorDialog(this);
         }
     }
 
     /**
+     * Clear stored windows sizes and locations.
+     */
+    private void clearStoredSizesAndLocations() {
+        // Asks the user whether he's sure he wants to Clear stored windows sizes and locations.
+        if (new QuestionDialog(parent, null, Translator.get("prefs_dialog.ok_to_clear_stored_windows_sizes_and_locations"), parent,
+                new String[]{Translator.get("yes"), Translator.get("no")},
+                new int[]{YES_ACTION, NO_ACTION},
+                0).getActionValue() == YES_ACTION) {
+            WindowsStorage.getInstance().clear();
+        }
+    }
+
+    /**
      * Starts the theme editor on the specified theme.
+     *
      * @param theme to edit.
      */
     private void editTheme(Theme theme) {
         // If the edited theme was modified, we must re-populate the list.
         final Theme modifiedTheme = new ThemeEditorDialog(parent, theme).editTheme();
-		if (modifiedTheme != null) {
-			populateThemes(modifiedTheme);
-			parent.setCommitButtonsEnabled(true);
-		}
+        if (modifiedTheme != null) {
+            populateThemes(modifiedTheme);
+            parent.setCommitButtonsEnabled(true);
+        }
     }
 
     /**
@@ -941,7 +1048,7 @@ class AppearancePanel extends PreferencesPanel implements ActionListener, Runnab
         if (lastSelectedFolder == null) {
             return new JFileChooser();
         }
-        return new JFileChooser((java.io.File)lastSelectedFolder.getUnderlyingFileObject());
+        return new JFileChooser((java.io.File) lastSelectedFolder.getUnderlyingFileObject());
     }
 
     private void insertTheme(Theme theme) {
@@ -949,7 +1056,7 @@ class AppearancePanel extends PreferencesPanel implements ActionListener, Runnab
 
         int count = themeComboBox.getItemCount();
         for (i = 0; i < count; i++) {
-            if((themeComboBox.getItemAt(i)).getName().compareTo(theme.getName()) >= 0) {
+            if ((themeComboBox.getItemAt(i)).getName().compareTo(theme.getName()) >= 0) {
                 themeComboBox.insertItemAt(theme, i);
                 break;
             }
@@ -985,8 +1092,8 @@ class AppearancePanel extends PreferencesPanel implements ActionListener, Runnab
 
             // Imports the theme and makes sure it appears in the combobox.
             try {
-                insertTheme(ThemeManager.importTheme((java.io.File)file.getUnderlyingFileObject()));
-            } catch(Exception ex) { // Notifies the user that something went wrong.
+                insertTheme(ThemeManager.importTheme((java.io.File) file.getUnderlyingFileObject()));
+            } catch (Exception ex) { // Notifies the user that something went wrong.
                 InformationDialog.showErrorDialog(this, Translator.get("prefs_dialog.error_in_import", file.getName()));
             }
         }
@@ -994,6 +1101,7 @@ class AppearancePanel extends PreferencesPanel implements ActionListener, Runnab
 
     /**
      * Exports the specified theme.
+     *
      * @param theme theme to export.
      */
     private void exportTheme(Theme theme) {
@@ -1009,8 +1117,8 @@ class AppearancePanel extends PreferencesPanel implements ActionListener, Runnab
 
             // Makes sure the file's extension is .xml.
             try {
-                if(!"xml".equalsIgnoreCase(file.getExtension()))    // Note: getExtension() may return null if no extension
-                    file = lastSelectedFolder.getDirectChild(file.getName()+".xml");
+                if (!"xml".equalsIgnoreCase(file.getExtension()))    // Note: getExtension() may return null if no extension
+                    file = lastSelectedFolder.getDirectChild(file.getName() + ".xml");
 
                 int collision = FileCollisionChecker.checkForCollision(null, file);
                 if (collision != FileCollisionChecker.NO_COLLOSION) {
@@ -1026,14 +1134,14 @@ class AppearancePanel extends PreferencesPanel implements ActionListener, Runnab
                 }
 
                 // Exports the theme.
-                ThemeManager.exportTheme(theme, (java.io.File)file.getUnderlyingFileObject());
+                ThemeManager.exportTheme(theme, (java.io.File) file.getUnderlyingFileObject());
 
                 // If it was exported to the custom themes folder, reload the theme combobox to reflect the
                 // changes.
                 if (lastSelectedFolder.equals(ThemeManager.getCustomThemesFolder())) {
                     populateThemes(theme);
-            }
-            } catch(Exception exception) { // Notifies users of errors.
+                }
+            } catch (Exception exception) { // Notifies users of errors.
                 InformationDialog.showErrorDialog(this, Translator.get("write_error"), Translator.get("cannot_write_file", file.getName()));
             }
         }
@@ -1045,82 +1153,104 @@ class AppearancePanel extends PreferencesPanel implements ActionListener, Runnab
     private void duplicateTheme(Theme theme) {
         try {
             insertTheme(ThemeManager.duplicateTheme(theme));
-        } catch(Exception e) {
+        } catch (Exception e) {
             InformationDialog.showErrorDialog(this);
         }
     }
 
 
-
-
     // - Listener code ----------------------------------------------------------
     // --------------------------------------------------------------------------
+
     /**
      * Called when a button is pressed.
      */
+    @Override
     public void actionPerformed(ActionEvent e) {
         Theme theme = themeComboBox.getSelectedItem();
 
         // Theme combobox selection changed.
-        if(e.getSource() == themeComboBox)
+        if (e.getSource() == themeComboBox) {
             resetThemeButtons(theme);
+        }
 
         // Look and feel combobox selection changed.
-        else if(e.getSource() == lookAndFeelComboBox)
+        else if (e.getSource() == lookAndFeelComboBox) {
             resetLookAndFeelButtons();
+        }
 
         // Delete look and feel button has been pressed.
-        else if(e.getSource() == deleteLookAndFeelButton)
+        else if (e.getSource() == deleteLookAndFeelButton) {
             deleteSelectedLookAndFeel();
+        }
 
         // Import look and feel button has been pressed.
-        else if(e.getSource() == importLookAndFeelButton)
+        else if (e.getSource() == importLookAndFeelButton) {
             importLookAndFeel();
+        }
 
         // Rename button was pressed.
-        else if(e.getSource() == renameThemeButton)
+        else if (e.getSource() == renameThemeButton) {
             renameTheme(theme);
+        }
 
         // Delete button was pressed.
-        else if(e.getSource() == deleteThemeButton)
+        else if (e.getSource() == deleteThemeButton) {
             deleteTheme(theme);
+        }
 
         // Edit button was pressed.
-        else if(e.getSource() == editThemeButton)
+        else if (e.getSource() == editThemeButton) {
             editTheme(theme);
+        }
 
         // Import button was pressed.
-        else if(e.getSource() == importThemeButton)
+        else if (e.getSource() == importThemeButton) {
             importTheme();
+        }
 
         // Export button was pressed.
-        else if(e.getSource() == exportThemeButton)
+        else if (e.getSource() == exportThemeButton) {
             exportTheme(theme);
+        }
 
         // Export button was pressed.
-        else if(e.getSource() == duplicateThemeButton)
+        else if (e.getSource() == duplicateThemeButton) {
             duplicateTheme(theme);
+        }
+
+        // Delete stored windows sizes and locations button was pressed.
+        else if (e.getSource() == clearStoredSizesAndLocationsButton) {
+            clearStoredSizesAndLocations();
+        }
     }
 
 
     // - File IMAGE_FILTER ------------------------------------------------------------
     // --------------------------------------------------------------------------
+
     /**
      * Filter used to only display XML files in the JFileChooser.
+     *
      * @author Nicolas Rinaudo
      */
     private static class ExtensionFileFilter extends javax.swing.filechooser.FileFilter {
-        /** Extension to match. */
+        /**
+         * Extension to match.
+         */
         private String extension;
-        /** Filter's description. */
+        /**
+         * Filter's description.
+         */
         private String description;
 
         /**
          * Creates a new extension file IMAGE_FILTER that will match files with the specified extension.
+         *
          * @param extension extension to match.
          */
         ExtensionFileFilter(String extension, String description) {
-            this.extension   = extension;
+            this.extension = extension;
             this.description = description;
         }
 
@@ -1137,10 +1267,13 @@ class AppearancePanel extends PreferencesPanel implements ActionListener, Runnab
             // If the file has an extension, and it matches .xml, return true.
             // Otherwise, return false.
             String ext = AbstractFile.getExtension(file.getName());
-            return ext != null && extension.equalsIgnoreCase(ext);
+            return extension.equalsIgnoreCase(ext);
         }
 
         @Override
-        public String getDescription() {return description;}
+        public String getDescription() {
+            return description;
+        }
     }
+
 }
