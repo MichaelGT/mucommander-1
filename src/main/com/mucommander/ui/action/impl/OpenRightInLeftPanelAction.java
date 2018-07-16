@@ -46,6 +46,7 @@ import java.util.Map;
 public class OpenRightInLeftPanelAction extends OpenLeftInRightPanelAction {
     /**
      * Creates a new <code>OpenRightInLeftPanelAction</code> with the specified parameters.
+     *
      * @param mainFrame  frame to which the action is attached.
      * @param properties action's properties.
      */
@@ -70,15 +71,23 @@ public class OpenRightInLeftPanelAction extends OpenLeftInRightPanelAction {
     public static final class Descriptor extends AbstractActionDescriptor {
         public static final String ACTION_ID = "OpenRightInLeftPanel";
 
-        public String getId() { return ACTION_ID; }
+        public String getId() {
+            return ACTION_ID;
+        }
 
-        public ActionCategory getCategory() { return ActionCategory.NAVIGATION; }
+        public ActionCategory getCategory() {
+            return ActionCategory.NAVIGATION;
+        }
 
-        public KeyStroke getDefaultAltKeyStroke() { return null; }
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
 
-        public KeyStroke getDefaultKeyStroke() { return null; }
+        public KeyStroke getDefaultKeyStroke() {
+            return null;
+        }
 
-        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new OpenRightInLeftPanelAction(mainFrame, properties);
         }
     }

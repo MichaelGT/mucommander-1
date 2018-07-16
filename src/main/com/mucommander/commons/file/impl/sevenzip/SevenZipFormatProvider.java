@@ -18,11 +18,10 @@ import java.io.IOException;
 public class SevenZipFormatProvider implements ArchiveFormatProvider {
 
     public static final String[] EXTENSIONS = {".7z", ".cb7"};
-
     /**
      * Static instance of the filename filter that matches archive filenames
      */
-    private static final ExtensionFilenameFilter FILENAME_FILTER = new ExtensionFilenameFilter(EXTENSIONS);
+    private final static ExtensionFilenameFilter filenameFilter = new ExtensionFilenameFilter(EXTENSIONS);
 
     private static final byte[] SIGNATURE = {0x37, 0x7A, (byte) 0xBC, (byte) 0xAF, 0x27, 0x1C};
 
@@ -36,7 +35,12 @@ public class SevenZipFormatProvider implements ArchiveFormatProvider {
 
     @Override
     public FilenameFilter getFilenameFilter() {
-        return FILENAME_FILTER;
+        return filenameFilter;
+    }
+
+    @Override
+    public String[] getFileExtensions() {
+        return EXTENSIONS;
     }
 
 }

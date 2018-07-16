@@ -18,7 +18,7 @@
 
 package com.mucommander.ui.action.impl;
 
-import javax.swing.*;
+import javax.swing.Action;
 import java.beans.PropertyChangeListener;
 
 /**
@@ -30,15 +30,17 @@ import java.beans.PropertyChangeListener;
  *
  * <p>This class is abstract, leaving <code>actionPerformed()</code> unimplemented. {@link MuteProxyAction} provides an
  * implementation where <code>actionPerformed()</code> does nothing.
- * 
+ *
  * @author Maxence Bernard
  */
 public abstract class ProxyAction implements Action {
 
-    /** Proxied action */
+    /**
+     * Proxied action
+     */
     private Action proxiedAction;
 
-    
+
     /**
      * Creates a new ProxyAction that acts as a proxy to the provided Action instance.
      *
@@ -50,7 +52,7 @@ public abstract class ProxyAction implements Action {
 
 
     /**
-     * Returns the Action instance that this ProxyAction proxies. 
+     * Returns the Action instance that this ProxyAction proxies.
      */
     public Action getProxiedAction() {
         return proxiedAction;

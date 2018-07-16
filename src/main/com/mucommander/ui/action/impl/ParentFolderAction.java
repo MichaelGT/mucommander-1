@@ -18,14 +18,14 @@
 
 package com.mucommander.ui.action.impl;
 
-import java.util.Map;
-
 import com.mucommander.ui.action.MuAction;
 import com.mucommander.ui.event.ActivePanelListener;
 import com.mucommander.ui.event.LocationEvent;
 import com.mucommander.ui.event.LocationListener;
 import com.mucommander.ui.main.FolderPanel;
 import com.mucommander.ui.main.MainFrame;
+
+import java.util.Map;
 
 /**
  * This class is an abstract {@link MuAction} that operates on the current folder. It monitors changes in the active
@@ -70,18 +70,21 @@ public abstract class ParentFolderAction extends MuAction implements ActivePanel
     public void activePanelChanged(FolderPanel folderPanel) {
         toggleEnabledState();
     }
-    
+
     /**********************************
-	 * LocationListener Implementation
-	 **********************************/
+     * LocationListener Implementation
+     **********************************/
 
     public void locationChanged(LocationEvent e) {
         toggleEnabledState();
     }
-    
-	public void locationChanging(LocationEvent locationEvent) { }
 
-	public void locationCancelled(LocationEvent locationEvent) { }
+    public void locationChanging(LocationEvent locationEvent) {
+    }
 
-	public void locationFailed(LocationEvent locationEvent) { }
+    public void locationCancelled(LocationEvent locationEvent) {
+    }
+
+    public void locationFailed(LocationEvent locationEvent) {
+    }
 }

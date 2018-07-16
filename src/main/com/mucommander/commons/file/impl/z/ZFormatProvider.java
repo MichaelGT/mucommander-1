@@ -1,20 +1,20 @@
 package com.mucommander.commons.file.impl.z;
 
-import java.io.IOException;
-
 import com.mucommander.commons.file.AbstractArchiveFile;
 import com.mucommander.commons.file.AbstractFile;
 import com.mucommander.commons.file.ArchiveFormatProvider;
 import com.mucommander.commons.file.filter.ExtensionFilenameFilter;
 import com.mucommander.commons.file.filter.FilenameFilter;
 import com.mucommander.commons.file.impl.SevenZipJBindingROArchiveFile;
-
 import net.sf.sevenzipjbinding.ArchiveFormat;
+
+import java.io.IOException;
 
 public class ZFormatProvider implements ArchiveFormatProvider {
 
-    private final static ExtensionFilenameFilter FILENAME_FILTER = new ExtensionFilenameFilter(
-            new String[] { ".z" });
+    public static final String[] EXTENSIONS = {".z"};
+
+    private final static ExtensionFilenameFilter FILENAME_FILTER = new ExtensionFilenameFilter(EXTENSIONS);
 
     private final static byte[] SIGNATURE = {0x1F, (byte) 0x9D};
 
@@ -26,6 +26,11 @@ public class ZFormatProvider implements ArchiveFormatProvider {
     @Override
     public FilenameFilter getFilenameFilter() {
         return FILENAME_FILTER;
+    }
+
+    @Override
+    public String[] getFileExtensions() {
+        return EXTENSIONS;
     }
 
 }

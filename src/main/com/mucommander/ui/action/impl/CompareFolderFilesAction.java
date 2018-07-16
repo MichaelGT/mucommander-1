@@ -26,7 +26,7 @@ import com.mucommander.ui.main.MainFrame;
 import com.mucommander.ui.main.table.FileTable;
 import com.mucommander.ui.main.table.views.BaseFileTableModel;
 
-import javax.swing.*;
+import javax.swing.KeyStroke;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,8 +36,9 @@ import java.util.Map;
 
 /**
  * This action compares the content of the 2 MainFrame's file tables and marks the files with different size or content.
- *
+ * <p>
  * Created on 10/07/17.
+ *
  * @author Oleg Trifonov
  */
 
@@ -125,21 +126,27 @@ public class CompareFolderFilesAction extends MuAction {
     public static final class Descriptor extends AbstractActionDescriptor {
         public static final String ACTION_ID = "CompareFolderFiles";
 
-        public String getId() { return ACTION_ID; }
+        public String getId() {
+            return ACTION_ID;
+        }
 
-        public ActionCategory getCategory() { return ActionCategory.SELECTION; }
+        public ActionCategory getCategory() {
+            return ActionCategory.SELECTION;
+        }
 
-        public KeyStroke getDefaultAltKeyStroke() { return null; }
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
 
         public KeyStroke getDefaultKeyStroke() {
 //            if (!OsFamily.MAC_OS_X.isCurrent()) {
-                return KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.CTRL_DOWN_MASK);
+            return KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.CTRL_DOWN_MASK);
 //            } else {
 //                return KeyStroke.getKeyStroke(KeyEvent.VK_M, KeyEvent.META_DOWN_MASK);
 //            }
         }
 
-        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new CompareFolderFilesAction(mainFrame, properties);
         }
 

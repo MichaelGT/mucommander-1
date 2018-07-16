@@ -26,7 +26,7 @@ import com.mucommander.ui.main.MainFrame;
 import com.mucommander.ui.main.table.FileTable;
 import com.mucommander.ui.main.table.views.TableViewMode;
 
-import javax.swing.*;
+import javax.swing.KeyStroke;
 import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,7 +55,7 @@ public class RightArrowAction extends MuAction {
         if (file != null && file.isDirectory() && table.getSelectedFileIndex() > 0) {
             new OpenAction(mainFrame, new HashMap<>()).performAction();
         } else {
-            table.selectFile(count-1);
+            table.selectFile(count - 1);
         }
     }
 
@@ -65,27 +65,34 @@ public class RightArrowAction extends MuAction {
     }
 
     public static final class Descriptor extends AbstractActionDescriptor {
+
         public static final String ACTION_ID = "RightArrowAction";
 
+        @Override
         public String getId() {
             return ACTION_ID;
         }
 
+        @Override
         public ActionCategory getCategory() {
             return ActionCategory.NAVIGATION;
         }
 
+        @Override
         public KeyStroke getDefaultKeyStroke() {
             return KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0);
         }
 
+        @Override
         public KeyStroke getDefaultAltKeyStroke() {
             return null;
         }
 
-        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+        @Override
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new RightArrowAction(mainFrame, properties);
         }
+
     }
 
 }

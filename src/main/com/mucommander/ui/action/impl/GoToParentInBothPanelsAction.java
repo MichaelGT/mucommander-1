@@ -19,7 +19,6 @@
 package com.mucommander.ui.action.impl;
 
 import com.mucommander.commons.file.AbstractFile;
-import com.mucommander.commons.runtime.OsFamily;
 import com.mucommander.ui.action.AbstractActionDescriptor;
 import com.mucommander.ui.action.ActionCategory;
 import com.mucommander.ui.action.ActionDescriptor;
@@ -47,8 +46,10 @@ import java.util.Map;
 public class GoToParentInBothPanelsAction extends ActiveTabAction {
     // - Initialization ------------------------------------------------------------------
     // -----------------------------------------------------------------------------------
+
     /**
      * Creates a new <code>GoToParentInBothPanelsAction</code> instance with the specified parameters.
+     *
      * @param mainFrame  frame to which the action is attached.
      * @param properties action's properties.
      */
@@ -67,12 +68,13 @@ public class GoToParentInBothPanelsAction extends ActiveTabAction {
     @Override
     protected void toggleEnabledState() {
         setEnabled(!mainFrame.getActivePanel().getTabs().getCurrentTab().isLocked() &&
-        		   !mainFrame.getInactivePanel().getTabs().getCurrentTab().isLocked() &&
-        		    mainFrame.getActivePanel().getCurrentFolder().getParent()!=null);
+                !mainFrame.getInactivePanel().getTabs().getCurrentTab().isLocked() &&
+                mainFrame.getActivePanel().getCurrentFolder().getParent() != null);
     }
 
     // - Action code ---------------------------------------------------------------------
     // -----------------------------------------------------------------------------------
+
     /**
      * Opens both the active and inactive folder panel's parent directories.
      */
@@ -86,12 +88,13 @@ public class GoToParentInBothPanelsAction extends ActiveTabAction {
 
             // If the inactive panel has a parent file, wait for the current panel change to be complete and navigate
             // to it.
-            if((parent = mainFrame.getInactivePanel().getCurrentFolder().getParent()) != null) {
-                if(openThread != null) {
-                    while(openThread.isAlive()) {
+            if ((parent = mainFrame.getInactivePanel().getCurrentFolder().getParent()) != null) {
+                if (openThread != null) {
+                    while (openThread.isAlive()) {
                         try {
                             openThread.join();
-                        } catch(InterruptedException ignore) {}
+                        } catch (InterruptedException ignore) {
+                        }
                     }
                 }
                 mainFrame.getInactivePanel().tryChangeCurrentFolder(parent);
@@ -99,30 +102,32 @@ public class GoToParentInBothPanelsAction extends ActiveTabAction {
         }
     }
 
-	@Override
-	public ActionDescriptor getDescriptor() {
-		return new Descriptor();
-	}
+    @Override
+    public ActionDescriptor getDescriptor() {
+        return new Descriptor();
+    }
 
 
     public static final class Descriptor extends AbstractActionDescriptor {
-    	public static final String ACTION_ID = "GoToParentInBothPanels";
-    	
-		public String getId() { return ACTION_ID; }
+        public static final String ACTION_ID = "GoToParentInBothPanels";
 
-		public ActionCategory getCategory() { return ActionCategory.NAVIGATION; }
-
-		public KeyStroke getDefaultAltKeyStroke() { return null; }
-
-		public KeyStroke getDefaultKeyStroke() {
-            if (!OsFamily.MAC_OS_X.isCurrent()) {
-                return KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, KeyEvent.SHIFT_DOWN_MASK | KeyEvent.CTRL_DOWN_MASK);
-            } else {
-                return KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, KeyEvent.SHIFT_DOWN_MASK | KeyEvent.META_DOWN_MASK);
-            }
+        public String getId() {
+            return ACTION_ID;
         }
 
-        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+        public ActionCategory getCategory() {
+            return ActionCategory.NAVIGATION;
+        }
+
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
+
+        public KeyStroke getDefaultKeyStroke() {
+            return KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, KeyEvent.SHIFT_DOWN_MASK | CTRL_OR_META_DOWN_MASK);
+        }
+
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new GoToParentInBothPanelsAction(mainFrame, properties);
         }
     }

@@ -35,7 +35,6 @@ public abstract class SelectBackwardAction extends MuAction {
         super(mainFrame, properties);
     }
 
-
     /////////////////////////////
     // MuAction implementation //
     /////////////////////////////
@@ -47,7 +46,6 @@ public abstract class SelectBackwardAction extends MuAction {
         activeTable.selectFile(newFileIndex);
     }
 
-
     //////////////////////
     // Abstract methods //
     //////////////////////
@@ -58,4 +56,5 @@ public abstract class SelectBackwardAction extends MuAction {
      * @return the number of rows to decrease from the current selection.
      */
     protected abstract int getRowDecrement();
+
 }

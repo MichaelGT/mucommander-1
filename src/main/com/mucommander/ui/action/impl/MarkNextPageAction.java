@@ -44,28 +44,36 @@ public class MarkNextPageAction extends MarkForwardAction {
     @Override
     protected int getRowIncrement() {
         // Note: the page row increment varies with the file table's height
-        return mainFrame.getActiveTable().getPageRowIncrement()+1;
+        return mainFrame.getActiveTable().getPageRowIncrement() + 1;
     }
 
-	@Override
-	public ActionDescriptor getDescriptor() {
-		return new Descriptor();
-	}
+    @Override
+    public ActionDescriptor getDescriptor() {
+        return new Descriptor();
+    }
 
 
     public static final class Descriptor extends AbstractActionDescriptor {
-    	public static final String ACTION_ID = "MarkNextPage";
-    	
-		public String getId() { return ACTION_ID; }
+        public static final String ACTION_ID = "MarkNextPage";
 
-		public ActionCategory getCategory() { return ActionCategory.SELECTION; }
+        public String getId() {
+            return ACTION_ID;
+        }
 
-		public KeyStroke getDefaultAltKeyStroke() { return null; }
+        public ActionCategory getCategory() {
+            return ActionCategory.SELECTION;
+        }
 
-		public KeyStroke getDefaultKeyStroke() { return KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, KeyEvent.SHIFT_DOWN_MASK); }
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
 
-		public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
-			return new MarkNextPageAction(mainFrame, properties);
-		}
+        public KeyStroke getDefaultKeyStroke() {
+            return KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, KeyEvent.SHIFT_DOWN_MASK);
+        }
+
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
+            return new MarkNextPageAction(mainFrame, properties);
+        }
     }
 }

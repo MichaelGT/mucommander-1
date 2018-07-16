@@ -58,11 +58,10 @@ public abstract class SelectedFileAction extends FileAction {
         this.filter = filter;
     }
 
-
     @Override
     protected boolean getFileTableCondition(FileTable fileTable) {
         AbstractFile selectedFile = fileTable.getSelectedFile(false, true);
-        boolean enable = selectedFile!=null;
+        boolean enable = selectedFile != null;
 
         if (enable && filter != null) {
             enable = filter.match(selectedFile);
@@ -70,4 +69,5 @@ public abstract class SelectedFileAction extends FileAction {
 
         return enable;
     }
+
 }

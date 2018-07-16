@@ -30,7 +30,7 @@ import java.util.Map;
 
 /**
  * Add a new tab in the other panel with the same location as the one presented in the currently selected tab
- * 
+ *
  * @author Arik Hadas
  */
 public class CloneTabToOtherPanelAction extends MuAction {
@@ -41,30 +41,38 @@ public class CloneTabToOtherPanelAction extends MuAction {
 
     @Override
     public void performAction() {
-    	AbstractFile currentLocation = mainFrame.getActivePanel().getCurrentFolder();
-    	mainFrame.getInactivePanel().getTabs().add(currentLocation);
+        AbstractFile currentLocation = mainFrame.getActivePanel().getCurrentFolder();
+        mainFrame.getInactivePanel().getTabs().add(currentLocation);
     }
 
-	@Override
-	public ActionDescriptor getDescriptor() {
-		return new Descriptor();
-	}
+    @Override
+    public ActionDescriptor getDescriptor() {
+        return new Descriptor();
+    }
 
 
     public static final class Descriptor extends AbstractActionDescriptor {
-    	public static final String ACTION_ID = "CloneTabToOtherPanel";
-    	
-		public String getId() { return ACTION_ID; }
+        public static final String ACTION_ID = "CloneTabToOtherPanel";
 
-		public ActionCategory getCategory() { return ActionCategory.TAB; }
+        public String getId() {
+            return ACTION_ID;
+        }
 
-		public KeyStroke getDefaultAltKeyStroke() { return null; }
+        public ActionCategory getCategory() {
+            return ActionCategory.TAB;
+        }
 
-		public KeyStroke getDefaultKeyStroke() { return null; }
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
 
-		public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
-			return new CloneTabToOtherPanelAction(mainFrame, properties);
-		}
+        public KeyStroke getDefaultKeyStroke() {
+            return null;
+        }
+
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
+            return new CloneTabToOtherPanelAction(mainFrame, properties);
+        }
     }
 }
 

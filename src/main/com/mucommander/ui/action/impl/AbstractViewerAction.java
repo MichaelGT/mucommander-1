@@ -18,8 +18,6 @@
 
 package com.mucommander.ui.action.impl;
 
-import java.util.Map;
-
 import com.mucommander.command.Command;
 import com.mucommander.commons.file.AbstractFile;
 import com.mucommander.commons.file.FileOperation;
@@ -27,21 +25,26 @@ import com.mucommander.commons.file.filter.FileOperationFilter;
 import com.mucommander.commons.file.impl.local.LocalFile;
 import com.mucommander.job.TempOpenWithJob;
 import com.mucommander.process.ProcessRunner;
-import com.mucommander.utils.text.Translator;
 import com.mucommander.ui.dialog.InformationDialog;
 import com.mucommander.ui.dialog.file.ProgressDialog;
 import com.mucommander.ui.main.MainFrame;
+import com.mucommander.utils.text.Translator;
+
+import java.util.Map;
 
 /**
  * Provides a common base for viewer and editor actions.
+ *
  * @author Maxence Bernard, Nicolas Rinaudo
  */
 abstract class AbstractViewerAction extends SelectedFileAction {
 
     // - Initialization ------------------------------------------------------------------
     // -----------------------------------------------------------------------------------
+
     /**
      * Creates a new instance of <code>AbstractViewerAction</code>.
+     *
      * @param mainFrame  frame to which the action is attached.
      * @param properties action's properties.
      */
@@ -53,9 +56,9 @@ abstract class AbstractViewerAction extends SelectedFileAction {
     }
 
 
-
     // - AbstractAction implementation ---------------------------------------------------
     // -----------------------------------------------------------------------------------
+
     /**
      * Edits the currently selected file.
      */
@@ -78,7 +81,7 @@ abstract class AbstractViewerAction extends SelectedFileAction {
         if (file.hasAncestor(LocalFile.class)) {
             try {
                 ProcessRunner.execute(customCommand.getTokens(file), file);
-            } catch(Exception e) {
+            } catch (Exception e) {
                 InformationDialog.showErrorDialog(mainFrame);
             }
         } else {
@@ -90,11 +93,12 @@ abstract class AbstractViewerAction extends SelectedFileAction {
     }
 
 
-
     // - Abstract methods ----------------------------------------------------------------
     // -----------------------------------------------------------------------------------
+
     /**
      * Opens the specified file without a custom command.
+     *
      * @param file file to open.
      */
     protected abstract void performInternalAction(AbstractFile file);

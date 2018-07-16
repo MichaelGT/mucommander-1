@@ -39,14 +39,14 @@ import java.util.Map;
  */
 public class AdbUtils {
 
-
     private static Map<String, String> lastDeviceNames;
 
     /**
      * Get list of connected ADB devices
+     *
      * @return null if adb doesn't found
      */
-    public static List<String> getDevices()  {
+    public static List<String> getDevices() {
         try {
             JadbConnection connection = new JadbConnection();
             List<JadbDevice> devices = connection.getDevices();
@@ -62,7 +62,6 @@ public class AdbUtils {
     }
 
     /**
-     *
      * @return true if adb found
      */
     public static boolean checkAdb() {
@@ -71,12 +70,14 @@ public class AdbUtils {
             try {
                 int result = ExecutorUtils.execute("./adb devices -l", adbPath);
                 return result == 0;
-            } catch (IOException | InterruptedException ignore) {}
+            } catch (IOException | InterruptedException ignore) {
+            }
         }
         try {
             int result = ExecutorUtils.execute("adb devices -l", adbPath);
             return result == 0;
-        } catch (IOException | InterruptedException ignore) {}
+        } catch (IOException | InterruptedException ignore) {
+        }
         return false;
     }
 
@@ -93,7 +94,8 @@ public class AdbUtils {
             path = null;
         }
         if (path != null) {
-            AbstractFile result = FileFactory.getFile(path + (OsFamily.WINDOWS.isCurrent() ? "\\platform-tools\\adb.exe" : "/platform-tools/adb"));
+            String adb = path + (OsFamily.WINDOWS.isCurrent() ? "\\platform-tools\\adb.exe" : "/platform-tools/adb");
+            AbstractFile result = FileFactory.getFile(adb);
             if (result != null && result.exists() && !result.isDirectory()) {
                 return result.getParent();
             }
@@ -104,7 +106,8 @@ public class AdbUtils {
             path = null;
         }
         if (path != null) {
-            AbstractFile result = FileFactory.getFile(path + (OsFamily.WINDOWS.isCurrent() ? "\\adb.exe" : "/adb"));
+            String adb = path + (OsFamily.getCurrent() == OsFamily.WINDOWS ? "\\adb.exe" : "/adb");
+            AbstractFile result = FileFactory.getFile(adb);
             if (result != null && result.exists() && !result.isDirectory()) {
                 return result.getParent();
             }
@@ -120,9 +123,7 @@ public class AdbUtils {
     }
 
     /**
-     *
      * @param serial the device serial number
-     *
      * @return device name (or null if unknown)
      */
     public static String getDeviceName(String serial) {
@@ -134,7 +135,6 @@ public class AdbUtils {
 
 
     /**
-     *
      * @return serial to name
      */
     public static Map<String, String> getDeviceNames() {

@@ -40,6 +40,7 @@ import com.mucommander.ui.event.LocationListener;
 import com.mucommander.ui.icon.IconManager;
 import com.mucommander.ui.layout.ProportionalSplitPane;
 import com.mucommander.ui.layout.YBoxPanel;
+import com.mucommander.ui.macosx.IMacOsWindow;
 import com.mucommander.ui.main.commandbar.CommandBar;
 import com.mucommander.ui.main.menu.MainMenuBar;
 import com.mucommander.ui.main.statusbar.PerformanceMonitorDialog;
@@ -77,7 +78,7 @@ import java.util.WeakHashMap;
  *
  * @author Maxence Bernard
  */
-public class MainFrame extends JFrame implements LocationListener {
+public class MainFrame extends JFrame implements LocationListener, IMacOsWindow {
 
     private ProportionalSplitPane splitPane;
 
@@ -150,8 +151,9 @@ public class MainFrame extends JFrame implements LocationListener {
         // TODO: this code should probably be moved to the desktop API
 
         // - Mac OS X completely ignores calls to #setIconImage/setIconImages, no need to waste time
-        if (OsFamily.MAC_OS_X.isCurrent())
+        if (OsFamily.MAC_OS_X.isCurrent()) {
             return;
+        }
 
         // Use Java 1.6 's new Window#setIconImages(List<Image>) when available
         if (JavaVersion.JAVA_1_6.isCurrentOrHigher()) {
@@ -188,6 +190,7 @@ public class MainFrame extends JFrame implements LocationListener {
     private void init(FolderPanel leftFolderPanel, FolderPanel rightFolderPanel) {
         // Set the window icon
         setWindowIcon();
+        //initLookAndFeel();
 
         if (OsFamily.MAC_OS_X.isCurrent()) {
             // Lion Fullscreen support

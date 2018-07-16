@@ -35,11 +35,11 @@ import java.util.Map;
  * After this action has been performed, minimized windows will return to a normal state and windows will be stacked
  * in the following order:
  * <ul>
- *  <li>Current MainFrame
- *  <li>MainFrame #1
- *  <li>MainFrame #2
- *  <li>...
- *  <li>MainFrame #N
+ * <li>Current MainFrame
+ * <li>MainFrame #1
+ * <li>MainFrame #2
+ * <li>...
+ * <li>MainFrame #N
  * </ul>
  *
  * @author Maxence Bernard
@@ -57,7 +57,7 @@ public class BringAllToFrontAction extends MuAction {
 
         int nbMainFrames = mainFrames.size();
         MainFrame mainFrame;
-        for (int i = nbMainFrames-1; i >= 0; i--) {
+        for (int i = nbMainFrames - 1; i >= 0; i--) {
             mainFrame = mainFrames.get(i);
             if (mainFrame != currentMainFrame) {
                 mainFrame.toFront();
@@ -67,25 +67,32 @@ public class BringAllToFrontAction extends MuAction {
         currentMainFrame.toFront();
     }
 
-	@Override
-	public ActionDescriptor getDescriptor() {
-		return new Descriptor();
-	}
+    @Override
+    public ActionDescriptor getDescriptor() {
+        return new Descriptor();
+    }
 
 
-    
     public static final class Descriptor extends AbstractActionDescriptor {
-    	public static final String ACTION_ID = "BringAllToFront";
-    	
-		public String getId() { return ACTION_ID; }
+        public static final String ACTION_ID = "BringAllToFront";
 
-		public ActionCategory getCategory() { return ActionCategory.WINDOW; }
+        public String getId() {
+            return ACTION_ID;
+        }
 
-		public KeyStroke getDefaultAltKeyStroke() { return null; }
+        public ActionCategory getCategory() {
+            return ActionCategory.WINDOW;
+        }
 
-		public KeyStroke getDefaultKeyStroke() { return null; }
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
 
-        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+        public KeyStroke getDefaultKeyStroke() {
+            return null;
+        }
+
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new BringAllToFrontAction(mainFrame, properties);
         }
     }

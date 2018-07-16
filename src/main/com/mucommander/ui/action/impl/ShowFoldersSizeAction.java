@@ -18,7 +18,10 @@
 package com.mucommander.ui.action.impl;
 
 import com.mucommander.commons.file.AbstractFile;
-import com.mucommander.ui.action.*;
+import com.mucommander.ui.action.AbstractActionDescriptor;
+import com.mucommander.ui.action.ActionCategory;
+import com.mucommander.ui.action.ActionDescriptor;
+import com.mucommander.ui.action.MuAction;
 import com.mucommander.ui.main.MainFrame;
 import com.mucommander.ui.main.table.FileTable;
 import com.mucommander.ui.main.table.views.full.FileTableModel;
@@ -44,7 +47,7 @@ public class ShowFoldersSizeAction extends ParentFolderAction {
     @Override
     public void performAction() {
         FileTable activeTable = mainFrame.getActiveTable();
-        FileTableModel fileTableModel = (FileTableModel)activeTable.getModel();
+        FileTableModel fileTableModel = (FileTableModel) activeTable.getModel();
         for (AbstractFile file : fileTableModel.getFiles()) {
             if (file.isDirectory()) {
                 fileTableModel.startDirectorySizeCalculation(activeTable, file);
@@ -57,23 +60,35 @@ public class ShowFoldersSizeAction extends ParentFolderAction {
         return new Descriptor();
     }
 
-
     public static final class Descriptor extends AbstractActionDescriptor {
+
         public static final String ACTION_ID = "ShowFoldersSize";
 
-        public String getId() { return ACTION_ID; }
+        @Override
+        public String getId() {
+            return ACTION_ID;
+        }
 
-        public ActionCategory getCategory() { return ActionCategory.VIEW; }
+        @Override
+        public ActionCategory getCategory() {
+            return ActionCategory.VIEW;
+        }
 
-        public KeyStroke getDefaultAltKeyStroke() { return null; }
+        @Override
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
 
+        @Override
         public KeyStroke getDefaultKeyStroke() {
             return null;
         }
 
+        @Override
         public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new ShowFoldersSizeAction(mainFrame, properties);
         }
+
     }
 
 }

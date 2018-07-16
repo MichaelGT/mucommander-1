@@ -45,10 +45,10 @@ public class GoForwardAction extends ActiveTabAction {
         mainFrame.getActivePanel().getFolderHistory().goForward();
     }
 
-	@Override
-	public ActionDescriptor getDescriptor() {
-		return new Descriptor();
-	}
+    @Override
+    public ActionDescriptor getDescriptor() {
+        return new Descriptor();
+    }
 
     /**
      * Enables or disables this action based on the history of the currently active FolderPanel: if there is a next
@@ -57,22 +57,30 @@ public class GoForwardAction extends ActiveTabAction {
     @Override
     protected void toggleEnabledState() {
         setEnabled(mainFrame.getActivePanel().getFolderHistory().hasForwardFolder() &&
-        		  !mainFrame.getActivePanel().getTabs().getCurrentTab().isLocked());
+                !mainFrame.getActivePanel().getTabs().getCurrentTab().isLocked());
     }
 
 
     public static final class Descriptor extends AbstractActionDescriptor {
-    	public static final String ACTION_ID = "GoForward";
-    	
-		public String getId() { return ACTION_ID; }
+        public static final String ACTION_ID = "GoForward";
 
-		public ActionCategory getCategory() { return ActionCategory.NAVIGATION; }
+        public String getId() {
+            return ACTION_ID;
+        }
 
-		public KeyStroke getDefaultAltKeyStroke() { return null; }
+        public ActionCategory getCategory() {
+            return ActionCategory.NAVIGATION;
+        }
 
-		public KeyStroke getDefaultKeyStroke() { return KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK); }
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
 
-        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+        public KeyStroke getDefaultKeyStroke() {
+            return KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK);
+        }
+
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new GoForwardAction(mainFrame, properties);
         }
     }

@@ -18,9 +18,6 @@
 
 package com.mucommander.ui.action.impl;
 
-import java.awt.Image;
-import java.util.Map;
-
 import com.mucommander.bonjour.BonjourService;
 import com.mucommander.bookmark.Bookmark;
 import com.mucommander.commons.file.AbstractFile;
@@ -34,6 +31,8 @@ import com.mucommander.ui.main.MainFrame;
 import com.mucommander.utils.FileIconsCache;
 
 import javax.swing.ImageIcon;
+import java.awt.Image;
+import java.util.Map;
 
 /**
  * This action opens a specified location in the current active FileTable. The location can be designated by either a
@@ -52,9 +51,9 @@ public class OpenLocationAction extends ActiveTabAction {
      * Creates a new OpenLocationAction instance using the provided url's string representation
      * (with credentials stripped out) as label.
      *
-     * @param mainFrame main frame
+     * @param mainFrame  main frame
      * @param properties properties to use in this action
-     * @param url location to open
+     * @param url        location to open
      */
     public OpenLocationAction(MainFrame mainFrame, Map<String, Object> properties, FileURL url) {
         this(mainFrame, properties, url, url.getScheme().equals(FileProtocols.FILE) ? url.getPath() : url.toString(false));
@@ -63,10 +62,10 @@ public class OpenLocationAction extends ActiveTabAction {
     /**
      * Creates a new OpenLocationAction instance using the provided FileURL and label.
      *
-     * @param mainFrame main frame
+     * @param mainFrame  main frame
      * @param properties properties to use in this action
-     * @param url location to open
-     * @param label tooltip label
+     * @param url        location to open
+     * @param label      tooltip label
      */
     private OpenLocationAction(MainFrame mainFrame, Map<String, Object> properties, FileURL url, String label) {
         super(mainFrame, properties);
@@ -83,12 +82,12 @@ public class OpenLocationAction extends ActiveTabAction {
 
 
     /**
-     * Creates a new OpenLocationAction instance using the filename of the provided AbstractFile 
+     * Creates a new OpenLocationAction instance using the filename of the provided AbstractFile
      * as label.
      *
-     * @param mainFrame main frame
+     * @param mainFrame  main frame
      * @param properties properties to use in this action
-     * @param file location to open
+     * @param file       location to open
      */
     public OpenLocationAction(MainFrame mainFrame, Map<String, Object> properties, AbstractFile file) {
         this(mainFrame, properties, file, file.getName());
@@ -97,10 +96,10 @@ public class OpenLocationAction extends ActiveTabAction {
     /**
      * Creates a new OpenLocationAction instance using the provided AbstractFile and label.
      *
-     * @param mainFrame main frame
+     * @param mainFrame  main frame
      * @param properties properties to use in this action
-     * @param file location to open
-     * @param label tooltip label
+     * @param file       location to open
+     * @param label      tooltip label
      */
     private OpenLocationAction(MainFrame mainFrame, Map<String, Object> properties, AbstractFile file, String label) {
         super(mainFrame, properties);
@@ -114,9 +113,9 @@ public class OpenLocationAction extends ActiveTabAction {
     /**
      * Creates a new OpenLocationAction instance using the provided path as label.
      *
-     * @param mainFrame main frame
+     * @param mainFrame  main frame
      * @param properties properties to use in this action
-     * @param path path to open
+     * @param path       path to open
      */
     public OpenLocationAction(MainFrame mainFrame, Map<String, Object> properties, String path) {
         this(mainFrame, properties, path, path);
@@ -125,10 +124,10 @@ public class OpenLocationAction extends ActiveTabAction {
     /**
      * Creates a new OpenLocationAction instance using the provided path and label.
      *
-     * @param mainFrame main frame
+     * @param mainFrame  main frame
      * @param properties properties to use in this action
-     * @param path path to open
-     * @param label tooltip label
+     * @param path       path to open
+     * @param label      tooltip label
      */
     private OpenLocationAction(MainFrame mainFrame, Map<String, Object> properties, String path, String label) {
         super(mainFrame, properties);
@@ -143,9 +142,9 @@ public class OpenLocationAction extends ActiveTabAction {
      * Convenience constructor, same effect as calling {@link #OpenLocationAction(MainFrame, Map, String, String)} with
      * {@link Bookmark#getLocation()} and {@link Bookmark#getName()}.
      *
-     * @param mainFrame main frame
+     * @param mainFrame  main frame
      * @param properties properties to use in this action
-     * @param  bookmark location top open
+     * @param bookmark   location top open
      */
     public OpenLocationAction(MainFrame mainFrame, Map<String, Object> properties, Bookmark bookmark) {
         this(mainFrame, properties, bookmark.getLocation(), bookmark.getName());
@@ -156,9 +155,9 @@ public class OpenLocationAction extends ActiveTabAction {
      * Convenience constructor, same effect as calling {@link #OpenLocationAction(MainFrame, Map, FileURL, String)} with
      * {@link BonjourService#getURL()} and {@link BonjourService#getNameWithProtocol()} ()}.
      *
-     * @param mainFrame main frame
-     * @param properties properties to use in this action
-     * @param  bonjourService location to open
+     * @param mainFrame      main frame
+     * @param properties     properties to use in this action
+     * @param bonjourService location to open
      */
     public OpenLocationAction(MainFrame mainFrame, Map<String, Object> properties, BonjourService bonjourService) {
         this(mainFrame, properties, bonjourService.getURL(), bonjourService.getNameWithProtocol());
@@ -199,9 +198,9 @@ public class OpenLocationAction extends ActiveTabAction {
         }
     }
 
-	@Override
-	public ActionDescriptor getDescriptor() {
-		return new Descriptor();
-	}
+    @Override
+    public ActionDescriptor getDescriptor() {
+        return new Descriptor();
+    }
 
 }

@@ -39,6 +39,7 @@ import java.util.Map;
 public class GoToParentAction extends ActiveTabAction {
     /**
      * Creates a new <code>GoToParentAction</code> with the specified parameters.
+     *
      * @param mainFrame  frame to which the action is attached.
      * @param properties action's properties.
      */
@@ -55,9 +56,8 @@ public class GoToParentAction extends ActiveTabAction {
     @Override
     protected void toggleEnabledState() {
         setEnabled(!mainFrame.getActivePanel().getTabs().getCurrentTab().isLocked() &&
-        		    mainFrame.getActivePanel().getCurrentFolder().getParent()!=null);
+                mainFrame.getActivePanel().getCurrentFolder().getParent() != null);
     }
-
 
 
     ///////////////////////
@@ -67,23 +67,23 @@ public class GoToParentAction extends ActiveTabAction {
     /**
      * Updates <code>panel</code>'s location to its parent.
      *
-     * @param  panel in which to change the location.
+     * @param panel in which to change the location.
      * @return <code>true</code> if <code>panel</code> has a parent, <code>false</code> otherwise.
      */
     protected boolean goToParent(FolderPanel panel) {
-    	AbstractFile parent = panel.getCurrentFolder().getParent();
+        AbstractFile parent = panel.getCurrentFolder().getParent();
         if (parent != null) {
-        	panel.tryChangeCurrentFolder(parent, null, true);
+            panel.tryChangeCurrentFolder(parent, null, true);
             return true;
         }
         return false;
     }
 
 
-
     /////////////////////////////
     // MuAction implementation //
     /////////////////////////////
+
     /**
      * Goes to the current location's parent in the active panel.
      */
@@ -94,24 +94,32 @@ public class GoToParentAction extends ActiveTabAction {
         goToParent(mainFrame.getActivePanel());
     }
 
-	@Override
-	public ActionDescriptor getDescriptor() {
-		return new Descriptor();
-	}
+    @Override
+    public ActionDescriptor getDescriptor() {
+        return new Descriptor();
+    }
 
 
     public static final class Descriptor extends AbstractActionDescriptor {
-    	public static final String ACTION_ID = "GoToParent";
-    	
-		public String getId() { return ACTION_ID; }
+        public static final String ACTION_ID = "GoToParent";
 
-		public ActionCategory getCategory() { return ActionCategory.NAVIGATION; }
+        public String getId() {
+            return ACTION_ID;
+        }
 
-		public KeyStroke getDefaultAltKeyStroke() { return null; }
+        public ActionCategory getCategory() {
+            return ActionCategory.NAVIGATION;
+        }
 
-		public KeyStroke getDefaultKeyStroke() { return KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0); }
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
 
-        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+        public KeyStroke getDefaultKeyStroke() {
+            return KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0);
+        }
+
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new GoToParentAction(mainFrame, properties);
         }
     }

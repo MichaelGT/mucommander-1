@@ -42,10 +42,6 @@ public class ArFormatProvider implements ArchiveFormatProvider {
      */
     private static final ExtensionFilenameFilter FILENAME_FILTER = new ExtensionFilenameFilter(EXTENSIONS);
 
-    //////////////////////////////////////////
-    // ArchiveFormatProvider implementation //
-    //////////////////////////////////////////
-
     @Override
     public AbstractArchiveFile getFile(AbstractFile file) throws IOException {
         return new ArArchiveFile(file);
@@ -54,6 +50,11 @@ public class ArFormatProvider implements ArchiveFormatProvider {
     @Override
     public FilenameFilter getFilenameFilter() {
         return FILENAME_FILTER;
+    }
+
+    @Override
+    public String[] getFileExtensions() {
+        return EXTENSIONS;
     }
 
 }

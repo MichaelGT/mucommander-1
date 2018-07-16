@@ -35,6 +35,7 @@ import ru.trolsoft.ui.TMenuSeparator;
  * Open in new tab
  * Open natively
  * Open with...
+ * Open as...
  * Rename
  * Reveal in Finder
  * ----

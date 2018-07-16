@@ -25,7 +25,11 @@ import com.mucommander.commons.file.filter.AttributeFileFilter.FileAttribute;
 import com.mucommander.commons.file.filter.FileFilter;
 import com.mucommander.commons.file.filter.FileOperationFilter;
 import com.mucommander.commons.file.util.FileSet;
-import com.mucommander.ui.action.*;
+import com.mucommander.ui.action.AbstractActionDescriptor;
+import com.mucommander.ui.action.ActionCategory;
+import com.mucommander.ui.action.ActionDescriptor;
+import com.mucommander.ui.action.InvokesDialog;
+import com.mucommander.ui.action.MuAction;
 import com.mucommander.ui.dialog.file.CombineFilesDialog;
 import com.mucommander.ui.main.MainFrame;
 
@@ -39,7 +43,7 @@ import java.util.Map;
  */
 @InvokesDialog
 public class CombineFilesAction extends SelectedFilesAction {
-	
+
     CombineFilesAction(MainFrame mainFrame, Map<String, Object> properties) {
         super(mainFrame, properties);
 
@@ -52,30 +56,38 @@ public class CombineFilesAction extends SelectedFilesAction {
         FileFilter filter = new AttributeFileFilter(FileAttribute.FILE);
         filter.filter(files);
 
-    	if (files.isEmpty())
-    		return;
+        if (files.isEmpty())
+            return;
 
         AbstractFile destFolder = mainFrame.getInactivePanel().getCurrentFolder();
         new CombineFilesDialog(mainFrame, files, destFolder).showDialog();
     }
 
-	@Override
-	public ActionDescriptor getDescriptor() {
-		return new Descriptor();
-	}
+    @Override
+    public ActionDescriptor getDescriptor() {
+        return new Descriptor();
+    }
 
     public static final class Descriptor extends AbstractActionDescriptor {
-    	public static final String ACTION_ID = "CombineFiles";
-    	
-		public String getId() { return ACTION_ID; }
+        public static final String ACTION_ID = "CombineFiles";
 
-		public ActionCategory getCategory() { return ActionCategory.FILES; }
+        public String getId() {
+            return ACTION_ID;
+        }
 
-		public KeyStroke getDefaultAltKeyStroke() { return null; }
+        public ActionCategory getCategory() {
+            return ActionCategory.FILES;
+        }
 
-		public KeyStroke getDefaultKeyStroke() { return null; }
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
 
-        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+        public KeyStroke getDefaultKeyStroke() {
+            return null;
+        }
+
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new CombineFilesAction(mainFrame, properties);
         }
 

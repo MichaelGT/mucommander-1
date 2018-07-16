@@ -18,10 +18,12 @@
 
 package com.mucommander.ui.action.impl;
 
-import com.mucommander.ui.action.*;
+import com.mucommander.ui.action.AbstractActionDescriptor;
+import com.mucommander.ui.action.ActionCategory;
+import com.mucommander.ui.action.MuAction;
 import com.mucommander.ui.main.MainFrame;
 
-import javax.swing.*;
+import javax.swing.KeyStroke;
 import java.util.Map;
 
 /**
@@ -37,20 +39,35 @@ public class ReportBugAction extends OpenURLInBrowserAction {
         putValue(URL_PROPERTY_KEY, com.mucommander.RuntimeConstants.BUG_REPOSITORY_URL);
     }
 
-
     public static final class Descriptor extends AbstractActionDescriptor {
-    	public static final String ACTION_ID = "ReportBug";
-    	
-		public String getId() { return ACTION_ID; }
 
-		public ActionCategory getCategory() { return ActionCategory.MISC; }
+        public static final String ACTION_ID = "ReportBug";
 
-		public KeyStroke getDefaultAltKeyStroke() { return null; }
+        @Override
+        public String getId() {
+            return ACTION_ID;
+        }
 
-		public KeyStroke getDefaultKeyStroke() { return null; }
+        @Override
+        public ActionCategory getCategory() {
+            return ActionCategory.MISC;
+        }
 
-        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+        @Override
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
+
+        @Override
+        public KeyStroke getDefaultKeyStroke() {
+            return null;
+        }
+
+        @Override
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new ReportBugAction(mainFrame, properties);
         }
+
     }
+
 }

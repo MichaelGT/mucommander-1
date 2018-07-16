@@ -72,7 +72,6 @@ public abstract class SortByAction extends MuAction implements ActivePanelListen
         setEnabled(fileTable.isColumnVisible(column));
     }
 
-
     /////////////////////////////
     // MuAction implementation //
     /////////////////////////////
@@ -81,7 +80,6 @@ public abstract class SortByAction extends MuAction implements ActivePanelListen
     public void performAction() {
         mainFrame.getActiveTable().sortBy(column);
     }
-
 
     ////////////////////////////////////////
     // ActivePanelListener implementation //
@@ -92,7 +90,6 @@ public abstract class SortByAction extends MuAction implements ActivePanelListen
         // Update this action's enabled state when the active panel has changed
         updateState(folderPanel.getFileTable());
     }
-
 
     /////////////////////////////////////////////
     // TableColumnModelListener implementation //

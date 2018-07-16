@@ -107,7 +107,7 @@ class ImageViewer extends FileViewer implements ActionListener {
     }
 
 
-    public ImageViewer() {
+    ImageViewer() {
     	imageViewerImpl = new ImageViewerImpl();
     	
     	setComponentToPresent(imageViewerImpl);
@@ -119,12 +119,12 @@ class ImageViewer extends FileViewer implements ActionListener {
         nextImageItem = MenuToolkit.addMenuItem(controlsMenu, Translator.get("image_viewer.next_image"), menuMnemonicHelper, KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), this);
         prevImageItem = MenuToolkit.addMenuItem(controlsMenu, Translator.get("image_viewer.previous_image"), menuMnemonicHelper, KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), this);
         controlsMenu.add(new TMenuSeparator());
-        if (!OsFamily.MAC_OS_X.isCurrent()) {
-            zoomInItem = MenuToolkit.addMenuItem(controlsMenu, Translator.get("image_viewer.zoom_in"), menuMnemonicHelper, KeyStroke.getKeyStroke(KeyEvent.VK_ADD, 0), this);
-            zoomOutItem = MenuToolkit.addMenuItem(controlsMenu, Translator.get("image_viewer.zoom_out"), menuMnemonicHelper, KeyStroke.getKeyStroke(KeyEvent.VK_SUBTRACT, 0), this);
-        } else {
+        if (OsFamily.MAC_OS_X.isCurrent()) {
             zoomInItem = MenuToolkit.addMenuItem(controlsMenu, Translator.get("image_viewer.zoom_in"), menuMnemonicHelper, KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), this);
             zoomOutItem = MenuToolkit.addMenuItem(controlsMenu, Translator.get("image_viewer.zoom_out"), menuMnemonicHelper, KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), this);
+        } else {
+            zoomInItem = MenuToolkit.addMenuItem(controlsMenu, Translator.get("image_viewer.zoom_in"), menuMnemonicHelper, KeyStroke.getKeyStroke(KeyEvent.VK_ADD, 0), this);
+            zoomOutItem = MenuToolkit.addMenuItem(controlsMenu, Translator.get("image_viewer.zoom_out"), menuMnemonicHelper, KeyStroke.getKeyStroke(KeyEvent.VK_SUBTRACT, 0), this);
         }
     }
     
@@ -141,7 +141,7 @@ class ImageViewer extends FileViewer implements ActionListener {
     @Override
     protected StatusBar getStatusBar() {
         if (statusBar == null) {
-        statusBar = new StatusBar();
+            statusBar = new StatusBar();
         }
         return statusBar;
     }

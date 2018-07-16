@@ -171,7 +171,6 @@ public class ToolBar extends JToolBar implements ConfigurationListener, MouseLis
         } else {
             RolloverButtonAdapter.decorateButton(button);
         }
-
         add(button);
     }
 

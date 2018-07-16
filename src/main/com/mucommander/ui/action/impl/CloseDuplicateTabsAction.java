@@ -29,39 +29,47 @@ import java.util.Map;
 
 /**
  * Close duplicate tabs in the folder panel
- * 
+ *
  * @author Arik Hadas
  */
 public class CloseDuplicateTabsAction extends MuAction {
-	
-	CloseDuplicateTabsAction(MainFrame mainFrame, Map<String, Object> properties) {
+
+    CloseDuplicateTabsAction(MainFrame mainFrame, Map<String, Object> properties) {
         super(mainFrame, properties);
     }
 
     @Override
     public void performAction() {
-    	mainFrame.getActivePanel().getTabs().closeDuplicateTabs();
+        mainFrame.getActivePanel().getTabs().closeDuplicateTabs();
     }
 
-	@Override
-	public ActionDescriptor getDescriptor() {
-		return new Descriptor();
-	}
+    @Override
+    public ActionDescriptor getDescriptor() {
+        return new Descriptor();
+    }
 
     public static final class Descriptor extends AbstractActionDescriptor {
-    	public static final String ACTION_ID = "CloseDuplicateTabs";
-    	
-		public String getId() { return ACTION_ID; }
+        public static final String ACTION_ID = "CloseDuplicateTabs";
 
-		public ActionCategory getCategory() { return ActionCategory.TAB; }
+        public String getId() {
+            return ACTION_ID;
+        }
 
-		public KeyStroke getDefaultAltKeyStroke() { return null; }
+        public ActionCategory getCategory() {
+            return ActionCategory.TAB;
+        }
 
-		public KeyStroke getDefaultKeyStroke() { return null; }
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
 
-		public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
-			return new CloseDuplicateTabsAction(mainFrame, properties);
-		}
+        public KeyStroke getDefaultKeyStroke() {
+            return null;
+        }
+
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
+            return new CloseDuplicateTabsAction(mainFrame, properties);
+        }
 
     }
 }

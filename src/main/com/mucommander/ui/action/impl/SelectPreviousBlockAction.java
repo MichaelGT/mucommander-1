@@ -18,7 +18,6 @@
 
 package com.mucommander.ui.action.impl;
 
-import com.mucommander.commons.runtime.OsFamily;
 import com.mucommander.conf.MuConfigurations;
 import com.mucommander.conf.MuPreference;
 import com.mucommander.conf.MuPreferences;
@@ -54,7 +53,6 @@ public class SelectPreviousBlockAction extends SelectBackwardAction {
         return new Descriptor();
     }
 
-
     public static final class Descriptor extends AbstractActionDescriptor {
 
         public static final String ACTION_ID = "SelectPreviousBlock";
@@ -71,11 +69,7 @@ public class SelectPreviousBlockAction extends SelectBackwardAction {
 
         @Override
         public KeyStroke getDefaultKeyStroke() {
-            if (!OsFamily.MAC_OS_X.isCurrent()) {
-                return KeyStroke.getKeyStroke(KeyEvent.VK_UP, KeyEvent.CTRL_DOWN_MASK);
-            } else {
-                return KeyStroke.getKeyStroke(KeyEvent.VK_UP, KeyEvent.META_DOWN_MASK);
-            }
+            return KeyStroke.getKeyStroke(KeyEvent.VK_UP, CTRL_OR_META_DOWN_MASK);
         }
 
         @Override

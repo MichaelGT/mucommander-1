@@ -21,7 +21,6 @@ import com.mucommander.commons.file.AbstractFile;
 import com.mucommander.commons.file.filter.MountedDriveFilter;
 import com.mucommander.commons.file.util.FileSet;
 import com.mucommander.commons.runtime.OsFamily;
-import com.mucommander.utils.text.Translator;
 import com.mucommander.ui.action.AbstractActionDescriptor;
 import com.mucommander.ui.action.ActionCategory;
 import com.mucommander.ui.action.ActionDescriptor;
@@ -29,14 +28,16 @@ import com.mucommander.ui.action.MuAction;
 import com.mucommander.ui.macosx.AppleScript;
 import com.mucommander.ui.main.MainFrame;
 import com.mucommander.ui.main.statusbar.TaskWidget;
+import com.mucommander.utils.text.Translator;
 
-import javax.swing.*;
+import javax.swing.KeyStroke;
+import javax.swing.SwingWorker;
 import java.util.List;
 import java.util.Map;
 
 /**
- *
  * Created on 26/01/16.
+ *
  * @author Oleg Trifonov
  */
 public class EjectDriveAction extends SelectedFilesAction {
@@ -69,13 +70,21 @@ public class EjectDriveAction extends SelectedFilesAction {
     public static final class Descriptor extends AbstractActionDescriptor {
         public static final String ACTION_ID = "EjectDrive";
 
-        public String getId() { return ACTION_ID; }
+        public String getId() {
+            return ACTION_ID;
+        }
 
-        public ActionCategory getCategory() { return ActionCategory.FILES; }
+        public ActionCategory getCategory() {
+            return ActionCategory.FILES;
+        }
 
-        public KeyStroke getDefaultAltKeyStroke() { return null; }
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
 
-        public KeyStroke getDefaultKeyStroke() { return null; }
+        public KeyStroke getDefaultKeyStroke() {
+            return null;
+        }
 
         public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new EjectDriveAction(mainFrame, properties);
@@ -119,7 +128,8 @@ public class EjectDriveAction extends SelectedFilesAction {
                 }
                 progress = 100;
                 publish();
-            } catch (Throwable ignore) {}
+            } catch (Throwable ignore) {
+            }
             return null;
         }
 

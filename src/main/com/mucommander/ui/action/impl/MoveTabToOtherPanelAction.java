@@ -18,7 +18,10 @@
 
 package com.mucommander.ui.action.impl;
 
-import com.mucommander.ui.action.*;
+import com.mucommander.ui.action.AbstractActionDescriptor;
+import com.mucommander.ui.action.ActionCategory;
+import com.mucommander.ui.action.ActionDescriptor;
+import com.mucommander.ui.action.MuAction;
 import com.mucommander.ui.main.MainFrame;
 import com.mucommander.ui.main.tabs.FileTableTab;
 
@@ -27,7 +30,7 @@ import java.util.Map;
 
 /**
  * Close current tab and open the same tab at the other FolderPanel
- * 
+ *
  * @author Arik Hadas
  */
 public class MoveTabToOtherPanelAction extends ActiveTabAction {
@@ -35,7 +38,7 @@ public class MoveTabToOtherPanelAction extends ActiveTabAction {
     MoveTabToOtherPanelAction(MainFrame mainFrame, Map<String, Object> properties) {
         super(mainFrame, properties);
     }
-    
+
     /**
      * Enables or disables this action based on the currently active folder's
      * current tab is not locked and is not the only tab in the panel,
@@ -44,33 +47,41 @@ public class MoveTabToOtherPanelAction extends ActiveTabAction {
     @Override
     protected void toggleEnabledState() {
         setEnabled(!mainFrame.getActivePanel().getTabs().getCurrentTab().isLocked() &&
-        		    mainFrame.getActivePanel().getTabs().getTabsCount() > 1);
+                mainFrame.getActivePanel().getTabs().getTabsCount() > 1);
     }
 
     @Override
     public void performAction() {
-    	FileTableTab tab = mainFrame.getActivePanel().getTabs().closeCurrentTab();
-    	mainFrame.getInactivePanel().getTabs().add(tab);
+        FileTableTab tab = mainFrame.getActivePanel().getTabs().closeCurrentTab();
+        mainFrame.getInactivePanel().getTabs().add(tab);
     }
 
-	@Override
-	public ActionDescriptor getDescriptor() {
-		return new Descriptor();
-	}
+    @Override
+    public ActionDescriptor getDescriptor() {
+        return new Descriptor();
+    }
 
 
     public static final class Descriptor extends AbstractActionDescriptor {
-    	public static final String ACTION_ID = "MoveTabToOtherPanel";
-    	
-		public String getId() { return ACTION_ID; }
+        public static final String ACTION_ID = "MoveTabToOtherPanel";
 
-		public ActionCategory getCategory() { return ActionCategory.TAB; }
+        public String getId() {
+            return ACTION_ID;
+        }
 
-		public KeyStroke getDefaultAltKeyStroke() { return null; }
+        public ActionCategory getCategory() {
+            return ActionCategory.TAB;
+        }
 
-		public KeyStroke getDefaultKeyStroke() { return null; }
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
 
-        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+        public KeyStroke getDefaultKeyStroke() {
+            return null;
+        }
+
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new MoveTabToOtherPanelAction(mainFrame, properties);
         }
     }

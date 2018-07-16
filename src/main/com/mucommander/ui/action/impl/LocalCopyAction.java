@@ -49,8 +49,8 @@ public class LocalCopyAction extends SelectedFileAction {
         super(mainFrame, properties);
 
         setSelectedFileFilter(new AndFileFilter(
-            new FileOperationFilter(FileOperation.READ_FILE),
-            new FileOperationFilter(FileOperation.WRITE_FILE)
+                new FileOperationFilter(FileOperation.READ_FILE),
+                new FileOperationFilter(FileOperation.WRITE_FILE)
         ));
     }
 
@@ -65,24 +65,32 @@ public class LocalCopyAction extends SelectedFileAction {
         }
     }
 
-	@Override
-	public ActionDescriptor getDescriptor() {
-		return new Descriptor();
-	}
+    @Override
+    public ActionDescriptor getDescriptor() {
+        return new Descriptor();
+    }
 
 
     public static final class Descriptor extends AbstractActionDescriptor {
-    	public static final String ACTION_ID = "LocalCopy";
-    	
-		public String getId() { return ACTION_ID; }
+        public static final String ACTION_ID = "LocalCopy";
 
-		public ActionCategory getCategory() { return null; }
+        public String getId() {
+            return ACTION_ID;
+        }
 
-		public KeyStroke getDefaultAltKeyStroke() { return null; }
+        public ActionCategory getCategory() {
+            return null;
+        }
 
-		public KeyStroke getDefaultKeyStroke() { return KeyStroke.getKeyStroke(KeyEvent.VK_F5, KeyEvent.SHIFT_DOWN_MASK); }
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
 
-        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+        public KeyStroke getDefaultKeyStroke() {
+            return KeyStroke.getKeyStroke(KeyEvent.VK_F5, KeyEvent.SHIFT_DOWN_MASK);
+        }
+
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new LocalCopyAction(mainFrame, properties);
         }
     }

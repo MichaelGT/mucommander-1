@@ -18,12 +18,12 @@
 
 package com.mucommander.ui.action.impl;
 
-import com.mucommander.utils.text.Translator;
 import com.mucommander.ui.action.AbstractActionDescriptor;
 import com.mucommander.ui.action.ActionCategory;
 import com.mucommander.ui.action.ActionDescriptor;
 import com.mucommander.ui.action.MuAction;
 import com.mucommander.ui.main.MainFrame;
+import com.mucommander.utils.text.Translator;
 
 import javax.swing.KeyStroke;
 import java.util.Map;
@@ -38,51 +38,66 @@ import java.util.Map;
  */
 public class ToggleLockTabAction extends ActiveTabAction {
 
-	ToggleLockTabAction(MainFrame mainFrame, Map<String, Object> properties) {
+    ToggleLockTabAction(MainFrame mainFrame, Map<String, Object> properties) {
         super(mainFrame, properties);
     }
 
     private void updateLabel(boolean locked) {
-        setLabel(Translator.get(locked?Descriptor.ACTION_ID+".unlock":Descriptor.ACTION_ID+".lock"));
+        setLabel(Translator.get(locked ? Descriptor.ACTION_ID + ".unlock" : Descriptor.ACTION_ID + ".lock"));
     }
 
     @Override
     public void performAction() {
-    	boolean lock = !mainFrame.getActivePanel().getTabs().getCurrentTab().isLocked();
+        boolean lock = !mainFrame.getActivePanel().getTabs().getCurrentTab().isLocked();
 
-    	if (lock)
-        	mainFrame.getActivePanel().getTabs().lock();
+        if (lock)
+            mainFrame.getActivePanel().getTabs().lock();
         else
-        	mainFrame.getActivePanel().getTabs().unlock();
-    	
+            mainFrame.getActivePanel().getTabs().unlock();
+
         // Change the label to reflect the new tab's locking state
         updateLabel(lock);
     }
 
-	@Override
-	public ActionDescriptor getDescriptor() {
-		return new Descriptor();
-	}
+    @Override
+    public ActionDescriptor getDescriptor() {
+        return new Descriptor();
+    }
 
-	@Override
-	protected void toggleEnabledState() {
-		updateLabel(mainFrame.getActivePanel().getTabs().getCurrentTab().isLocked());
-	}
-
+    @Override
+    protected void toggleEnabledState() {
+        updateLabel(mainFrame.getActivePanel().getTabs().getCurrentTab().isLocked());
+    }
 
     public static final class Descriptor extends AbstractActionDescriptor {
-    	public static final String ACTION_ID = "ToggleLockTab";
-    	
-		public String getId() { return ACTION_ID; }
 
-		public ActionCategory getCategory() { return ActionCategory.TAB; }
+        public static final String ACTION_ID = "ToggleLockTab";
 
-		public KeyStroke getDefaultAltKeyStroke() { return null; }
+        @Override
+        public String getId() {
+            return ACTION_ID;
+        }
 
-		public KeyStroke getDefaultKeyStroke() { return null; }
+        @Override
+        public ActionCategory getCategory() {
+            return ActionCategory.TAB;
+        }
 
-		public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
-			return new ToggleLockTabAction(mainFrame, properties);
-		}
+        @Override
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
+
+        @Override
+        public KeyStroke getDefaultKeyStroke() {
+            return null;
+        }
+
+        @Override
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
+            return new ToggleLockTabAction(mainFrame, properties);
+        }
+
     }
+
 }

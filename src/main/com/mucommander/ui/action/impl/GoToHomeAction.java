@@ -39,7 +39,7 @@ public class GoToHomeAction extends ActiveTabAction {
     GoToHomeAction(MainFrame mainFrame, Map<String, Object> properties) {
         super(mainFrame, properties);
     }
-    
+
     /**
      * Enables or disables this action based on the currently active folder's
      * current tab is not locked, this action will be enabled, if not it will be disabled.
@@ -53,28 +53,36 @@ public class GoToHomeAction extends ActiveTabAction {
     public void performAction() {
         // Changes the current folder to make it the user home folder
         AbstractFile homeFolder = LocalFile.getUserHome();
-        if(homeFolder!=null)
+        if (homeFolder != null)
             mainFrame.getActivePanel().tryChangeCurrentFolder(homeFolder);
     }
 
-	@Override
-	public ActionDescriptor getDescriptor() {
-		return new Descriptor();
-	}
+    @Override
+    public ActionDescriptor getDescriptor() {
+        return new Descriptor();
+    }
 
 
     public static final class Descriptor extends AbstractActionDescriptor {
-    	public static final String ACTION_ID = "GoToHome";
-    	
-		public String getId() { return ACTION_ID; }
+        public static final String ACTION_ID = "GoToHome";
 
-		public ActionCategory getCategory() { return ActionCategory.NAVIGATION; }
+        public String getId() {
+            return ACTION_ID;
+        }
 
-		public KeyStroke getDefaultAltKeyStroke() { return null; }
+        public ActionCategory getCategory() {
+            return ActionCategory.NAVIGATION;
+        }
 
-		public KeyStroke getDefaultKeyStroke() { return null; }
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
 
-        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+        public KeyStroke getDefaultKeyStroke() {
+            return null;
+        }
+
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new GoToHomeAction(mainFrame, properties);
         }
     }
