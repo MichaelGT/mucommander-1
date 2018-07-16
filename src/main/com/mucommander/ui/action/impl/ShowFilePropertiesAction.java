@@ -54,6 +54,7 @@ public class ShowFilePropertiesAction extends SelectedFilesAction {
     }
 
     public static final class Descriptor extends AbstractActionDescriptor {
+
         public static final String ACTION_ID = "ShowFileProperties";
 
         @Override
@@ -80,6 +81,7 @@ public class ShowFilePropertiesAction extends SelectedFilesAction {
         public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new ShowFilePropertiesAction(mainFrame, properties);
         }
+
     }
 
 }

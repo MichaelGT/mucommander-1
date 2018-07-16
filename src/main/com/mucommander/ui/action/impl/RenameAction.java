@@ -23,7 +23,10 @@ import com.mucommander.commons.file.FileOperation;
 import com.mucommander.commons.file.filter.AndFileFilter;
 import com.mucommander.commons.file.filter.FileOperationFilter;
 import com.mucommander.commons.file.filter.OrFileFilter;
-import com.mucommander.ui.action.*;
+import com.mucommander.ui.action.AbstractActionDescriptor;
+import com.mucommander.ui.action.ActionCategory;
+import com.mucommander.ui.action.ActionDescriptor;
+import com.mucommander.ui.action.MuAction;
 import com.mucommander.ui.main.MainFrame;
 import com.mucommander.ui.main.table.FileTable;
 
@@ -43,11 +46,11 @@ public class RenameAction extends SelectedFileAction {
         super(mainFrame, properties);
 
         setSelectedFileFilter(new OrFileFilter(
-            new FileOperationFilter(FileOperation.RENAME),
-            new AndFileFilter(
-                new FileOperationFilter(FileOperation.READ_FILE),
-                new FileOperationFilter(FileOperation.WRITE_FILE)
-            )
+                new FileOperationFilter(FileOperation.RENAME),
+                new AndFileFilter(
+                        new FileOperationFilter(FileOperation.READ_FILE),
+                        new FileOperationFilter(FileOperation.WRITE_FILE)
+                )
         ));
     }
 
@@ -63,25 +66,40 @@ public class RenameAction extends SelectedFileAction {
         }
     }
 
-	@Override
-	public ActionDescriptor getDescriptor() {
-		return new Descriptor();
-	}
-
+    @Override
+    public ActionDescriptor getDescriptor() {
+        return new Descriptor();
+    }
 
     public static final class Descriptor extends AbstractActionDescriptor {
-    	public static final String ACTION_ID = "Rename";
-    	
-		public String getId() { return ACTION_ID; }
 
-		public ActionCategory getCategory() { return ActionCategory.FILES; }
+        public static final String ACTION_ID = "Rename";
 
-		public KeyStroke getDefaultAltKeyStroke() { return null; }
+        @Override
+        public String getId() {
+            return ACTION_ID;
+        }
 
-		public KeyStroke getDefaultKeyStroke() { return KeyStroke.getKeyStroke(KeyEvent.VK_F6, KeyEvent.SHIFT_DOWN_MASK); }
+        @Override
+        public ActionCategory getCategory() {
+            return ActionCategory.FILES;
+        }
 
-        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+        @Override
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
+
+        @Override
+        public KeyStroke getDefaultKeyStroke() {
+            return KeyStroke.getKeyStroke(KeyEvent.VK_F6, KeyEvent.SHIFT_DOWN_MASK);
+        }
+
+        @Override
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new RenameAction(mainFrame, properties);
         }
+
     }
+
 }

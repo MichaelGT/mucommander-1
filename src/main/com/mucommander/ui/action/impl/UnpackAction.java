@@ -22,8 +22,11 @@ import com.mucommander.commons.file.filter.AttributeFileFilter;
 import com.mucommander.commons.file.filter.AttributeFileFilter.FileAttribute;
 import com.mucommander.commons.file.filter.OrFileFilter;
 import com.mucommander.commons.file.util.FileSet;
-import com.mucommander.commons.runtime.OsFamily;
-import com.mucommander.ui.action.*;
+import com.mucommander.ui.action.AbstractActionDescriptor;
+import com.mucommander.ui.action.ActionCategory;
+import com.mucommander.ui.action.ActionDescriptor;
+import com.mucommander.ui.action.InvokesDialog;
+import com.mucommander.ui.action.MuAction;
 import com.mucommander.ui.dialog.file.UnpackDialog;
 import com.mucommander.ui.main.MainFrame;
 
@@ -44,8 +47,8 @@ public class UnpackAction extends SelectedFilesAction {
 
         // Unpack job operates on archives and directories
         setSelectedFileFilter(new OrFileFilter(
-            new AttributeFileFilter(FileAttribute.ARCHIVE),
-            new AttributeFileFilter(FileAttribute.DIRECTORY)
+                new AttributeFileFilter(FileAttribute.ARCHIVE),
+                new AttributeFileFilter(FileAttribute.DIRECTORY)
         ));
     }
 
@@ -54,31 +57,41 @@ public class UnpackAction extends SelectedFilesAction {
         new UnpackDialog(mainFrame, files).showDialog();
     }
 
-	@Override
-	public ActionDescriptor getDescriptor() {
-		return new Descriptor();
-	}
+    @Override
+    public ActionDescriptor getDescriptor() {
+        return new Descriptor();
+    }
 
 
     public static final class Descriptor extends AbstractActionDescriptor {
-    	public static final String ACTION_ID = "Unpack";
-    	
-		public String getId() { return ACTION_ID; }
 
-		public ActionCategory getCategory() { return ActionCategory.FILES; }
+        public static final String ACTION_ID = "Unpack";
 
-		public KeyStroke getDefaultAltKeyStroke() { return null; }
-
-		public KeyStroke getDefaultKeyStroke() {
-            if (!OsFamily.MAC_OS_X.isCurrent()) {
-                return KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_DOWN_MASK);
-            } else {
-                return KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.META_DOWN_MASK);
-            }
+        @Override
+        public String getId() {
+            return ACTION_ID;
         }
 
-        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+        @Override
+        public ActionCategory getCategory() {
+            return ActionCategory.FILES;
+        }
+
+        @Override
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
+
+        @Override
+        public KeyStroke getDefaultKeyStroke() {
+            return KeyStroke.getKeyStroke(KeyEvent.VK_P, CTRL_OR_META_DOWN_MASK);
+        }
+
+        @Override
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new UnpackAction(mainFrame, properties);
         }
+
     }
+
 }

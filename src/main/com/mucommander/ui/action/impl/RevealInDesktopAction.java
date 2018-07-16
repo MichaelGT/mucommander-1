@@ -24,12 +24,17 @@ import com.mucommander.commons.file.AbstractFile;
 import com.mucommander.commons.file.FileProtocols;
 import com.mucommander.commons.runtime.OsFamily;
 import com.mucommander.desktop.DesktopManager;
-import com.mucommander.utils.text.Translator;
-import com.mucommander.ui.action.*;
+import com.mucommander.ui.action.AbstractActionDescriptor;
+import com.mucommander.ui.action.ActionCategory;
+import com.mucommander.ui.action.ActionDescriptor;
+import com.mucommander.ui.action.ActionProperties;
+import com.mucommander.ui.action.MuAction;
 import com.mucommander.ui.dialog.InformationDialog;
 import com.mucommander.ui.main.MainFrame;
+import com.mucommander.utils.text.Translator;
 
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.KeyStroke;
 import java.awt.event.KeyEvent;
 import java.util.Map;
 
@@ -52,8 +57,8 @@ public class RevealInDesktopAction extends ParentFolderAction {
     protected void toggleEnabledState() {
         AbstractFile currentFolder = mainFrame.getActivePanel().getCurrentFolder();
         setEnabled(currentFolder.getURL().getScheme().equals(FileProtocols.FILE)
-               && !currentFolder.isArchive()
-               && !currentFolder.hasAncestor(AbstractArchiveEntryFile.class)
+                && !currentFolder.isArchive()
+                && !currentFolder.hasAncestor(AbstractArchiveEntryFile.class)
         );
     }
 
@@ -69,32 +74,38 @@ public class RevealInDesktopAction extends ParentFolderAction {
             } else {
                 DesktopManager.openInFileManager(mainFrame.getActivePanel().getCurrentFolder());
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             InformationDialog.showErrorDialog(mainFrame);
         }
     }
 
-	@Override
-	public ActionDescriptor getDescriptor() {
-		return new Descriptor();
-	}
-
+    @Override
+    public ActionDescriptor getDescriptor() {
+        return new Descriptor();
+    }
 
     public static final class Descriptor extends AbstractActionDescriptor {
-    	public static final String ACTION_ID = "RevealInDesktop";
-    	
-		public String getId() { return ACTION_ID; }
 
-		public ActionCategory getCategory() { return ActionCategory.NAVIGATION; }
+        public static final String ACTION_ID = "RevealInDesktop";
 
-		public KeyStroke getDefaultAltKeyStroke() { return null; }
+        @Override
+        public String getId() {
+            return ACTION_ID;
+        }
 
-		public KeyStroke getDefaultKeyStroke() {
-            if (!OsFamily.MAC_OS_X.isCurrent()) {
-                return KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.CTRL_DOWN_MASK);
-            } else {
-                return KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.META_DOWN_MASK);
-            }
+        @Override
+        public ActionCategory getCategory() {
+            return ActionCategory.NAVIGATION;
+        }
+
+        @Override
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
+
+        @Override
+        public KeyStroke getDefaultKeyStroke() {
+            return KeyStroke.getKeyStroke(KeyEvent.VK_L, CTRL_OR_META_DOWN_MASK);
         }
 
         @Override
@@ -105,14 +116,17 @@ public class RevealInDesktopAction extends ParentFolderAction {
 
         @Override
         public ImageIcon getIcon() {
-		    if (OsFamily.MAC_OS_X.isCurrent()) {
+            if (OsFamily.MAC_OS_X.isCurrent()) {
                 return getStandardIcon("Finder");
             }
             return super.getIcon();
         }
 
-        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+        @Override
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new RevealInDesktopAction(mainFrame, properties);
         }
+
     }
+
 }

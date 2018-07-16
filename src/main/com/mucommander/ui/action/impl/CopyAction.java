@@ -50,24 +50,32 @@ public class CopyAction extends SelectedFilesAction {
         new CopyDialog(mainFrame, files).showDialog();
     }
 
-	@Override
-	public ActionDescriptor getDescriptor() {
-		return new Descriptor();
-	}
+    @Override
+    public ActionDescriptor getDescriptor() {
+        return new Descriptor();
+    }
 
 
     public static final class Descriptor extends AbstractActionDescriptor {
-    	public static final String ACTION_ID = "Copy";
-    	
-		public String getId() { return ACTION_ID; }
+        public static final String ACTION_ID = "Copy";
 
-		public ActionCategory getCategory() { return ActionCategory.FILES; }
+        public String getId() {
+            return ACTION_ID;
+        }
 
-		public KeyStroke getDefaultAltKeyStroke() { return null; }
+        public ActionCategory getCategory() {
+            return ActionCategory.FILES;
+        }
 
-		public KeyStroke getDefaultKeyStroke() { return KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0); }
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
 
-        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+        public KeyStroke getDefaultKeyStroke() {
+            return KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0);
+        }
+
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new CopyAction(mainFrame, properties);
         }
 

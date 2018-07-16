@@ -56,20 +56,34 @@ public class ToggleTableViewModeShortAction extends MuAction {
 
 
     public static final class Descriptor extends AbstractActionDescriptor {
+
         public static final String ACTION_ID = "ToggleTableViewModeShort";
 
-        public String getId() { return ACTION_ID; }
+        @Override
+        public String getId() {
+            return ACTION_ID;
+        }
 
-        public ActionCategory getCategory() { return ActionCategory.VIEW; }
+        @Override
+        public ActionCategory getCategory() {
+            return ActionCategory.VIEW;
+        }
 
-        public KeyStroke getDefaultAltKeyStroke() { return null; }
+        @Override
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
 
+        @Override
         public KeyStroke getDefaultKeyStroke() {
             return KeyStroke.getKeyStroke(KeyEvent.VK_3, KeyEvent.CTRL_DOWN_MASK);
         }
 
+        @Override
         public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new ToggleTableViewModeShortAction(mainFrame, properties);
         }
+
     }
+
 }

@@ -19,7 +19,6 @@
 package com.mucommander.ui.action.impl;
 
 import com.mucommander.commons.file.AbstractFile;
-import com.mucommander.commons.runtime.OsFamily;
 import com.mucommander.conf.MuConfigurations;
 import com.mucommander.conf.MuPreference;
 import com.mucommander.conf.MuPreferences;
@@ -103,11 +102,7 @@ public class MarkAllAction extends MuAction {
 
         @Override
         public KeyStroke getDefaultKeyStroke() {
-            if (!OsFamily.MAC_OS_X.isCurrent()) {
-                return KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.CTRL_DOWN_MASK);
-            } else {
-                return KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.META_DOWN_MASK);
-            }
+            return KeyStroke.getKeyStroke(KeyEvent.VK_A, CTRL_OR_META_DOWN_MASK);
         }
 
         @Override

@@ -10,7 +10,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * This class represents a Uniform Resource Locator (URL). The general format of a URL is as follows:
@@ -28,13 +31,13 @@ import java.util.*;
  * <p>
  * In addition to standard URL features, FileURL gives access to scheme-specific attributes:
  * <dl>
- *  <dt>{@link #getStandardPort() standard port}</dt><dd>the standard port implied when no port is defined in the URL,
+ * <dt>{@link #getStandardPort() standard port}</dt><dd>the standard port implied when no port is defined in the URL,
  * e.g. 21 for FTP</dd>
- *  <dt>{@link #getPathSeparator() path separator}</dt><dd>the character(s) that separates path fragments, e.g. '/' for
+ * <dt>{@link #getPathSeparator() path separator}</dt><dd>the character(s) that separates path fragments, e.g. '/' for
  * most schemes, '\' for local paths under certain OSes like Windows.</dd>
- *  <dt>{@link #getGuestCredentials() guest credentials}</dt><dd>credentials to authenticate as a guest, e.g. 'GUEST'
+ * <dt>{@link #getGuestCredentials() guest credentials}</dt><dd>credentials to authenticate as a guest, e.g. 'GUEST'
  * for SMB, 'anonymous' for FTP.</dd>
- *  <dt>{@link #getRealm() authentication realm}</dt><dd>the base URL throughout which a set of credentials can be used.
+ * <dt>{@link #getRealm() authentication realm}</dt><dd>the base URL throughout which a set of credentials can be used.
  * </dd>
  * </dl>
  * These attribute values are provided by the {@link SchemeHandler} registered with the scheme, if any.
@@ -65,55 +68,80 @@ import java.util.*;
  * <p>
  * This class has the several limitations that are worth noting:
  * <ul>
- *  <li>URL syntax is not strictly enforced: some invalid URLs (as per RFC) will be parsed without throwing an exception</li>
- *  <li>relative URLs are not supported</li>
- *  <li>no proper percent encoding/decoding </li>
- *  <li>no support for the fragment part</li>
+ * <li>URL syntax is not strictly enforced: some invalid URLs (as per RFC) will be parsed without throwing an exception</li>
+ * <li>relative URLs are not supported</li>
+ * <li>no proper percent encoding/decoding </li>
+ * <li>no support for the fragment part</li>
  * </ul>
  * Some of these limitations will be addressed in upcoming revisions of this class.
  *
+ * @author Maxence Bernard
  * @see SchemeHandler
  * @see SchemeParser
- * @author Maxence Bernard
  */
 public class FileURL implements Cloneable {
 
     // Todo: add support for the fragment part
     // Todo: add percent encoding/decoding
 
-    /** Handler instance that provides the scheme-specific features of this FileURL */
+    /**
+     * Handler instance that provides the scheme-specific features of this FileURL
+     */
     private SchemeHandler handler;
 
-    /** Scheme part */
+    /**
+     * Scheme part
+     */
     private String scheme;
-    /** Port part, -1 if this URL has none */
+    /**
+     * Port part, -1 if this URL has none
+     */
     private int port = -1;
-    /** Host part, null if this URL has none */
+    /**
+     * Host part, null if this URL has none
+     */
     private String host;
-    /** Path part */
+    /**
+     * Path part
+     */
     private String path;
-    /** Filename, extracted from the path, null if the path has none */
+    /**
+     * Filename, extracted from the path, null if the path has none
+     */
     private String filename;
-    /** Query part, null if this URL has none */
+    /**
+     * Query part, null if this URL has none
+     */
     private String query;
 
-    /** Properties, null if none have been set thus far */
+    /**
+     * Properties, null if none have been set thus far
+     */
     private Map<String, String> properties;
-    /** Credentials (login and password parts), null if this URL has none */
+    /**
+     * Credentials (login and password parts), null if this URL has none
+     */
     private Credentials credentials;
 
-    /** Caches the value returned by #hashCode() for as long as this instance is not modified */
+    /**
+     * Caches the value returned by #hashCode() for as long as this instance is not modified
+     */
     private int hashCode;
 
-    /** Default handler for schemes that do not have a specific handler */
+    /**
+     * Default handler for schemes that do not have a specific handler
+     */
     private static final SchemeHandler DEFAULT_HANDLER = new DefaultSchemeHandler();
 
-    /** Maps schemes (String) onto SchemeHandler instances */
+    /**
+     * Maps schemes (String) onto SchemeHandler instances
+     */
     private static final Map<String, SchemeHandler> handlers = new HashMap<>();
 
-    /** String designating the localhost */
+    /**
+     * String designating the localhost
+     */
     public final static String LOCALHOST = "localhost";
-
 
     static {
         // Register custom handlers for known schemes
@@ -138,7 +166,7 @@ public class FileURL implements Cloneable {
                 String newPath = location.getPath();
                 // Find first path token (share)
                 int pos = newPath.indexOf('/', 1);
-                newPath = newPath.substring(0, pos < 0 ? newPath.length() : pos+1);
+                newPath = newPath.substring(0, pos < 0 ? newPath.length() : pos + 1);
 
                 realm.setPath(newPath);
                 realm.setScheme(location.getScheme());
@@ -152,7 +180,6 @@ public class FileURL implements Cloneable {
             }
         });
     }
-
 
     /**
      * Private constructor. Creates an empty FileURL that uses the given handler, all parts have to be manually set.
@@ -178,8 +205,8 @@ public class FileURL implements Cloneable {
      * scheme (i.e. is local or UNC path, not a URL) then the default handler's parser is used.
      *
      * @param location the URL or path for which to get a <code>FileURL</code> instance
-     * @throws MalformedURLException if the specified string isn't a valid URL, according to the scheme's parser used
      * @return a FileURL corresponding to the given location
+     * @throws MalformedURLException if the specified string isn't a valid URL, according to the scheme's parser used
      */
     public static FileURL getFileURL(String location) throws MalformedURLException {
         int schemeDelimPos = location.indexOf("://");
@@ -249,7 +276,7 @@ public class FileURL implements Cloneable {
      * Registers a handler for the specified scheme, replacing any handler previously registered
      * for the same scheme.
      *
-     * @param scheme the scheme to associate the handler with (case-insensitive)
+     * @param scheme  the scheme to associate the handler with (case-insensitive)
      * @param handler the new handler in charge of the scheme
      */
     static void registerHandler(String scheme, SchemeHandler handler) {
@@ -278,7 +305,7 @@ public class FileURL implements Cloneable {
 
     /**
      * Returns the default handler, which handles schemes which do not have a specific handler.
-     * The returned instance is a {@link DefaultSchemeHandler} created with the no-arg constructor. 
+     * The returned instance is a {@link DefaultSchemeHandler} created with the no-arg constructor.
      *
      * @return the default handler
      */
@@ -290,7 +317,7 @@ public class FileURL implements Cloneable {
      * Extracts the filename from the given path and returns it, or <code>null</code> if the path does not contain
      * a filename.
      *
-     * @param path the path from which to extract a filename
+     * @param path      the path from which to extract a filename
      * @param separator the path separator
      * @return the filename extracted from the given path, <code>null</code> if the path doesn't contain any
      */
@@ -312,9 +339,8 @@ public class FileURL implements Cloneable {
             return null;
         }
 
-        return path.substring(pos+1);
+        return path.substring(pos + 1);
     }
-
 
     /**
      * Returns the scheme part of this URL. The returned scheme may never be <code>null</code>.
@@ -380,7 +406,7 @@ public class FileURL implements Cloneable {
     public int getPort() {
         return port;
     }
-	
+
     /**
      * Sets the port part of this URL, <code>-1</code> for no specific port.
      *
@@ -409,7 +435,6 @@ public class FileURL implements Cloneable {
     public int getStandardPort() {
         return handler.getStandardPort();
     }
-    
 
     /**
      * Returns the login part of this URL, <code>null</code> if there isn't any.
@@ -418,7 +443,7 @@ public class FileURL implements Cloneable {
      * @see #getCredentials()
      */
     public String getLogin() {
-        return credentials==null?null:credentials.getLogin();
+        return credentials == null ? null : credentials.getLogin();
     }
 
     /**
@@ -428,7 +453,7 @@ public class FileURL implements Cloneable {
      * @see #getCredentials()
      */
     public String getPassword() {
-        return credentials==null?null:credentials.getPassword();
+        return credentials == null ? null : credentials.getPassword();
     }
 
     /**
@@ -450,7 +475,7 @@ public class FileURL implements Cloneable {
      * @return <code>true</code> if this URL contains credentials, <code>false</code> otherwise.
      */
     public boolean containsCredentials() {
-        return credentials!=null;
+        return credentials != null;
     }
 
     /**
@@ -470,13 +495,13 @@ public class FileURL implements Cloneable {
 
     /**
      * Sets the login and password parts of this URL. Any credentials contained by this FileURL will be replaced.
-     *  <code>null</code> can be passed to discard existing credentials.
+     * <code>null</code> can be passed to discard existing credentials.
      *
      * <p>Credentials may or may not be of any use for the scheme's file protocol depending on the value
      * returned by {@link #getAuthenticationType()}.
      *
      * @param credentials the new login and password parts, replacing any existing credentials. If null is passed,
-     * existing credentials will be discarded.
+     *                    existing credentials will be discarded.
      * @see #getCredentials()
      */
     public void setCredentials(Credentials credentials) {
@@ -501,20 +526,19 @@ public class FileURL implements Cloneable {
         return handler.getGuestCredentials();
     }
 
-
     /**
      * Returns the path part of this URL. The returned value will never be <code>null</code> and always start with a
      * leading '/' character.
      *
      * @return the path part of this URL.
-     * @see    #setPath(String)
+     * @see #setPath(String)
      */
     public String getPath() {
         return path;
     }
 
     /**
-     * Sets the path part of this URL. The specified path cannot be <code>null</code> and must start with a leading 
+     * Sets the path part of this URL. The specified path cannot be <code>null</code> and must start with a leading
      * '/' character. If the specified path value is <code>null</code>, then the path will be set to "/".
      * If the path does not start with a leading separator, one will be added.
      *
@@ -549,7 +573,6 @@ public class FileURL implements Cloneable {
         return handler.getPathSeparator();
     }
 
-
     /**
      * Returns the parent of this URL according to its path, <code>null</code> if this URL has no parent (its path is "/").
      * <p>
@@ -567,7 +590,7 @@ public class FileURL implements Cloneable {
             String separator = getPathSeparator();
 
             // Remove any trailing separator
-            String parentPath = path.endsWith(separator)?path.substring(0, path.length()-separator.length()):path;
+            String parentPath = path.endsWith(separator) ? path.substring(0, path.length() - separator.length()) : path;
 
             // Resolve parent folder's path and reconstruct parent URL
             int lastSeparatorPos = parentPath.lastIndexOf(separator);
@@ -577,7 +600,7 @@ public class FileURL implements Cloneable {
                 parentURL.scheme = scheme;
                 parentURL.host = host;
                 parentURL.port = port;
-                parentURL.path = parentPath.substring(0, lastSeparatorPos+1);  // Keep trailing slash
+                parentURL.path = parentPath.substring(0, lastSeparatorPos + 1);  // Keep trailing slash
                 parentURL.filename = getFilenameFromPath(parentURL.path, separator);
 
                 // Set same credentials for parent, (if any)
@@ -595,7 +618,6 @@ public class FileURL implements Cloneable {
         return null;    // URL has no parent
     }
 
-
     /**
      * Returns the authentication realm corresponding to this URL, i.e. the base location throughout which credentials
      * can be used. Any property contained by the specified FileURL will be carried over in the returned FileURL.
@@ -603,7 +625,7 @@ public class FileURL implements Cloneable {
      *
      * <p>Note: this method returns a new FileURL instance every time it is called. Therefore the returned FileURL can
      * safely be modified without any risk of side effects.
-
+     *
      * <p>This method is just a shorthand for <code>getHandler().getRealm(this)</code>.
      *
      * @return this url's authentication realm
@@ -612,7 +634,6 @@ public class FileURL implements Cloneable {
         return handler.getRealm(this);
     }
 
-
     /**
      * Returns the filename of this URL , <code>null</code> if doesn't have one (e.g. if the path is "/").
      * <p>
@@ -620,18 +641,17 @@ public class FileURL implements Cloneable {
      * Use {@link #setPath(String)} to change the path and its filename.
      *
      * @return the filename of this URL, <code>null</code> if it doesn't have one.
-     * @see    #setPath(String)
+     * @see #setPath(String)
      */
     public String getFilename() {
         return filename;
     }
 
-
     /**
      * Returns the query part of this URL if it has one, <code>null</code> otherwise.
      *
      * @return the query part of this URL if it has one, <code>null</code> otherwise
-     * @see    #setQuery(String)
+     * @see #setQuery(String)
      */
     public String getQuery() {
         return query;
@@ -649,23 +669,22 @@ public class FileURL implements Cloneable {
         urlModified();
     }
 
-	
     /**
      * Returns the value corresponding to the given property name, <code>null</code> if the property has no value.
      *
      * @param name name of the property whose value is to be retrieved
      * @return the value associated with the specified property name, <code>null</code> if it has no value
-     * @see #setProperty(String,String)
+     * @see #setProperty(String, String)
      */
     public String getProperty(String name) {
-        return properties==null?null:properties.get(name);
+        return properties == null ? null : properties.get(name);
     }
-	
+
     /**
      * Sets the given property (name/value pair) in the FileURL instance. A <code>null</code> property value has the
      * effect of removing the property.
      *
-     * @param name name of the property to set
+     * @param name  name of the property to set
      * @param value value of the property
      * @see #getProperty(String)
      */
@@ -684,7 +703,6 @@ public class FileURL implements Cloneable {
         urlModified();
     }
 
-
     /**
      * Returns an <code>Enumeration</code> of all property names this FileURL contains.
      *
@@ -692,7 +710,7 @@ public class FileURL implements Cloneable {
      */
     public Set<String> getPropertyNames() {
         return properties == null ? new HashSet<>() : properties.keySet();
-        }
+    }
 
     /**
      * Copy the properties of the given FileURL into this FileURL.
@@ -713,13 +731,13 @@ public class FileURL implements Cloneable {
 
     /**
      * Returns a String representation of this FileURL, including the login and password parts (credentials) only if
-     * specified, and masking the password as requested. 
+     * specified, and masking the password as requested.
      *
      * @param includeCredentials if <code>true</code>, the login and password parts (if any) will be included in the
-     * returned URL.
-     * @param maskPassword if <code>true</code> and the includeCredentials parameter is also true, the password's
-     * characters (if any) will be replaced by '*' characters. This allows a URL containing credentials to be displayed
-     * to the end user without revealing the actual password.
+     *                           returned URL.
+     * @param maskPassword       if <code>true</code> and the includeCredentials parameter is also true, the password's
+     *                           characters (if any) will be replaced by '*' characters. This allows a URL containing credentials to be displayed
+     *                           to the end user without revealing the actual password.
      * @return a string representation of this <code>FileURL</code>
      */
     public String toString(boolean includeCredentials, boolean maskPassword) {
@@ -729,12 +747,12 @@ public class FileURL implements Cloneable {
         if (includeCredentials && credentials != null) {
             try {
                 sb.append(URLEncoder.encode(credentials.getLogin(), "UTF-8"));
-            } catch(UnsupportedEncodingException e) {
+            } catch (UnsupportedEncodingException e) {
                 // This can't happen in practice, UTF-8 is necessarily supported
             }
 
             String password = credentials.getPassword();
-            if( !password.isEmpty()) {
+            if (!password.isEmpty()) {
                 sb.append(':');
                 if (maskPassword)
                     sb.append(credentials.getMaskedPassword());
@@ -759,7 +777,7 @@ public class FileURL implements Cloneable {
             sb.append(port);
         }
 
-        if (host != null || !path.equals("/"))	{ // Test to avoid URLs like 'smb:///'
+        if (host != null || !path.equals("/")) { // Test to avoid URLs like 'smb:///'
             if (path.startsWith("/")) {
                 sb.append(path);
             } else {
@@ -783,13 +801,12 @@ public class FileURL implements Cloneable {
      * requested.
      *
      * @param includeCredentials if <code>true</code>, the login and password parts (if any) will be included in the
-     * returned URL.
+     *                           returned URL.
      * @return a string representation of this <code>FileURL</code>.
      */
     public String toString(boolean includeCredentials) {
         return toString(includeCredentials, false);
     }
-
 
     /**
      * Creates and returns a <code>java.net.URL</code> referring to the same location as this <code>FileURL</code>.
@@ -847,8 +864,8 @@ public class FileURL implements Cloneable {
         int port2 = url.port;
         int standardPort = getStandardPort();
 
-        return port1==port2 ||
-            (standardPort==url.getStandardPort() && ((port1==-1 && port2==standardPort || (port2==-1 && port1==standardPort))));
+        return port1 == port2 ||
+                (standardPort == url.getStandardPort() && ((port1 == -1 && port2 == standardPort || (port2 == -1 && port1 == standardPort))));
     }
 
     /**
@@ -866,8 +883,8 @@ public class FileURL implements Cloneable {
      * @return <code>true</code> if the path of this URL and the given URL are equal
      */
     public boolean pathEquals(FileURL url) {
-    	boolean isCaseSensitiveOS = !(OsFamily.WINDOWS.isCurrent() || OsFamily.getCurrent().equals(OsFamily.OS_2));
-    	
+        boolean isCaseSensitiveOS = !(OsFamily.WINDOWS.isCurrent() || OsFamily.OS_2.isCurrent());
+
         String path1 = isCaseSensitiveOS ? this.getPath() : this.getPath().toLowerCase();
         String path2 = isCaseSensitiveOS ? url.getPath() : url.getPath().toLowerCase();
 
@@ -882,8 +899,8 @@ public class FileURL implements Cloneable {
             int len2 = path2.length();
 
             // If the difference between the 2 strings is just a trailing path separator, we consider the paths as equal
-            if (Math.abs(len1-len2) == separatorLen && (len1 > len2 ? path1.startsWith(path2) : path2.startsWith(path1))) {
-                String diff = len1>len2 ? path1.substring(len1-separatorLen) : path2.substring(len2-separatorLen);
+            if (Math.abs(len1 - len2) == separatorLen && (len1 > len2 ? path1.startsWith(path2) : path2.startsWith(path1))) {
+                String diff = len1 > len2 ? path1.substring(len1 - separatorLen) : path2.substring(len2 - separatorLen);
                 return separator.equals(diff);
             }
         }
@@ -914,8 +931,8 @@ public class FileURL implements Cloneable {
         Credentials creds2 = url.credentials;
 
         return (creds1 == null && creds2 == null)
-            || (creds1 != null && creds1.equals(creds2, true))
-            || (creds2 != null && creds2.equals(creds1, true));
+                || (creds1 != null && creds1.equals(creds2, true))
+                || (creds2 != null && creds2.equals(creds1, true));
     }
 
     /**
@@ -927,10 +944,9 @@ public class FileURL implements Cloneable {
      */
     private boolean propertiesEquals(FileURL url) {
         return (this.properties == null && url.properties == null)
-           ||  (this.properties != null && this.properties.equals(url.properties))
-           ||  (url.properties != null && url.properties.equals(this.properties));
+                || (this.properties != null && this.properties.equals(url.properties))
+                || (url.properties != null && url.properties.equals(this.properties));
     }
-
 
     ////////////////////////
     // Overridden methods //
@@ -939,6 +955,7 @@ public class FileURL implements Cloneable {
     /**
      * Returns a String representation of this FileURL, without including the login and password parts it may have.
      */
+    @Override
     public String toString() {
         return toString(false);
     }
@@ -981,6 +998,7 @@ public class FileURL implements Cloneable {
      * @param o object to compare against this FileURL instance.
      * @return true if both FileURL instances are equal.
      */
+    @Override
     public boolean equals(Object o) {
         return equals(o, true, true);
     }
@@ -991,47 +1009,49 @@ public class FileURL implements Cloneable {
      * <p>
      * Two <code>FileURL</code> instances are said to be equal if:
      * <ul>
-     *  <li>schemes are equal (case-insensitive)</li>
-     *  <li>hosts are equal (case-insensitive)</li>
-     *  <li>ports are equal. The default port is taken into account when comparing ports: a non specified port part (-1)
+     * <li>schemes are equal (case-insensitive)</li>
+     * <li>hosts are equal (case-insensitive)</li>
+     * <li>ports are equal. The default port is taken into account when comparing ports: a non specified port part (-1)
      * is equivalent to the scheme's standard port. For instance, <code>http://mucommander.com:80/</code>
      * and <code>http://mucommander.com/</code> are considered equal.</li>
-     *  <li>paths are equal (case-sensitive). There can be a trailing separator difference in the two paths, they will
+     * <li>paths are equal (case-sensitive). There can be a trailing separator difference in the two paths, they will
      * still be considered as equal. For example, <code>/path</code> and <code>/path/</code> are considered equal
      * (assuming the path separator is '/').</li>
-     *  <li>queries are equal (case-sensitive)</li>
+     * <li>queries are equal (case-sensitive)</li>
      * </ul>
      * <p>
      * Credentials (login and password parts) are compared only if requested. The comparison for both the login and
      * password is case-sensitive.<br>
      * Likewise, properties are compared only if requested: the comparison of all properties is case-sensitive.
      *
-     * @param o object to compare against this FileURL instance
+     * @param o                  object to compare against this FileURL instance
      * @param compareCredentials if <code>true</code>, the login and password parts of both FileURL need to be
-     * equal (case-sensitive) for the FileURL instances to be equal
-     * @param compareProperties if <code>true</code>, all properties need to be equal (case-sensitive) in both
-     * FileURL for them to be equal
+     *                           equal (case-sensitive) for the FileURL instances to be equal
+     * @param compareProperties  if <code>true</code>, all properties need to be equal (case-sensitive) in both
+     *                           FileURL for them to be equal
      * @return true if both FileURL instances are equal
      */
     public boolean equals(Object o, boolean compareCredentials, boolean compareProperties) {
-        if (o == null || !(o instanceof FileURL))
+        if (!(o instanceof FileURL)) {
             return false;
+        }
 
-        FileURL url = (FileURL)o;
+        FileURL url = (FileURL) o;
 
         return pathEquals(url)      // Compare the path first as it is the most likely to be different
-            && schemeEquals(url)
-            && hostEquals(url)
-            && portEquals(url)
-            && queryEquals(url)
-            && (!compareCredentials || credentialsEquals(url))
-            && (!compareProperties || propertiesEquals(url));
+                && schemeEquals(url)
+                && hostEquals(url)
+                && portEquals(url)
+                && queryEquals(url)
+                && (!compareCredentials || credentialsEquals(url))
+                && (!compareProperties || propertiesEquals(url));
     }
 
     /**
      * This method is overridden to return a hash code that takes into account the behavior of {@link FileURL#equals(Object)},
      * so that <code>url1.equals(url2)</code> implies <code>url1.hashCode()==url2.hashCode()</code>.
      */
+    @Override
     public int hashCode() {
         if (hashCode == 0) {
             String separator = handler.getPathSeparator();
@@ -1039,20 +1059,20 @@ public class FileURL implements Cloneable {
             // #equals(Object) is trailing separator insensitive, so the hashCode must be trailing separator invariant
             int h = PathUtils.getPathHashCode(path, separator);
 
-            h = 31* h + scheme.toLowerCase().hashCode();
-            h = 31* h + (port==-1?handler.getStandardPort():port);
+            h = 31 * h + scheme.toLowerCase().hashCode();
+            h = 31 * h + (port == -1 ? handler.getStandardPort() : port);
 
             if (host != null)
-                h = 31* h + host.toLowerCase().hashCode();
+                h = 31 * h + host.toLowerCase().hashCode();
 
             if (query != null)
-                h = 31* h + query.hashCode();
+                h = 31 * h + query.hashCode();
 
             if (credentials != null)
-                h = 31* h + credentials.hashCode();
+                h = 31 * h + credentials.hashCode();
 
             if (properties != null)
-                h = 31* h + properties.hashCode();
+                h = 31 * h + properties.hashCode();
 
             // Cache the value until for as long as this instance is not modified
             hashCode = h;
@@ -1060,4 +1080,5 @@ public class FileURL implements Cloneable {
 
         return hashCode;
     }
+
 }

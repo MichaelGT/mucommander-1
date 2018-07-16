@@ -18,19 +18,20 @@
 
 package com.mucommander.ui.action.impl;
 
-import java.awt.event.KeyEvent;
-import java.net.MalformedURLException;
-import java.util.Map;
-
-import javax.swing.KeyStroke;
-
 import com.mucommander.bookmark.BookmarkManager;
 import com.mucommander.commons.file.AbstractFile;
 import com.mucommander.commons.file.FileURL;
-import com.mucommander.commons.runtime.OsFamily;
-import com.mucommander.ui.action.*;
+import com.mucommander.ui.action.AbstractActionDescriptor;
+import com.mucommander.ui.action.ActionCategory;
+import com.mucommander.ui.action.ActionDescriptor;
+import com.mucommander.ui.action.MuAction;
 import com.mucommander.ui.main.MainFrame;
 import com.mucommander.ui.main.table.FileTable;
+
+import javax.swing.KeyStroke;
+import java.awt.event.KeyEvent;
+import java.net.MalformedURLException;
+import java.util.Map;
 
 /**
  * Opens browsable file in a new tab.
@@ -42,11 +43,11 @@ import com.mucommander.ui.main.table.FileTable;
  */
 public class OpenInNewTabAction extends SelectedFileAction {
 
-	OpenInNewTabAction(MainFrame mainFrame, Map<String, Object> properties) {
+    OpenInNewTabAction(MainFrame mainFrame, Map<String, Object> properties) {
         super(mainFrame, properties);
     }
-	
-	/**
+
+    /**
      * This method is overridden to enable this action when the parent folder is selected.
      */
     @Override
@@ -55,10 +56,10 @@ public class OpenInNewTabAction extends SelectedFileAction {
 
         return selectedFile != null && selectedFile.isBrowsable();
     }
-    
-	@Override
-	public void performAction() {
-		AbstractFile file = mainFrame.getActiveTable().getSelectedFile(true, true);
+
+    @Override
+    public void performAction() {
+        AbstractFile file = mainFrame.getActiveTable().getSelectedFile(true, true);
 
         // Retrieves the currently selected file, aborts if none (should not normally happen).
         if (file == null || !file.isBrowsable()) {
@@ -77,32 +78,34 @@ public class OpenInNewTabAction extends SelectedFileAction {
 
         // Opens the currently selected file in a new tab
         mainFrame.getActivePanel().getTabs().add(fileURL);
-	}
+    }
 
-	@Override
-	public ActionDescriptor getDescriptor() {
-		return new Descriptor();
-	}
+    @Override
+    public ActionDescriptor getDescriptor() {
+        return new Descriptor();
+    }
 
 
     public static final class Descriptor extends AbstractActionDescriptor {
-    	public static final String ACTION_ID = "OpenInNewTab";
-    	
-		public String getId() { return ACTION_ID; }
+        public static final String ACTION_ID = "OpenInNewTab";
 
-		public ActionCategory getCategory() { return ActionCategory.NAVIGATION; }
-
-		public KeyStroke getDefaultAltKeyStroke() { return null; }
-
-		public KeyStroke getDefaultKeyStroke() {
-            if (!OsFamily.MAC_OS_X.isCurrent()) {
-                return KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, KeyEvent.CTRL_DOWN_MASK);
-            } else {
-                return KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, KeyEvent.META_DOWN_MASK);
-            }
+        public String getId() {
+            return ACTION_ID;
         }
 
-        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+        public ActionCategory getCategory() {
+            return ActionCategory.NAVIGATION;
+        }
+
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
+
+        public KeyStroke getDefaultKeyStroke() {
+            return KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, CTRL_OR_META_DOWN_MASK);
+        }
+
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new OpenInNewTabAction(mainFrame, properties);
         }
     }

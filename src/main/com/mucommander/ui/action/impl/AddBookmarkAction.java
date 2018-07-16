@@ -18,15 +18,17 @@
 
 package com.mucommander.ui.action.impl;
 
-import java.awt.event.KeyEvent;
-import java.util.Map;
-
-import javax.swing.KeyStroke;
-
-import com.mucommander.commons.runtime.OsFamily;
-import com.mucommander.ui.action.*;
+import com.mucommander.ui.action.AbstractActionDescriptor;
+import com.mucommander.ui.action.ActionCategory;
+import com.mucommander.ui.action.ActionDescriptor;
+import com.mucommander.ui.action.InvokesDialog;
+import com.mucommander.ui.action.MuAction;
 import com.mucommander.ui.dialog.bookmark.AddBookmarkDialog;
 import com.mucommander.ui.main.MainFrame;
+
+import javax.swing.KeyStroke;
+import java.awt.event.KeyEvent;
+import java.util.Map;
 
 /**
  * This action brings up the 'Add bookmark' dialog that allows to bookmark the current folder.
@@ -45,33 +47,40 @@ public class AddBookmarkAction extends MuAction {
         new AddBookmarkDialog(mainFrame);
     }
 
-	@Override
-	public ActionDescriptor getDescriptor() {
-		return new Descriptor();
-	}
-
-
+    @Override
+    public ActionDescriptor getDescriptor() {
+        return new Descriptor();
+    }
 
     public static final class Descriptor extends AbstractActionDescriptor {
-    	public static final String ACTION_ID = "AddBookmark";
 
-		public String getId() {	return ACTION_ID; }
+        public static final String ACTION_ID = "AddBookmark";
 
-		public ActionCategory getCategory() { return ActionCategory.NAVIGATION; }
-
-		public KeyStroke getDefaultAltKeyStroke() { return null; }
-
-		public KeyStroke getDefaultKeyStroke() {
-            if (!OsFamily.MAC_OS_X.isCurrent()) {
-                return KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.CTRL_DOWN_MASK);
-            } else {
-                return KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.META_DOWN_MASK);
-            }
+        @Override
+        public String getId() {
+            return ACTION_ID;
         }
 
-        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+        @Override
+        public ActionCategory getCategory() {
+            return ActionCategory.NAVIGATION;
+        }
+
+        @Override
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
+
+        @Override
+        public KeyStroke getDefaultKeyStroke() {
+            return KeyStroke.getKeyStroke(KeyEvent.VK_B, CTRL_OR_META_DOWN_MASK);
+        }
+
+        @Override
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new AddBookmarkAction(mainFrame, properties);
         }
+
     }
 
 

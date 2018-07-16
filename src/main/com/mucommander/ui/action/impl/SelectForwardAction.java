@@ -35,7 +35,6 @@ public abstract class SelectForwardAction extends MuAction {
         super(mainFrame, properties);
     }
 
-
     /////////////////////////////
     // MuAction implementation //
     /////////////////////////////
@@ -47,7 +46,6 @@ public abstract class SelectForwardAction extends MuAction {
         activeTable.selectFile(newFileIndex);
     }
 
-
     //////////////////////
     // Abstract methods //
     //////////////////////
@@ -58,4 +56,5 @@ public abstract class SelectForwardAction extends MuAction {
      * @return the number of rows to increment the current selection.
      */
     protected abstract int getRowIncrement();
+
 }

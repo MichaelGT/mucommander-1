@@ -50,6 +50,8 @@ public abstract class FileFrame extends JFrame implements QuickListContainer, IM
 		initLookAndFeel();
 
 		setIconImage(icon);
+
+        initLookAndFeel();
 		
 		// Call #dispose() on close (default is hide)
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);

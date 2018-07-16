@@ -18,8 +18,11 @@
 package com.mucommander.ui.action.impl;
 
 import com.mucommander.commons.file.AbstractFile;
-import com.mucommander.commons.runtime.OsFamily;
-import com.mucommander.ui.action.*;
+import com.mucommander.ui.action.AbstractActionDescriptor;
+import com.mucommander.ui.action.ActionCategory;
+import com.mucommander.ui.action.ActionDescriptor;
+import com.mucommander.ui.action.InvokesDialog;
+import com.mucommander.ui.action.MuAction;
 import com.mucommander.ui.dialog.file.FindFileDialog;
 import com.mucommander.ui.main.MainFrame;
 
@@ -29,6 +32,7 @@ import java.util.Map;
 
 /**
  * Find File action
+ *
  * @author Oleg Trifonov
  */
 @InvokesDialog
@@ -58,21 +62,23 @@ public class FindFileAction extends ParentFolderAction {
     public static final class Descriptor extends AbstractActionDescriptor {
         public static final String ACTION_ID = "FindFile";
 
-        public String getId() { return ACTION_ID; }
-
-        public ActionCategory getCategory() { return ActionCategory.NAVIGATION; }
-
-        public KeyStroke getDefaultAltKeyStroke() { return null; }
-
-        public KeyStroke getDefaultKeyStroke() {
-            if (!OsFamily.MAC_OS_X.isCurrent()) {
-                return KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK);
-            } else {
-                return KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.META_DOWN_MASK);
-            }
+        public String getId() {
+            return ACTION_ID;
         }
 
-        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+        public ActionCategory getCategory() {
+            return ActionCategory.NAVIGATION;
+        }
+
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
+
+        public KeyStroke getDefaultKeyStroke() {
+            return KeyStroke.getKeyStroke(KeyEvent.VK_F, CTRL_OR_META_DOWN_MASK);
+        }
+
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new FindFileAction(mainFrame, properties);
         }
     }

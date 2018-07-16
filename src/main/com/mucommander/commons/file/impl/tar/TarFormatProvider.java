@@ -21,11 +21,8 @@ public class TarFormatProvider implements ArchiveFormatProvider {
     /**
      * Static instance of the filename filter that matches archive filenames
      */
-    private static final ExtensionFilenameFilter FILENAME_FILTER = new ExtensionFilenameFilter(EXTENSIONS);
+    public final static ExtensionFilenameFilter FILENAME_FILTER = new ExtensionFilenameFilter(EXTENSIONS);
 
-    //////////////////////////////////////////
-    // ArchiveFormatProvider implementation //
-    //////////////////////////////////////////
 
     @Override
     public AbstractArchiveFile getFile(AbstractFile file) throws IOException {
@@ -35,6 +32,11 @@ public class TarFormatProvider implements ArchiveFormatProvider {
     @Override
     public FilenameFilter getFilenameFilter() {
         return FILENAME_FILTER;
+    }
+
+    @Override
+    public String[] getFileExtensions() {
+        return EXTENSIONS;
     }
 
 }

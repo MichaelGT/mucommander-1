@@ -18,11 +18,15 @@
 
 package com.mucommander.ui.action.impl;
 
-import com.mucommander.ui.action.*;
+import com.mucommander.ui.action.AbstractActionDescriptor;
+import com.mucommander.ui.action.ActionCategory;
+import com.mucommander.ui.action.ActionDescriptor;
+import com.mucommander.ui.action.ActionFactory;
+import com.mucommander.ui.action.MuAction;
 import com.mucommander.ui.main.MainFrame;
 import com.mucommander.utils.text.Translator;
 
-import javax.swing.*;
+import javax.swing.KeyStroke;
 import java.util.Map;
 
 /**
@@ -99,6 +103,7 @@ public class TogglePerformanceMonitorAction extends MuAction {
         public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new TogglePerformanceMonitorAction(mainFrame, properties);
         }
+
     }
 
 }

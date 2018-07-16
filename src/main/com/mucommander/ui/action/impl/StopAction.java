@@ -19,7 +19,10 @@
 package com.mucommander.ui.action.impl;
 
 import com.mucommander.core.LocationChanger.ChangeFolderThread;
-import com.mucommander.ui.action.*;
+import com.mucommander.ui.action.AbstractActionDescriptor;
+import com.mucommander.ui.action.ActionCategory;
+import com.mucommander.ui.action.ActionDescriptor;
+import com.mucommander.ui.action.MuAction;
 import com.mucommander.ui.event.LocationEvent;
 import com.mucommander.ui.event.LocationListener;
 import com.mucommander.ui.main.FolderPanel;
@@ -55,50 +58,68 @@ public class StopAction extends MuAction implements LocationListener {
         FolderPanel folderPanel = mainFrame.getActivePanel();
         ChangeFolderThread changeFolderThread = folderPanel.getChangeFolderThread();
 
-        if(changeFolderThread!=null)
+        if (changeFolderThread != null)
             changeFolderThread.tryKill();
     }
 
-	@Override
-	public ActionDescriptor getDescriptor() {
-		return new Descriptor();
-	}
-
+    @Override
+    public ActionDescriptor getDescriptor() {
+        return new Descriptor();
+    }
 
     //////////////////////////////
     // LocationListener methods //
     //////////////////////////////
 
+    @Override
     public void locationChanged(LocationEvent e) {
         setEnabled(false);
     }
 
+    @Override
     public void locationChanging(LocationEvent e) {
         setEnabled(true);
     }
 
+    @Override
     public void locationCancelled(LocationEvent e) {
         setEnabled(false);
     }
 
+    @Override
     public void locationFailed(LocationEvent e) {
         setEnabled(false);
     }
 
-
     public static final class Descriptor extends AbstractActionDescriptor {
-    	public static final String ACTION_ID = "Stop";
-    	
-		public String getId() { return ACTION_ID; }
 
-		public ActionCategory getCategory() { return ActionCategory.NAVIGATION; }
+        public static final String ACTION_ID = "Stop";
 
-		public KeyStroke getDefaultAltKeyStroke() { return null; }
+        @Override
+        public String getId() {
+            return ACTION_ID;
+        }
 
-		public KeyStroke getDefaultKeyStroke() { return KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0); }
+        @Override
+        public ActionCategory getCategory() {
+            return ActionCategory.NAVIGATION;
+        }
 
-        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+        @Override
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
+
+        @Override
+        public KeyStroke getDefaultKeyStroke() {
+            return KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
+        }
+
+        @Override
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new StopAction(mainFrame, properties);
         }
+
     }
+
 }

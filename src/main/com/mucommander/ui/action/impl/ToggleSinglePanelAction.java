@@ -18,15 +18,14 @@
 
 package com.mucommander.ui.action.impl;
 
-import java.util.Map;
-
-import javax.swing.KeyStroke;
-
 import com.mucommander.ui.action.AbstractActionDescriptor;
 import com.mucommander.ui.action.ActionCategory;
 import com.mucommander.ui.action.ActionDescriptor;
 import com.mucommander.ui.action.MuAction;
 import com.mucommander.ui.main.MainFrame;
+
+import javax.swing.KeyStroke;
+import java.util.Map;
 
 /**
  * Toggles isVisible state of the right panel, imitating single/two panel view switch.
@@ -47,7 +46,6 @@ public class ToggleSinglePanelAction extends MuAction {
     private void showInactivePanel() {
         mainFrame.getInactivePanel().setVisible(true);
     }
-
 
     @Override
     public void performAction() {
@@ -71,22 +69,26 @@ public class ToggleSinglePanelAction extends MuAction {
         return new Descriptor();
     }
 
-
     public static class Descriptor extends AbstractActionDescriptor {
+
         public static final String ACTION_ID = "ToggleSinglePanel";
 
+        @Override
         public String getId() {
             return ACTION_ID;
         }
 
+        @Override
         public ActionCategory getCategory() {
             return ActionCategory.VIEW;
         }
 
+        @Override
         public KeyStroke getDefaultAltKeyStroke() {
             return null;
         }
 
+        @Override
         public KeyStroke getDefaultKeyStroke() {
             return null;
         }
@@ -95,5 +97,7 @@ public class ToggleSinglePanelAction extends MuAction {
         public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new ToggleSinglePanelAction(mainFrame, properties);
         }
+
     }
+
 }

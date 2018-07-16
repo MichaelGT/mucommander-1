@@ -19,8 +19,10 @@
 package com.mucommander.ui.action.impl;
 
 import com.mucommander.commons.file.AbstractFile;
-import com.mucommander.commons.runtime.OsFamily;
-import com.mucommander.ui.action.*;
+import com.mucommander.ui.action.AbstractActionDescriptor;
+import com.mucommander.ui.action.ActionCategory;
+import com.mucommander.ui.action.ActionDescriptor;
+import com.mucommander.ui.action.MuAction;
 import com.mucommander.ui.main.FolderPanel;
 import com.mucommander.ui.main.MainFrame;
 import com.mucommander.ui.main.table.FileTable;
@@ -36,16 +38,16 @@ import java.util.Map;
  * This action will analyse the current selection and, if applicable, any file from the inactive
  * panel that bears the same name and:
  * <ul>
- *   <li>
- *     If both the selection and its inactive equivalent are browsable, both will be explored in their
- *     respective panels.
- *   </li>
- *   <li>
- *     If both are non-browsable, both will be opened as defined in {@link OpenAction}.
- *   </li>
- *   <li>
- *     If one is browsable an not the other one, only the current selection will be opened.
- *   </li>
+ * <li>
+ * If both the selection and its inactive equivalent are browsable, both will be explored in their
+ * respective panels.
+ * </li>
+ * <li>
+ * If both are non-browsable, both will be opened as defined in {@link OpenAction}.
+ * </li>
+ * <li>
+ * If one is browsable an not the other one, only the current selection will be opened.
+ * </li>
  * </ul>
  *
  * <p>
@@ -61,8 +63,10 @@ import java.util.Map;
 public class OpenInBothPanelsAction extends SelectedFileAction {
     // - Initialization ------------------------------------------------------------------
     // -----------------------------------------------------------------------------------
+
     /**
      * Creates a new <code>OpenInBothPanelsAction</code> with the specified parameters.
+     *
      * @param mainFrame  frame to which the action is attached.
      * @param properties action's properties.
      */
@@ -76,24 +80,25 @@ public class OpenInBothPanelsAction extends SelectedFileAction {
     @Override
     public void activePanelChanged(FolderPanel folderPanel) {
         super.activePanelChanged(folderPanel);
-        
+
         if (mainFrame.getInactivePanel().getTabs().getCurrentTab().isLocked())
-        	setEnabled(false);
+            setEnabled(false);
     }
 
     /**
-     * This method is overridden to enable this action when the parent folder is selected. 
+     * This method is overridden to enable this action when the parent folder is selected.
      */
     @Override
     protected boolean getFileTableCondition(FileTable fileTable) {
         AbstractFile selectedFile = fileTable.getSelectedFile(true, true);
 
-        return selectedFile!=null && selectedFile.isBrowsable();
+        return selectedFile != null && selectedFile.isBrowsable();
     }
 
 
     // - Action code ---------------------------------------------------------------------
     // -----------------------------------------------------------------------------------
+
     /**
      * Opens the current selection and its inactive equivalent.
      */
@@ -122,7 +127,7 @@ public class OpenInBothPanelsAction extends SelectedFileAction {
                         break;
                     }
 
-                    if (i == fileCount-1) {
+                    if (i == fileCount - 1) {
                         otherFile = null;
                     }
                 }
@@ -141,37 +146,40 @@ public class OpenInBothPanelsAction extends SelectedFileAction {
                 while (openThread.isAlive()) {
                     try {
                         openThread.join();
-                    } catch(InterruptedException ignore) {}
+                    } catch (InterruptedException ignore) {
+                    }
                 }
             }
             mainFrame.getInactivePanel().tryChangeCurrentFolder(otherFile);
         }
     }
 
-	@Override
-	public ActionDescriptor getDescriptor() {
-		return new Descriptor();
-	}
+    @Override
+    public ActionDescriptor getDescriptor() {
+        return new Descriptor();
+    }
 
 
     public static final class Descriptor extends AbstractActionDescriptor {
-    	public static final String ACTION_ID = "OpenInBothPanels";
-    	
-		public String getId() { return ACTION_ID; }
+        public static final String ACTION_ID = "OpenInBothPanels";
 
-		public ActionCategory getCategory() { return ActionCategory.NAVIGATION; }
-
-		public KeyStroke getDefaultAltKeyStroke() { return null; }
-
-		public KeyStroke getDefaultKeyStroke() {
-            if (!OsFamily.MAC_OS_X.isCurrent()) {
-                return KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.SHIFT_DOWN_MASK | KeyEvent.CTRL_DOWN_MASK);
-            } else {
-                return KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.SHIFT_DOWN_MASK | KeyEvent.META_DOWN_MASK);
-            }
+        public String getId() {
+            return ACTION_ID;
         }
 
-        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+        public ActionCategory getCategory() {
+            return ActionCategory.NAVIGATION;
+        }
+
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
+
+        public KeyStroke getDefaultKeyStroke() {
+            return KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.SHIFT_DOWN_MASK | CTRL_OR_META_DOWN_MASK);
+        }
+
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new OpenInBothPanelsAction(mainFrame, properties);
         }
     }

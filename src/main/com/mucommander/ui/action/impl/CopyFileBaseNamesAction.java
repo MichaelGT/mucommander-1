@@ -19,7 +19,6 @@
 package com.mucommander.ui.action.impl;
 
 import com.mucommander.commons.file.util.FileSet;
-import com.mucommander.commons.runtime.OsFamily;
 import com.mucommander.ui.action.AbstractActionDescriptor;
 import com.mucommander.ui.action.ActionCategory;
 import com.mucommander.ui.action.ActionDescriptor;
@@ -39,12 +38,12 @@ import java.util.Map;
  */
 public class CopyFileBaseNamesAction extends SelectedFilesAction {
 
-	CopyFileBaseNamesAction(MainFrame mainFrame, Map<String, Object> properties) {
-		super(mainFrame, properties);
-	}
+    CopyFileBaseNamesAction(MainFrame mainFrame, Map<String, Object> properties) {
+        super(mainFrame, properties);
+    }
 
-	@Override
-	public void performAction(FileSet files) {
+    @Override
+    public void performAction(FileSet files) {
         // create a TransferableFileSet and make DataFlavour.stringFlavor (text) the only DataFlavour supported
         TransferableFileSet tfs = new TransferableFileSet(files);
 
@@ -56,40 +55,42 @@ public class CopyFileBaseNamesAction extends SelectedFilesAction {
 
         // Transfer filenames, not file paths
         tfs.setStringDataFlavourTransfersFilename(true);
-        
+
         // Transfer base names (filename without its extension)
         tfs.setStringDataFlavourTransfersFileBaseName(true);
 
         ClipboardSupport.setClipboardContents(tfs);
 
-	}
+    }
 
-	@Override
-	public ActionDescriptor getDescriptor() {
-		return new Descriptor();
-	}
+    @Override
+    public ActionDescriptor getDescriptor() {
+        return new Descriptor();
+    }
 
 
-	public static final class Descriptor extends AbstractActionDescriptor {
-		public static final String ACTION_ID = "CopyFileBaseNames";
+    public static final class Descriptor extends AbstractActionDescriptor {
+        public static final String ACTION_ID = "CopyFileBaseNames";
 
-		public String getId() {	return ACTION_ID; }
-
-		public ActionCategory getCategory() { return ActionCategory.SELECTION; }
-
-		public KeyStroke getDefaultAltKeyStroke() {	return null; }
-
-		public KeyStroke getDefaultKeyStroke() {
-            if (!OsFamily.MAC_OS_X.isCurrent()) {
-                return KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.ALT_DOWN_MASK | KeyEvent.CTRL_DOWN_MASK);
-            } else {
-                return KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.ALT_DOWN_MASK | KeyEvent.META_DOWN_MASK);
-            }
+        public String getId() {
+            return ACTION_ID;
         }
 
-		public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
-			return new CopyFileBaseNamesAction(mainFrame, properties);
-		}
-	}
+        public ActionCategory getCategory() {
+            return ActionCategory.SELECTION;
+        }
+
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
+
+        public KeyStroke getDefaultKeyStroke() {
+            return KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.ALT_DOWN_MASK | CTRL_OR_META_DOWN_MASK);
+        }
+
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
+            return new CopyFileBaseNamesAction(mainFrame, properties);
+        }
+    }
 
 }

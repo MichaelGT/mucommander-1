@@ -41,17 +41,25 @@ public class GoToWebsiteAction extends OpenURLInBrowserAction {
 
 
     public static final class Descriptor extends AbstractActionDescriptor {
-    	public static final String ACTION_ID = "GoToWebsite";
-    	
-		public String getId() { return ACTION_ID; }
+        public static final String ACTION_ID = "GoToWebsite";
 
-		public ActionCategory getCategory() { return ActionCategory.MISC; }
+        public String getId() {
+            return ACTION_ID;
+        }
 
-		public KeyStroke getDefaultAltKeyStroke() { return null; }
+        public ActionCategory getCategory() {
+            return ActionCategory.MISC;
+        }
 
-		public KeyStroke getDefaultKeyStroke() { return null; }
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
 
-        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+        public KeyStroke getDefaultKeyStroke() {
+            return null;
+        }
+
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new GoToWebsiteAction(mainFrame, properties);
         }
     }

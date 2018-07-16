@@ -18,10 +18,6 @@
 
 package com.mucommander.ui.action.impl;
 
-import java.util.Map;
-
-import javax.swing.KeyStroke;
-
 import com.mucommander.commons.file.AbstractFile;
 import com.mucommander.ui.action.AbstractActionDescriptor;
 import com.mucommander.ui.action.ActionCategory;
@@ -31,6 +27,9 @@ import com.mucommander.ui.main.FolderPanel;
 import com.mucommander.ui.main.MainFrame;
 import com.mucommander.ui.main.table.FileTable;
 import com.mucommander.ui.main.tabs.FileTableTabs;
+
+import javax.swing.KeyStroke;
+import java.util.Map;
 
 /**
  * Opens browsable files in the right panel.
@@ -50,6 +49,7 @@ import com.mucommander.ui.main.tabs.FileTableTabs;
 public class OpenLeftInRightPanelAction extends FileAction {
     /**
      * Creates a new <code>OpenLeftInRightPanelAction</code> with the specified parameters.
+     *
      * @param mainFrame  frame to which the action is attached.
      * @param properties action's properties.
      */
@@ -120,15 +120,23 @@ public class OpenLeftInRightPanelAction extends FileAction {
     public static final class Descriptor extends AbstractActionDescriptor {
         public static final String ACTION_ID = "OpenLeftInRightPanel";
 
-        public String getId() { return ACTION_ID; }
+        public String getId() {
+            return ACTION_ID;
+        }
 
-        public ActionCategory getCategory() { return ActionCategory.NAVIGATION; }
+        public ActionCategory getCategory() {
+            return ActionCategory.NAVIGATION;
+        }
 
-        public KeyStroke getDefaultAltKeyStroke() { return null; }
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
 
-        public KeyStroke getDefaultKeyStroke() { return null; }
+        public KeyStroke getDefaultKeyStroke() {
+            return null;
+        }
 
-        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new OpenLeftInRightPanelAction(mainFrame, properties);
         }
     }

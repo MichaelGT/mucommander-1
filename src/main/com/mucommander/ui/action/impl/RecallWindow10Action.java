@@ -34,16 +34,19 @@ public class RecallWindow10Action extends RecallWindowAction {
         super(mainFrame, properties, 10);
     }
 
-
     public static final class Descriptor extends RecallWindowAction.Descriptor {
-        public static final String ACTION_ID = RecallWindowAction.Descriptor.ACTION_ID+"10";
+
+        public static final String ACTION_ID = RecallWindowAction.Descriptor.ACTION_ID + "10";
 
         public Descriptor() {
             super(10);
         }
 
-        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+        @Override
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new RecallWindow10Action(mainFrame, properties);
         }
+
     }
+
 }

@@ -47,7 +47,7 @@ public abstract class MarkForwardAction extends MuAction {
         FileTable fileTable = mainFrame.getActiveTable();
 
         int currentFileIndex = fileTable.getSelectedFileIndex();
-        int lastIndex = fileTable.getFilesCount()-1;
+        int lastIndex = fileTable.getFilesCount() - 1;
 //        int currentRow = fileTable.getSelectedRow();
 //        int lastRow = fileTable.getRowCount()-1;
         int endIndex = Math.min(lastIndex, currentFileIndex + getRowIncrement() - 1);

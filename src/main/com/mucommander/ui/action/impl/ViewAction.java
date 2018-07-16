@@ -33,17 +33,20 @@ import java.util.Map;
 
 /**
  * User configurable variant of {@link InternalViewAction}.
+ *
  * @author Maxence Bernard, Nicolas Rinaudo
  */
 public class ViewAction extends InternalViewAction {
     // - Initialization ------------------------------------------------------------------------------------------------
     // -----------------------------------------------------------------------------------------------------------------
+
     /**
      * Creates a new instance of <code>ViewAction</code>.
+     *
      * @param mainFrame  frame to which the action is attached.
      * @param properties action's properties.
      */
-    public ViewAction(MainFrame mainFrame, Map<String,Object> properties) {
+    public ViewAction(MainFrame mainFrame, Map<String, Object> properties) {
         super(mainFrame, properties);
     }
 
@@ -62,18 +65,34 @@ public class ViewAction extends InternalViewAction {
 
 
     public static final class Descriptor extends AbstractActionDescriptor {
-    	public static final String ACTION_ID = "View";
-    	
-		public String getId() { return ACTION_ID; }
 
-		public ActionCategory getCategory() { return ActionCategory.FILES; }
+        public static final String ACTION_ID = "View";
 
-		public KeyStroke getDefaultAltKeyStroke() { return null; }
+        @Override
+        public String getId() {
+            return ACTION_ID;
+        }
 
-		public KeyStroke getDefaultKeyStroke() { return KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0); }
+        @Override
+        public ActionCategory getCategory() {
+            return ActionCategory.FILES;
+        }
 
-        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+        @Override
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
+
+        @Override
+        public KeyStroke getDefaultKeyStroke() {
+            return KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0);
+        }
+
+        @Override
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new ViewAction(mainFrame, properties);
         }
+
     }
+
 }

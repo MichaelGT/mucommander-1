@@ -54,23 +54,35 @@ public class ToggleTableViewModeCompactAction extends MuAction {
         return new Descriptor();
     }
 
-
-
     public static final class Descriptor extends AbstractActionDescriptor {
+
         public static final String ACTION_ID = "ToggleTableViewModeCompact";
 
-        public String getId() { return ACTION_ID; }
+        @Override
+        public String getId() {
+            return ACTION_ID;
+        }
 
-        public ActionCategory getCategory() { return ActionCategory.VIEW; }
+        @Override
+        public ActionCategory getCategory() {
+            return ActionCategory.VIEW;
+        }
 
-        public KeyStroke getDefaultAltKeyStroke() { return null; }
+        @Override
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
 
+        @Override
         public KeyStroke getDefaultKeyStroke() {
             return KeyStroke.getKeyStroke(KeyEvent.VK_2, KeyEvent.CTRL_DOWN_MASK);
         }
 
+        @Override
         public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new ToggleTableViewModeCompactAction(mainFrame, properties);
         }
+
     }
+
 }

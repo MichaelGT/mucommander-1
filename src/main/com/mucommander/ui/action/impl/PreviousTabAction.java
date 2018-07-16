@@ -36,8 +36,10 @@
 
 package com.mucommander.ui.action.impl;
 
-import com.mucommander.commons.runtime.OsFamily;
-import com.mucommander.ui.action.*;
+import com.mucommander.ui.action.AbstractActionDescriptor;
+import com.mucommander.ui.action.ActionCategory;
+import com.mucommander.ui.action.ActionDescriptor;
+import com.mucommander.ui.action.MuAction;
 import com.mucommander.ui.main.MainFrame;
 
 import javax.swing.KeyStroke;
@@ -47,50 +49,46 @@ import java.util.Map;
 /**
  * Change the selected tab to the tab which is located to the left of the current displayed tab.
  * If the current displayed tab is the leftmost tab, the rightmost tab will be displayed.
- * 
+ *
  * @author Arik Hadas
  */
 public class PreviousTabAction extends MuAction {
-	
-	PreviousTabAction(MainFrame mainFrame, Map<String, Object> properties) {
+
+    PreviousTabAction(MainFrame mainFrame, Map<String, Object> properties) {
         super(mainFrame, properties);
     }
 
     @Override
     public void performAction() {
-    	mainFrame.getActivePanel().getTabs().previousTab();
+        mainFrame.getActivePanel().getTabs().previousTab();
     }
 
-	@Override
-	public ActionDescriptor getDescriptor() {
-		return new Descriptor();
-	}
+    @Override
+    public ActionDescriptor getDescriptor() {
+        return new Descriptor();
+    }
 
 
     public static final class Descriptor extends AbstractActionDescriptor {
-    	public static final String ACTION_ID = "PreviousTab";
-    	
-		public String getId() { return ACTION_ID; }
+        public static final String ACTION_ID = "PreviousTab";
 
-		public ActionCategory getCategory() { return ActionCategory.TAB; }
-
-		public KeyStroke getDefaultAltKeyStroke() {
-            if (!OsFamily.MAC_OS_X.isCurrent()) {
-                return KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.CTRL_DOWN_MASK);
-            } else {
-                return KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.META_DOWN_MASK);
-            }
+        public String getId() {
+            return ACTION_ID;
         }
 
-		public KeyStroke getDefaultKeyStroke() {
-            if (!OsFamily.MAC_OS_X.isCurrent()) {
-                return KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, KeyEvent.CTRL_DOWN_MASK);
-            } else {
-                return KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, KeyEvent.META_DOWN_MASK);
-            }
+        public ActionCategory getCategory() {
+            return ActionCategory.TAB;
         }
 
-        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+        public KeyStroke getDefaultAltKeyStroke() {
+            return KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, CTRL_OR_META_DOWN_MASK);
+        }
+
+        public KeyStroke getDefaultKeyStroke() {
+            return KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, CTRL_OR_META_DOWN_MASK);
+        }
+
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new PreviousTabAction(mainFrame, properties);
         }
     }

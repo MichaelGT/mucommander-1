@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 package com.mucommander.commons.file;
 
 import com.mucommander.commons.file.filter.FilenameFilter;
@@ -39,12 +38,11 @@ public interface ArchiveFormatProvider {
     /**
      * Creates a new instance of <code>AbstractArchiveFile</code> .
      *
-     * @param  file        file to map as an <code>AbstractArchiveFile</code>.
-     * @return             a new instance of <code>AbstractArchiveFile</code> that matches the specified URL.
+     * @param file file to map as an <code>AbstractArchiveFile</code>.
+     * @return a new instance of <code>AbstractArchiveFile</code> that matches the specified URL.
      * @throws IOException if an error occurs.
      */
     AbstractArchiveFile getFile(AbstractFile file) throws IOException;
-
 
     /**
      * Returns the <code>FilenameFilter</code> that matches filenames to be associated with this archive format.
@@ -52,4 +50,7 @@ public interface ArchiveFormatProvider {
      * @return the <code>FilenameFilter</code> that matches filenames to be associated with this archive format
      */
     FilenameFilter getFilenameFilter();
+
+    String[] getFileExtensions();
+
 }

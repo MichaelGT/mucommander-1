@@ -18,7 +18,10 @@
 
 package com.mucommander.ui.action.impl;
 
-import com.mucommander.ui.action.*;
+import com.mucommander.ui.action.AbstractActionDescriptor;
+import com.mucommander.ui.action.ActionCategory;
+import com.mucommander.ui.action.ActionDescriptor;
+import com.mucommander.ui.action.MuAction;
 import com.mucommander.ui.main.MainFrame;
 
 import javax.swing.KeyStroke;
@@ -41,25 +44,40 @@ public class SelectFirstRowAction extends MuAction {
         mainFrame.getActiveTable().selectFile(0);
     }
 
-	@Override
-	public ActionDescriptor getDescriptor() {
-		return new Descriptor();
-	}
-
+    @Override
+    public ActionDescriptor getDescriptor() {
+        return new Descriptor();
+    }
 
     public static final class Descriptor extends AbstractActionDescriptor {
-    	public static final String ACTION_ID = "SelectFirstRow";
-    	
-		public String getId() { return ACTION_ID; }
 
-		public ActionCategory getCategory() { return ActionCategory.SELECTION; }
+        public static final String ACTION_ID = "SelectFirstRow";
 
-		public KeyStroke getDefaultAltKeyStroke() { return null; }
+        @Override
+        public String getId() {
+            return ACTION_ID;
+        }
 
-		public KeyStroke getDefaultKeyStroke() { return KeyStroke.getKeyStroke(KeyEvent.VK_HOME, 0); }
+        @Override
+        public ActionCategory getCategory() {
+            return ActionCategory.SELECTION;
+        }
 
-		public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
-			return new SelectFirstRowAction(mainFrame, properties);
-		}
+        @Override
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
+
+        @Override
+        public KeyStroke getDefaultKeyStroke() {
+            return KeyStroke.getKeyStroke(KeyEvent.VK_HOME, 0);
+        }
+
+        @Override
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
+            return new SelectFirstRowAction(mainFrame, properties);
+        }
+
     }
+
 }

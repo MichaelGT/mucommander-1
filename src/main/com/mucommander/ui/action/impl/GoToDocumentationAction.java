@@ -38,10 +38,12 @@ import java.util.Map;
  */
 public class GoToDocumentationAction extends OpenURLInBrowserAction implements PropertyChangeListener {
 
-    /** Key to the topic property */
+    /**
+     * Key to the topic property
+     */
     public final static String TOPIC_PROPERTY_KEY = "topic";
 
-    public GoToDocumentationAction(MainFrame mainFrame, Map<String,Object> properties) {
+    public GoToDocumentationAction(MainFrame mainFrame, Map<String, Object> properties) {
         super(mainFrame, properties);
 
         setIcon(IconManager.getIcon(IconManager.IconSet.COMMON, "help.png"));
@@ -60,7 +62,7 @@ public class GoToDocumentationAction extends OpenURLInBrowserAction implements P
      */
     private void updateURL() {
         String url = com.mucommander.RuntimeConstants.DOCUMENTATION_URL;
-        String topic = (String)getValue(TOPIC_PROPERTY_KEY);
+        String topic = (String) getValue(TOPIC_PROPERTY_KEY);
 
         // If there is a topic, append it to the URL
         if (topic != null) {
@@ -88,17 +90,25 @@ public class GoToDocumentationAction extends OpenURLInBrowserAction implements P
 
 
     public static final class Descriptor extends AbstractActionDescriptor {
-    	public static final String ACTION_ID = "GoToDocumentation";
-    	
-		public String getId() { return ACTION_ID; }
+        public static final String ACTION_ID = "GoToDocumentation";
 
-		public ActionCategory getCategory() { return ActionCategory.MISC; }
+        public String getId() {
+            return ACTION_ID;
+        }
 
-		public KeyStroke getDefaultAltKeyStroke() { return null; }
+        public ActionCategory getCategory() {
+            return ActionCategory.MISC;
+        }
 
-		public KeyStroke getDefaultKeyStroke() { return null; }
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
 
-        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+        public KeyStroke getDefaultKeyStroke() {
+            return null;
+        }
+
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new GoToDocumentationAction(mainFrame, properties);
         }
     }

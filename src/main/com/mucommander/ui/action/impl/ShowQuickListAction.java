@@ -26,17 +26,18 @@ import java.util.Map;
 
 /**
  * ShowFileTablePopupAction is an abstract action that shows pop up corresponding to the given
- * 	index on the currently active FileTable.
+ * index on the currently active FileTable.
  *
  * @author Arik Hadas
  */
 abstract class ShowQuickListAction extends MuAction {
 
-	ShowQuickListAction(MainFrame mainFrame, Map<String, Object> properties) {
-		super(mainFrame, properties);		
-	}
-	
-	void openQuickList(QuickLists quickList) {
-		mainFrame.getActivePanel().showQuickList(quickList.ordinal());
-	}
+    ShowQuickListAction(MainFrame mainFrame, Map<String, Object> properties) {
+        super(mainFrame, properties);
+    }
+
+    void openQuickList(QuickLists quickList) {
+        mainFrame.getActivePanel().showQuickList(quickList.ordinal());
+    }
+
 }

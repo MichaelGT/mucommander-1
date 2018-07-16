@@ -17,7 +17,11 @@
  */
 package com.mucommander.ui.action.impl;
 
-import com.mucommander.ui.action.*;
+import com.mucommander.ui.action.AbstractActionDescriptor;
+import com.mucommander.ui.action.ActionCategory;
+import com.mucommander.ui.action.ActionDescriptor;
+import com.mucommander.ui.action.InvokesDialog;
+import com.mucommander.ui.action.MuAction;
 import com.mucommander.ui.dialog.commands.EditCommandsDialog;
 import com.mucommander.ui.main.MainFrame;
 
@@ -51,7 +55,6 @@ public class EditCommandsAction extends MuAction {
     public ActionDescriptor getDescriptor() {
         return new Descriptor();
     }
-
 
 
     public static final class Descriptor extends AbstractActionDescriptor {

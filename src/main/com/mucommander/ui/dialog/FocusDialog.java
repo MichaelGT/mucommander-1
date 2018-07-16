@@ -139,6 +139,8 @@ public class FocusDialog extends JDialog implements WindowListener, IMacOsWindow
         this.locationRelativeComp = locationRelativeComp;
         setLocationRelativeTo(locationRelativeComp);
 
+        initLookAndFeel();
+
         JPanel contentPane = (JPanel)getContentPane();
         contentPane.setBorder(BORDER);
         setResizable(true);

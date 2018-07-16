@@ -21,7 +21,11 @@ package com.mucommander.ui.action.impl;
 import com.mucommander.commons.file.FileOperation;
 import com.mucommander.commons.file.filter.FileOperationFilter;
 import com.mucommander.commons.file.util.FileSet;
-import com.mucommander.ui.action.*;
+import com.mucommander.ui.action.AbstractActionDescriptor;
+import com.mucommander.ui.action.ActionCategory;
+import com.mucommander.ui.action.ActionDescriptor;
+import com.mucommander.ui.action.InvokesDialog;
+import com.mucommander.ui.action.MuAction;
 import com.mucommander.ui.dialog.file.ChangeDateDialog;
 import com.mucommander.ui.main.MainFrame;
 
@@ -49,24 +53,32 @@ public class ChangeDateAction extends SelectedFilesAction {
         new ChangeDateDialog(mainFrame, files).showDialog();
     }
 
-	@Override
-	public ActionDescriptor getDescriptor() {
-		return new Descriptor();
-	}
+    @Override
+    public ActionDescriptor getDescriptor() {
+        return new Descriptor();
+    }
 
 
     public static final class Descriptor extends AbstractActionDescriptor {
-    	public static final String ACTION_ID = "ChangeDate";
-    	
-		public String getId() { return ACTION_ID; }
+        public static final String ACTION_ID = "ChangeDate";
 
-		public ActionCategory getCategory() { return ActionCategory.FILES; }
+        public String getId() {
+            return ACTION_ID;
+        }
 
-		public KeyStroke getDefaultAltKeyStroke() { return null; }
+        public ActionCategory getCategory() {
+            return ActionCategory.FILES;
+        }
 
-		public KeyStroke getDefaultKeyStroke() { return KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.SHIFT_DOWN_MASK | KeyEvent.ALT_DOWN_MASK); }
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
 
-        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+        public KeyStroke getDefaultKeyStroke() {
+            return KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.SHIFT_DOWN_MASK | KeyEvent.ALT_DOWN_MASK);
+        }
+
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new ChangeDateAction(mainFrame, properties);
         }
     }

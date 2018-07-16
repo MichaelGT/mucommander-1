@@ -19,7 +19,6 @@
 package com.mucommander.ui.action.impl;
 
 import com.mucommander.commons.file.AbstractFile;
-import com.mucommander.commons.runtime.OsFamily;
 import com.mucommander.ui.action.AbstractActionDescriptor;
 import com.mucommander.ui.action.ActionCategory;
 import com.mucommander.ui.action.ActionDescriptor;
@@ -42,6 +41,7 @@ import java.util.Map;
 public class GoToParentInOtherPanelAction extends ParentFolderAction {
     /**
      * Creates a new <code>GoToParentInOtherPanelAction</code> with the specified parameters.
+     *
      * @param mainFrame  frame to which the action is attached.
      * @param properties action's properties.
      */
@@ -54,9 +54,9 @@ public class GoToParentInOtherPanelAction extends ParentFolderAction {
      * <p>
      * If <code>sourcePanel</code> doesn't have a parent, nothing will happen.
      *
-     * @param  sourcePanel panel whose parent should be used.
-     * @param  destPanel   panel in which to change the location.
-     * @return             <code>true</code> if <code>sourcePanel</code> has a parent, <code>false</code> otherwise.
+     * @param sourcePanel panel whose parent should be used.
+     * @param destPanel   panel in which to change the location.
+     * @return <code>true</code> if <code>sourcePanel</code> has a parent, <code>false</code> otherwise.
      */
     private boolean goToParent(FolderPanel sourcePanel, FolderPanel destPanel) {
         AbstractFile parent = sourcePanel.getCurrentFolder().getParent();
@@ -67,7 +67,7 @@ public class GoToParentInOtherPanelAction extends ParentFolderAction {
         }
         return false;
     }
-    
+
     /**
      * Enables or disables this action based on the currently active folder's
      * has a parent and selected tab in the other panel is not locked,
@@ -76,41 +76,43 @@ public class GoToParentInOtherPanelAction extends ParentFolderAction {
     @Override
     protected void toggleEnabledState() {
         setEnabled(!mainFrame.getInactivePanel().getTabs().getCurrentTab().isLocked() &&
-        		    mainFrame.getActivePanel().getCurrentFolder().getParent()!=null);
+                mainFrame.getActivePanel().getCurrentFolder().getParent() != null);
     }
-    
+
     /**
      * Opens the active panel's parent in the inactive panel.
      */
     @Override
     public void performAction() {
-    	goToParent(mainFrame.getActivePanel(), mainFrame.getInactivePanel());
+        goToParent(mainFrame.getActivePanel(), mainFrame.getInactivePanel());
     }
 
-	@Override
-	public ActionDescriptor getDescriptor() {
-		return new Descriptor();
-	}
+    @Override
+    public ActionDescriptor getDescriptor() {
+        return new Descriptor();
+    }
 
 
     public static final class Descriptor extends AbstractActionDescriptor {
-    	public static final String ACTION_ID = "GoToParentInOtherPanel";
-    	
-		public String getId() { return ACTION_ID; }
+        public static final String ACTION_ID = "GoToParentInOtherPanel";
 
-		public ActionCategory getCategory() { return ActionCategory.NAVIGATION; }
-
-		public KeyStroke getDefaultAltKeyStroke() { return null; }
-
-		public KeyStroke getDefaultKeyStroke() {
-            if (!OsFamily.MAC_OS_X.isCurrent()) {
-                return KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, KeyEvent.CTRL_DOWN_MASK);
-            } else {
-                return KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, KeyEvent.META_DOWN_MASK);
-            }
+        public String getId() {
+            return ACTION_ID;
         }
 
-        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+        public ActionCategory getCategory() {
+            return ActionCategory.NAVIGATION;
+        }
+
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
+
+        public KeyStroke getDefaultKeyStroke() {
+            return KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, CTRL_OR_META_DOWN_MASK);
+        }
+
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new GoToParentInOtherPanelAction(mainFrame, properties);
         }
     }

@@ -27,7 +27,7 @@ import com.mucommander.ui.main.MainFrame;
 import com.mucommander.ui.main.table.FileTable;
 import com.mucommander.ui.main.table.views.BaseFileTableModel;
 
-import javax.swing.*;
+import javax.swing.KeyStroke;
 import java.awt.event.KeyEvent;
 import java.util.Map;
 
@@ -88,30 +88,36 @@ public class CompareFoldersAction extends MuAction {
         return result;
     }
 
-	@Override
-	public ActionDescriptor getDescriptor() {
-		return new Descriptor();
-	}
+    @Override
+    public ActionDescriptor getDescriptor() {
+        return new Descriptor();
+    }
 
 
     public static final class Descriptor extends AbstractActionDescriptor {
-    	public static final String ACTION_ID = "CompareFolders";
-    	
-		public String getId() { return ACTION_ID; }
+        public static final String ACTION_ID = "CompareFolders";
 
-		public ActionCategory getCategory() { return ActionCategory.SELECTION; }
+        public String getId() {
+            return ACTION_ID;
+        }
 
-		public KeyStroke getDefaultAltKeyStroke() { return null; }
+        public ActionCategory getCategory() {
+            return ActionCategory.SELECTION;
+        }
 
-		public KeyStroke getDefaultKeyStroke() {
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
+
+        public KeyStroke getDefaultKeyStroke() {
 //            if (!OsFamily.MAC_OS_X.isCurrent()) {
-                return KeyStroke.getKeyStroke(KeyEvent.VK_M, KeyEvent.CTRL_DOWN_MASK);
+            return KeyStroke.getKeyStroke(KeyEvent.VK_M, KeyEvent.CTRL_DOWN_MASK);
 //            } else {
 //                return KeyStroke.getKeyStroke(KeyEvent.VK_M, KeyEvent.META_DOWN_MASK);
 //            }
         }
 
-        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new CompareFoldersAction(mainFrame, properties);
         }
 

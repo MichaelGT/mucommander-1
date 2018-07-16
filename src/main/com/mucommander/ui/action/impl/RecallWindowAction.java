@@ -18,10 +18,13 @@
 
 package com.mucommander.ui.action.impl;
 
-import com.mucommander.utils.text.Translator;
-import com.mucommander.ui.action.*;
+import com.mucommander.ui.action.AbstractActionDescriptor;
+import com.mucommander.ui.action.ActionCategory;
+import com.mucommander.ui.action.ActionDescriptor;
+import com.mucommander.ui.action.MuAction;
 import com.mucommander.ui.main.MainFrame;
 import com.mucommander.ui.main.WindowManager;
+import com.mucommander.utils.text.Translator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,20 +37,24 @@ import java.util.Map;
  * Brings a {@link MainFrame} window to the front. This action operates on a specific window number specified in the
  * constructor, either as a constructor parameter, or in the {@link #WINDOW_NUMBER_PROPERTY_KEY} property.
  *
- * @see com.mucommander.ui.main.WindowManager
  * @author Maxence Bernard
+ * @see com.mucommander.ui.main.WindowManager
  */
 public class RecallWindowAction extends MuAction {
-	private static final Logger LOGGER = LoggerFactory.getLogger(RecallWindowAction.class);
-	
-    /** Window number this action operates on */
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RecallWindowAction.class);
+
+    /**
+     * Window number this action operates on
+     */
     private int windowNumber;
 
-    /** Key of the property that holds the window number */
+    /**
+     * Key of the property that holds the window number
+     */
     public final static String WINDOW_NUMBER_PROPERTY_KEY = "window_number";
 
-
-    public RecallWindowAction(MainFrame mainFrame, Map<String,Object> properties) {
+    public RecallWindowAction(MainFrame mainFrame, Map<String, Object> properties) {
         super(mainFrame, properties);
 
         Object windowNumberValue = getValue(WINDOW_NUMBER_PROPERTY_KEY);
@@ -55,19 +62,19 @@ public class RecallWindowAction extends MuAction {
             throw new IllegalArgumentException(WINDOW_NUMBER_PROPERTY_KEY + " (" + windowNumberValue + ")");
         }
 
-        windowNumber = Integer.parseInt((String)windowNumberValue);
+        windowNumber = Integer.parseInt((String) windowNumberValue);
 
         if (windowNumber <= 0) {
             throw new IllegalArgumentException(WINDOW_NUMBER_PROPERTY_KEY + " (" + windowNumberValue + ")");
         }
     }
 
-    public RecallWindowAction(MainFrame mainFrame, Map<String,Object> properties, int windowNumber) {
+    public RecallWindowAction(MainFrame mainFrame, Map<String, Object> properties, int windowNumber) {
         super(mainFrame, properties);
 
         this.windowNumber = windowNumber;
         if (windowNumber <= 0) {
-            throw new IllegalArgumentException("windowNumber ("+windowNumber+")");
+            throw new IllegalArgumentException("windowNumber (" + windowNumber + ")");
         }
     }
 
@@ -77,22 +84,22 @@ public class RecallWindowAction extends MuAction {
 
         // Checks that the window number currently exists
         if (windowNumber <= 0 || windowNumber > mainFrames.size()) {
-            LOGGER.debug("Window number "+windowNumber+" does not exist");
+            LOGGER.debug("Window number " + windowNumber + " does not exist");
             return;
         }
 
         // Brings the MainFrame to front
-        mainFrames.get(windowNumber-1).toFront();
+        mainFrames.get(windowNumber - 1).toFront();
     }
 
-	@Override
-	public ActionDescriptor getDescriptor() {
-		return new Descriptor(windowNumber);
-	}
-
+    @Override
+    public ActionDescriptor getDescriptor() {
+        return new Descriptor(windowNumber);
+    }
 
     public static class Descriptor extends AbstractActionDescriptor {
-    	public static final String ACTION_ID = "RecallWindow";
+
+        public static final String ACTION_ID = "RecallWindow";
 
         private int windowNumber;
 
@@ -104,12 +111,22 @@ public class RecallWindowAction extends MuAction {
             this.windowNumber = windowNumber;
         }
 
-		public String getId() { return windowNumber < 0 ? ACTION_ID : ACTION_ID + windowNumber; }
+        @Override
+        public String getId() {
+            return windowNumber < 0 ? ACTION_ID : ACTION_ID + windowNumber;
+        }
 
-		public ActionCategory getCategory() { return ActionCategory.WINDOW; }
+        @Override
+        public ActionCategory getCategory() {
+            return ActionCategory.WINDOW;
+        }
 
-		public KeyStroke getDefaultAltKeyStroke() { return null; }
+        @Override
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
 
+        @Override
         public KeyStroke getDefaultKeyStroke() {
             if (windowNumber <= 0 || windowNumber > 10) {
                 return null;
@@ -120,7 +137,7 @@ public class RecallWindowAction extends MuAction {
 
         @Override
         public String getLabel() {
-            return Translator.get(getLabelKey(), windowNumber < 0 ? "?" : ""+windowNumber);
+            return Translator.get(getLabelKey(), windowNumber < 0 ? "?" : "" + windowNumber);
         }
 
         @Override
@@ -128,8 +145,11 @@ public class RecallWindowAction extends MuAction {
             return windowNumber == -1;
         }
 
-        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+        @Override
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new RecallWindowAction(mainFrame, properties);
         }
+
     }
+
 }

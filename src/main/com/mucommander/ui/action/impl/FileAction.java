@@ -44,7 +44,9 @@ import java.util.Map;
  */
 public abstract class FileAction extends MuAction implements TableSelectionListener, ActivePanelListener {
 
-    /** Filter that restricts the enabled condition to files that match it (can be null) */
+    /**
+     * Filter that restricts the enabled condition to files that match it (can be null)
+     */
     protected FileFilter filter;
 
 
@@ -53,7 +55,7 @@ public abstract class FileAction extends MuAction implements TableSelectionListe
         init(mainFrame);
     }
 
-    
+
     private void init(MainFrame mainFrame) {
         mainFrame.addActivePanelListener(this);
         mainFrame.getLeftPanel().getFileTable().addTableSelectionListener(this);
@@ -103,7 +105,7 @@ public abstract class FileAction extends MuAction implements TableSelectionListe
      */
     public void selectedFileChanged(FileTable source) {
         // No need to update state if the originating FileTable is not the currently active one 
-        if(source==mainFrame.getActiveTable())
+        if (source == mainFrame.getActiveTable())
             updateEnabledState(source);
     }
 
@@ -112,7 +114,7 @@ public abstract class FileAction extends MuAction implements TableSelectionListe
      */
     public void markedFilesChanged(FileTable source) {
         // No need to update state if the originating FileTable is not the currently active one
-        if(source==mainFrame.getActiveTable())
+        if (source == mainFrame.getActiveTable())
             updateEnabledState(source);
     }
 

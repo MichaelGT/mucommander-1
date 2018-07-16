@@ -22,13 +22,16 @@ import com.mucommander.commons.file.AbstractFile;
 import com.mucommander.commons.file.util.FileSet;
 import com.mucommander.commons.runtime.OsFamily;
 import com.mucommander.job.CopyJob;
-import com.mucommander.utils.text.Translator;
-import com.mucommander.ui.action.*;
+import com.mucommander.ui.action.AbstractActionDescriptor;
+import com.mucommander.ui.action.ActionCategory;
+import com.mucommander.ui.action.ActionDescriptor;
+import com.mucommander.ui.action.MuAction;
 import com.mucommander.ui.dialog.file.FileCollisionDialog;
 import com.mucommander.ui.dialog.file.ProgressDialog;
 import com.mucommander.ui.dnd.ClipboardNotifier;
 import com.mucommander.ui.dnd.ClipboardSupport;
 import com.mucommander.ui.main.MainFrame;
+import com.mucommander.utils.text.Translator;
 
 import javax.swing.KeyStroke;
 import java.awt.event.KeyEvent;
@@ -50,7 +53,7 @@ public class PasteClipboardFilesAction extends MuAction {
 
         // Allows this action to be dynamically enabled when the clipboard contains files, and disabled otherwise.
         // ClipboardNotifier does not work under Mac OS X (tested under Tiger with Java 1.5.0_06)
-        if(!OsFamily.MAC_OS_X.isCurrent())
+        if (!OsFamily.MAC_OS_X.isCurrent())
             new ClipboardNotifier(this);
     }
 
@@ -68,30 +71,32 @@ public class PasteClipboardFilesAction extends MuAction {
         progressDialog.start(job);
     }
 
-	@Override
-	public ActionDescriptor getDescriptor() {
-		return new Descriptor();
-	}
+    @Override
+    public ActionDescriptor getDescriptor() {
+        return new Descriptor();
+    }
 
 
     public static final class Descriptor extends AbstractActionDescriptor {
-    	public static final String ACTION_ID = "PasteClipboardFiles";
+        public static final String ACTION_ID = "PasteClipboardFiles";
 
-		public String getId() { return ACTION_ID; }
-
-		public ActionCategory getCategory() { return ActionCategory.SELECTION; }
-
-		public KeyStroke getDefaultAltKeyStroke() { return null; }
-
-		public KeyStroke getDefaultKeyStroke() {
-            if (!OsFamily.MAC_OS_X.isCurrent()) {
-                return KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK);
-            } else {
-                return KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.META_DOWN_MASK);
-            }
+        public String getId() {
+            return ACTION_ID;
         }
 
-        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+        public ActionCategory getCategory() {
+            return ActionCategory.SELECTION;
+        }
+
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
+
+        public KeyStroke getDefaultKeyStroke() {
+            return KeyStroke.getKeyStroke(KeyEvent.VK_V, CTRL_OR_META_DOWN_MASK);
+        }
+
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new PasteClipboardFilesAction(mainFrame, properties);
         }
     }

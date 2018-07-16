@@ -25,15 +25,15 @@ import com.mucommander.ui.action.MuAction;
 import com.mucommander.ui.main.MainFrame;
 import com.mucommander.ui.main.quicklist.ViewedAndEditedFilesQL;
 
-import javax.swing.*;
+import javax.swing.KeyStroke;
 import java.awt.event.KeyEvent;
 import java.util.Map;
 
 public class TextEditorsListAction extends MuAction {
+
     TextEditorsListAction(MainFrame mainFrame, Map<String, Object> properties) {
         super(mainFrame, properties);
     }
-
 
     @Override
     public void performAction() {
@@ -49,25 +49,38 @@ public class TextEditorsListAction extends MuAction {
     }
 
     public static final class Descriptor extends AbstractActionDescriptor {
+
         public static final String ACTION_ID = "TextEditorsList";
 
-        public String getId() { return ACTION_ID; }
+        @Override
+        public String getId() {
+            return ACTION_ID;
+        }
 
-        public ActionCategory getCategory() { return ActionCategory.WINDOW; }
+        @Override
+        public ActionCategory getCategory() {
+            return ActionCategory.WINDOW;
+        }
 
-        public KeyStroke getDefaultAltKeyStroke() { return null; }
+        @Override
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
 
+        @Override
         public KeyStroke getDefaultKeyStroke() {
-            if (!OsFamily.MAC_OS_X.isCurrent()) {
-                return KeyStroke.getKeyStroke(KeyEvent.VK_TAB, KeyEvent.CTRL_DOWN_MASK);
-            } else {
+            if (OsFamily.MAC_OS_X.isCurrent()) {
                 return KeyStroke.getKeyStroke(KeyEvent.VK_TAB, KeyEvent.ALT_DOWN_MASK);
+            } else {
+                return KeyStroke.getKeyStroke(KeyEvent.VK_TAB, KeyEvent.CTRL_DOWN_MASK);
             }
         }
 
-        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+        @Override
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new TextEditorsListAction(mainFrame, properties);
         }
+
     }
 
 }

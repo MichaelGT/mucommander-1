@@ -18,7 +18,6 @@
 
 package com.mucommander.ui.action.impl;
 
-import com.mucommander.commons.runtime.OsFamily;
 import com.mucommander.conf.MuConfigurations;
 import com.mucommander.conf.MuPreference;
 import com.mucommander.conf.MuPreferences;
@@ -76,11 +75,7 @@ public class MarkNextBlockAction extends MarkForwardAction {
 
         @Override
         public KeyStroke getDefaultKeyStroke() {
-            if (!OsFamily.MAC_OS_X.isCurrent()) {
-                return KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, KeyEvent.SHIFT_DOWN_MASK | KeyEvent.CTRL_DOWN_MASK);
-            } else {
-                return KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, KeyEvent.SHIFT_DOWN_MASK | KeyEvent.META_DOWN_MASK);
-            }
+            return KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, CTRL_OR_META_DOWN_MASK);
         }
 
         @Override

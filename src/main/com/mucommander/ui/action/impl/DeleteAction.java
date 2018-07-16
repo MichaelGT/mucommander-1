@@ -38,8 +38,8 @@ import java.util.Map;
  * on the current OS environment, and if the selected files are on a filesystem that allows it (usually only local files
  * can be moved to the trash).
  *
- * @see com.mucommander.ui.action.impl.PermanentDeleteAction
  * @author Maxence Bernard
+ * @see com.mucommander.ui.action.impl.PermanentDeleteAction
  */
 public class DeleteAction extends SelectedFilesAction {
 
@@ -54,24 +54,32 @@ public class DeleteAction extends SelectedFilesAction {
         new DeleteDialog(mainFrame, files, false).showDialog();
     }
 
-	@Override
-	public ActionDescriptor getDescriptor() {
-		return new Descriptor();
-	}
+    @Override
+    public ActionDescriptor getDescriptor() {
+        return new Descriptor();
+    }
 
 
     public static final class Descriptor extends AbstractActionDescriptor {
-    	public static final String ACTION_ID = "Delete";
-    	
-		public String getId() { return ACTION_ID; }
+        public static final String ACTION_ID = "Delete";
 
-		public ActionCategory getCategory() { return ActionCategory.FILES; }
+        public String getId() {
+            return ACTION_ID;
+        }
 
-		public KeyStroke getDefaultAltKeyStroke() { return KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0); }
+        public ActionCategory getCategory() {
+            return ActionCategory.FILES;
+        }
 
-		public KeyStroke getDefaultKeyStroke() { return KeyStroke.getKeyStroke(KeyEvent.VK_F8, 0); }
+        public KeyStroke getDefaultAltKeyStroke() {
+            return KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0);
+        }
 
-        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+        public KeyStroke getDefaultKeyStroke() {
+            return KeyStroke.getKeyStroke(KeyEvent.VK_F8, 0);
+        }
+
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new DeleteAction(mainFrame, properties);
         }
     }

@@ -18,7 +18,6 @@
 
 package com.mucommander.ui.action.impl;
 
-import com.mucommander.commons.runtime.OsFamily;
 import com.mucommander.ui.action.AbstractActionDescriptor;
 import com.mucommander.ui.action.ActionCategory;
 import com.mucommander.ui.action.ActionDescriptor;
@@ -70,7 +69,7 @@ public class FocusNextAction extends MuAction {
             nextComponent = folderPanel.isTreeVisible() ? tree : fileTable;
         } else if (focusOwner == tree) {
             nextComponent = fileTable;
-        } else if(focusOwner == fileTable) {
+        } else if (focusOwner == fileTable) {
             nextComponent = locationField;
         } else {
             return;
@@ -79,30 +78,32 @@ public class FocusNextAction extends MuAction {
         FocusRequester.requestFocusInWindow(nextComponent);
     }
 
-	@Override
-	public ActionDescriptor getDescriptor() {
-		return new Descriptor();
-	}
+    @Override
+    public ActionDescriptor getDescriptor() {
+        return new Descriptor();
+    }
 
 
     public static final class Descriptor extends AbstractActionDescriptor {
-    	public static final String ACTION_ID = "FocusNext";
-    	
-		public String getId() { return ACTION_ID; }
+        public static final String ACTION_ID = "FocusNext";
 
-		public ActionCategory getCategory() { return ActionCategory.NAVIGATION; }
-
-		public KeyStroke getDefaultAltKeyStroke() { return null; }
-
-		public KeyStroke getDefaultKeyStroke() {
-            if (!OsFamily.MAC_OS_X.isCurrent()) {
-                return KeyStroke.getKeyStroke(KeyEvent.VK_TAB, KeyEvent.CTRL_DOWN_MASK);
-            } else {
-                return KeyStroke.getKeyStroke(KeyEvent.VK_TAB, KeyEvent.META_DOWN_MASK);
-            }
+        public String getId() {
+            return ACTION_ID;
         }
 
-        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+        public ActionCategory getCategory() {
+            return ActionCategory.NAVIGATION;
+        }
+
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
+
+        public KeyStroke getDefaultKeyStroke() {
+            return KeyStroke.getKeyStroke(KeyEvent.VK_TAB, CTRL_OR_META_DOWN_MASK);
+        }
+
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new FocusNextAction(mainFrame, properties);
         }
     }

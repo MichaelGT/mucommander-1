@@ -39,6 +39,7 @@ import java.util.Map;
 
 /**
  * Created on 01/02/16.
+ *
  * @author Oleg Trifonov
  */
 public class CompareFilesAction extends SelectedFilesAction {
@@ -46,19 +47,19 @@ public class CompareFilesAction extends SelectedFilesAction {
     CompareFilesAction(MainFrame mainFrame, Map<String, Object> properties) {
         super(mainFrame, properties);
         setSelectedFileFilter(new AndFileFilter(
-            new FileOperationFilter(FileOperation.READ_FILE),
-            new AbstractFileFilter() {
-                @Override
-                public boolean accept(AbstractFile file) {
-                    if (supported()) {
-                        AbstractFile leftFile = mainFrame.getLeftPanel().getFileTable().getSelectedFile();
-                        AbstractFile rightFile = mainFrame.getRightPanel().getFileTable().getSelectedFile();
-                        return  leftFile != null && !leftFile.isDirectory() && rightFile != null && !rightFile.isDirectory() &&
-                                leftFile instanceof LocalFile && rightFile instanceof LocalFile;
+                new FileOperationFilter(FileOperation.READ_FILE),
+                new AbstractFileFilter() {
+                    @Override
+                    public boolean accept(AbstractFile file) {
+                        if (supported()) {
+                            AbstractFile leftFile = mainFrame.getLeftPanel().getFileTable().getSelectedFile();
+                            AbstractFile rightFile = mainFrame.getRightPanel().getFileTable().getSelectedFile();
+                            return leftFile != null && !leftFile.isDirectory() && rightFile != null && !rightFile.isDirectory() &&
+                                    leftFile instanceof LocalFile && rightFile instanceof LocalFile;
+                        }
+                        return false;
                     }
-                    return false;
                 }
-            }
         ));
     }
 
@@ -87,13 +88,21 @@ public class CompareFilesAction extends SelectedFilesAction {
     public static final class Descriptor extends AbstractActionDescriptor {
         public static final String ACTION_ID = "CompareFiles";
 
-        public String getId() { return ACTION_ID; }
+        public String getId() {
+            return ACTION_ID;
+        }
 
-        public ActionCategory getCategory() { return ActionCategory.FILES; }
+        public ActionCategory getCategory() {
+            return ActionCategory.FILES;
+        }
 
-        public KeyStroke getDefaultAltKeyStroke() { return null; }
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
 
-        public KeyStroke getDefaultKeyStroke() { return null; }
+        public KeyStroke getDefaultKeyStroke() {
+            return null;
+        }
 
         public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new CompareFilesAction(mainFrame, properties);

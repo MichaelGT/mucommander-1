@@ -25,7 +25,6 @@ import com.mucommander.commons.file.impl.local.LocalFile;
 import com.mucommander.commons.file.util.FileSet;
 import com.mucommander.job.TempOpenWithJob;
 import com.mucommander.process.ProcessRunner;
-import com.mucommander.utils.text.Translator;
 import com.mucommander.ui.action.AbstractActionDescriptor;
 import com.mucommander.ui.action.ActionCategory;
 import com.mucommander.ui.action.ActionDescriptor;
@@ -33,6 +32,7 @@ import com.mucommander.ui.action.MuAction;
 import com.mucommander.ui.dialog.InformationDialog;
 import com.mucommander.ui.dialog.file.ProgressDialog;
 import com.mucommander.ui.main.MainFrame;
+import com.mucommander.utils.text.Translator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,19 +43,22 @@ import java.util.Map;
  * @author Nicolas Rinaudo
  */
 public class CommandAction extends MuAction {
-	private static final Logger LOGGER = LoggerFactory.getLogger(CommandAction.class);
-	
+    private static final Logger LOGGER = LoggerFactory.getLogger(CommandAction.class);
+
     // - Instance fields -------------------------------------------------------
     // -------------------------------------------------------------------------
-    /** Command to init. */
+    /**
+     * Command to init.
+     */
     private Command command;
-
 
 
     // - Initialization --------------------------------------------------------
     // -------------------------------------------------------------------------
+
     /**
      * Creates a new <code>CommandAction</code> initialized with the specified parameters.
+     *
      * @param mainFrame  frame that will be affected by this action.
      * @param properties ignored.
      * @param command    command to init when this action is called.
@@ -65,7 +68,6 @@ public class CommandAction extends MuAction {
         this.command = command;
         setLabel(command.getDisplayName());
     }
-
 
 
     // - Action code -----------------------------------------------------------
@@ -85,7 +87,7 @@ public class CommandAction extends MuAction {
         if (baseFolder.getURL().getScheme().equals(FileProtocols.FILE) && (baseFolder.hasAncestor(LocalFile.class))) {
             try {
                 ProcessRunner.execute(command.getTokens(selectedFiles), selectedFiles.getBaseFolder());
-            } catch(Exception e) {
+            } catch (Exception e) {
                 InformationDialog.showErrorDialog(mainFrame);
 
                 LOGGER.debug("Failed to execute command: " + command.getCommand(), e);
@@ -99,37 +101,47 @@ public class CommandAction extends MuAction {
     }
 
     @Override
-	public ActionDescriptor getDescriptor() {
-		return new Descriptor(command);
-	}
+    public ActionDescriptor getDescriptor() {
+        return new Descriptor(command);
+    }
 
 
     public static final class Descriptor extends AbstractActionDescriptor {
         private Command command;
 
-    	private static final String ACTION_ID_PREFIX = "OpenWith_";
-    	private String ACTION_ID;
-    	private String label;
+        private static final String ACTION_ID_PREFIX = "OpenWith_";
+        private String ACTION_ID;
+        private String label;
 
-    	public Descriptor(Command command) {
+        public Descriptor(Command command) {
             this.command = command;
-    		ACTION_ID = ACTION_ID_PREFIX + command.getAlias() + ":" + command.getDisplayName();
-    		label = String.format("%s %s", 
-    				Translator.get("file_menu.open_with"),
-    				command.getDisplayName());
-    	}
+            ACTION_ID = ACTION_ID_PREFIX + command.getAlias() + ":" + command.getDisplayName();
+            label = String.format("%s %s",
+                    Translator.get("file_menu.open_with"),
+                    command.getDisplayName());
+        }
 
-    	public String getId() { return ACTION_ID; }
+        public String getId() {
+            return ACTION_ID;
+        }
 
-    	public String getLabel() { return label; }
+        public String getLabel() {
+            return label;
+        }
 
-    	public ActionCategory getCategory() { return ActionCategory.COMMANDS; }
+        public ActionCategory getCategory() {
+            return ActionCategory.COMMANDS;
+        }
 
-    	public KeyStroke getDefaultAltKeyStroke() { return null; }
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
 
-    	public KeyStroke getDefaultKeyStroke() { return null; }
+        public KeyStroke getDefaultKeyStroke() {
+            return null;
+        }
 
-        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new CommandAction(mainFrame, properties, command);
         }
 

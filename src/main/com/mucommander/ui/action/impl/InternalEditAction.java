@@ -40,13 +40,16 @@ import java.util.Map;
 
 /**
  * Opens the current file in edit mode.
+ *
  * @author Maxence Bernard, Nicolas Rinaudo
  */
 public class InternalEditAction extends AbstractViewerAction {
     // - Initialization ------------------------------------------------------------------------------------------------
     // -----------------------------------------------------------------------------------------------------------------
+
     /**
      * Creates a new instance of <code>EditAction</code>.
+     *
      * @param mainFrame  frame to which the action is attached.
      * @param properties action's properties.
      */
@@ -55,8 +58,8 @@ public class InternalEditAction extends AbstractViewerAction {
 
         // Edit requires being able to write the file (in addition to view requirements)
         setSelectedFileFilter(new AndFileFilter(
-            new FileOperationFilter(FileOperation.WRITE_FILE),
-            getSelectedFileFilter()
+                new FileOperationFilter(FileOperation.WRITE_FILE),
+                getSelectedFileFilter()
         ));
 
         ImageIcon icon = getStandardIcon(EditAction.class);
@@ -68,8 +71,10 @@ public class InternalEditAction extends AbstractViewerAction {
 
     // - AbstractViewerAction implementation ---------------------------------------------------------------------------
     // -----------------------------------------------------------------------------------------------------------------
+
     /**
      * Opens the internal editor on the specified file.
+     *
      * @param file file to edit.
      */
     @Override
@@ -90,24 +95,32 @@ public class InternalEditAction extends AbstractViewerAction {
         return null;
     }
 
-	@Override
-	public ActionDescriptor getDescriptor() {
-		return new Descriptor();
-	}
+    @Override
+    public ActionDescriptor getDescriptor() {
+        return new Descriptor();
+    }
 
 
     public static final class Descriptor extends AbstractActionDescriptor {
-    	public static final String ACTION_ID = "InternalEdit";
-    	
-		public String getId() { return ACTION_ID; }
+        public static final String ACTION_ID = "InternalEdit";
 
-		public ActionCategory getCategory() { return ActionCategory.FILES; }
+        public String getId() {
+            return ACTION_ID;
+        }
 
-		public KeyStroke getDefaultAltKeyStroke() { return null; }
+        public ActionCategory getCategory() {
+            return ActionCategory.FILES;
+        }
 
-		public KeyStroke getDefaultKeyStroke() { return null; }
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
 
-        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+        public KeyStroke getDefaultKeyStroke() {
+            return null;
+        }
+
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new InternalEditAction(mainFrame, properties);
         }
 

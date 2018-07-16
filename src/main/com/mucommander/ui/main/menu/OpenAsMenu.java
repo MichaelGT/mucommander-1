@@ -19,13 +19,23 @@
 package com.mucommander.ui.main.menu;
 
 import com.mucommander.commons.file.impl.ar.ArFormatProvider;
+import com.mucommander.commons.file.impl.arj.ArjFormatProvider;
 import com.mucommander.commons.file.impl.bzip2.Bzip2FormatProvider;
+import com.mucommander.commons.file.impl.cab.CabFormatProvider;
+import com.mucommander.commons.file.impl.cpio.CpioFormatProvider;
+import com.mucommander.commons.file.impl.deb.DebFormatProvider;
 import com.mucommander.commons.file.impl.gzip.GzipFormatProvider;
 import com.mucommander.commons.file.impl.iso.IsoFormatProvider;
 import com.mucommander.commons.file.impl.lst.LstFormatProvider;
+import com.mucommander.commons.file.impl.lzh.LzhFormatProvider;
+import com.mucommander.commons.file.impl.lzma.LzmaFormatProvider;
 import com.mucommander.commons.file.impl.rar.RarFormatProvider;
 import com.mucommander.commons.file.impl.sevenzip.SevenZipFormatProvider;
 import com.mucommander.commons.file.impl.tar.TarFormatProvider;
+import com.mucommander.commons.file.impl.udf.UdfFormatProvider;
+import com.mucommander.commons.file.impl.wim.WimFormatProvider;
+import com.mucommander.commons.file.impl.xar.XarFormatProvider;
+import com.mucommander.commons.file.impl.z.ZFormatProvider;
 import com.mucommander.commons.file.impl.zip.ZipFormatProvider;
 import com.mucommander.ui.action.ActionManager;
 import com.mucommander.ui.action.ActionParameters;
@@ -53,13 +63,23 @@ public class OpenAsMenu extends JMenu {
 
     static {
         EXTENSIONS.addAll(Arrays.asList(ArFormatProvider.EXTENSIONS));
+        EXTENSIONS.addAll(Arrays.asList(ArjFormatProvider.EXTENSIONS));
         EXTENSIONS.addAll(Arrays.asList(Bzip2FormatProvider.EXTENSIONS));
+        EXTENSIONS.addAll(Arrays.asList(CabFormatProvider.EXTENSIONS));
+        EXTENSIONS.addAll(Arrays.asList(CpioFormatProvider.EXTENSIONS));
+        EXTENSIONS.addAll(Arrays.asList(DebFormatProvider.EXTENSIONS));
         EXTENSIONS.addAll(Arrays.asList(GzipFormatProvider.EXTENSIONS));
         EXTENSIONS.addAll(Arrays.asList(IsoFormatProvider.EXTENSIONS));
         EXTENSIONS.addAll(Arrays.asList(LstFormatProvider.EXTENSIONS));
+        EXTENSIONS.addAll(Arrays.asList(LzhFormatProvider.EXTENSIONS));
+        EXTENSIONS.addAll(Arrays.asList(LzmaFormatProvider.EXTENSIONS));
         EXTENSIONS.addAll(Arrays.asList(RarFormatProvider.EXTENSIONS));
         EXTENSIONS.addAll(Arrays.asList(SevenZipFormatProvider.EXTENSIONS));
         EXTENSIONS.addAll(Arrays.asList(TarFormatProvider.EXTENSIONS));
+        EXTENSIONS.addAll(Arrays.asList(UdfFormatProvider.EXTENSIONS));
+        EXTENSIONS.addAll(Arrays.asList(WimFormatProvider.EXTENSIONS));
+        EXTENSIONS.addAll(Arrays.asList(XarFormatProvider.EXTENSIONS));
+        EXTENSIONS.addAll(Arrays.asList(ZFormatProvider.EXTENSIONS));
         EXTENSIONS.addAll(Arrays.asList(ZipFormatProvider.EXTENSIONS));
         Collections.sort(EXTENSIONS);
     }

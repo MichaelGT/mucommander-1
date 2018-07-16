@@ -21,13 +21,13 @@ package com.mucommander.ui.action.impl;
 import com.mucommander.conf.MuConfigurations;
 import com.mucommander.conf.MuPreference;
 import com.mucommander.conf.MuPreferences;
-import com.mucommander.utils.text.Translator;
 import com.mucommander.ui.action.AbstractActionDescriptor;
 import com.mucommander.ui.action.ActionCategory;
 import com.mucommander.ui.action.ActionDescriptor;
 import com.mucommander.ui.action.MuAction;
 import com.mucommander.ui.main.MainFrame;
 import com.mucommander.ui.main.statusbar.StatusBar;
+import com.mucommander.utils.text.Translator;
 
 import javax.swing.KeyStroke;
 import java.util.Map;
@@ -51,7 +51,7 @@ public class ToggleStatusBarAction extends MuAction {
     }
 
     private void updateLabel(boolean visible) {
-        setLabel(Translator.get(visible?Descriptor.ACTION_ID+".hide":Descriptor.ACTION_ID+".show"));
+        setLabel(Translator.get(visible ? Descriptor.ACTION_ID + ".hide" : Descriptor.ACTION_ID + ".show"));
     }
 
     @Override
@@ -67,29 +67,46 @@ public class ToggleStatusBarAction extends MuAction {
         mainFrame.validate();
     }
 
-	@Override
-	public ActionDescriptor getDescriptor() {
-		return new Descriptor();
-	}
+    @Override
+    public ActionDescriptor getDescriptor() {
+        return new Descriptor();
+    }
 
 
     public static final class Descriptor extends AbstractActionDescriptor {
-    	public static final String ACTION_ID = "ToggleStatusBar";
-    	
-		public String getId() { return ACTION_ID; }
 
-		public ActionCategory getCategory() { return ActionCategory.VIEW; }
-
-		public KeyStroke getDefaultAltKeyStroke() { return null; }
-
-		public KeyStroke getDefaultKeyStroke() { return null; }
+        public static final String ACTION_ID = "ToggleStatusBar";
 
         @Override
-        public String getLabelKey() { return ACTION_ID+".show"; }
+        public String getId() {
+            return ACTION_ID;
+        }
 
-        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+        @Override
+        public ActionCategory getCategory() {
+            return ActionCategory.VIEW;
+        }
+
+        @Override
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
+
+        @Override
+        public KeyStroke getDefaultKeyStroke() {
+            return null;
+        }
+
+        @Override
+        public String getLabelKey() {
+            return ACTION_ID + ".show";
+        }
+
+        @Override
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new ToggleStatusBarAction(mainFrame, properties);
         }
 
     }
+
 }

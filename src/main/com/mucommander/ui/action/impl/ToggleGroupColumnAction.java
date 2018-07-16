@@ -37,19 +37,22 @@ public class ToggleGroupColumnAction extends ToggleColumnAction {
         super(mainFrame, properties, Column.GROUP);
     }
 
-	@Override
-	public ActionDescriptor getDescriptor() {
-		return new Descriptor();
-	}
-
+    @Override
+    public ActionDescriptor getDescriptor() {
+        return new Descriptor();
+    }
 
     public static final class Descriptor extends ToggleColumnAction.Descriptor {
+
         public Descriptor() {
             super(Column.GROUP);
         }
 
-        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+        @Override
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
             return new ToggleGroupColumnAction(mainFrame, properties);
         }
+
     }
+
 }

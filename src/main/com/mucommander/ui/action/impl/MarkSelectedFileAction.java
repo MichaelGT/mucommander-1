@@ -56,42 +56,49 @@ public class MarkSelectedFileAction extends MuAction {
 
     @Override
     public void performAction() {
-		if (MuConfigurations.getPreferences().getVariable(MuPreference.CALCULATE_FOLDER_SIZE_ON_MARK, MuPreferences.DEFAULT_CALCULATE_FOLDER_SIZE_ON_MARK))
-		{
-			calculateFolderSize();
-		}
+        if (MuConfigurations.getPreferences().getVariable(MuPreference.CALCULATE_FOLDER_SIZE_ON_MARK, MuPreferences.DEFAULT_CALCULATE_FOLDER_SIZE_ON_MARK)) {
+            calculateFolderSize();
+        }
         mainFrame.getActiveTable().markSelectedFile();
     }
 
-	private void calculateFolderSize() {
-		FileTable table = mainFrame.getActiveTable();
-		AbstractFile file = table.getSelectedFile();
+    private void calculateFolderSize() {
+        FileTable table = mainFrame.getActiveTable();
+        AbstractFile file = table.getSelectedFile();
 
-		if (file != null && file.isDirectory()) {
-			FileTableModel model = (FileTableModel) mainFrame.getActiveTable().getModel();
-			model.startDirectorySizeCalculation(table, table.getSelectedFile());
-		}
-	}
+        if (file != null && file.isDirectory()) {
+            FileTableModel model = (FileTableModel) mainFrame.getActiveTable().getModel();
+            model.startDirectorySizeCalculation(table, table.getSelectedFile());
+        }
+    }
 
-	@Override
-	public ActionDescriptor getDescriptor() {
-		return new Descriptor();
-	}
+    @Override
+    public ActionDescriptor getDescriptor() {
+        return new Descriptor();
+    }
 
 
     public static final class Descriptor extends AbstractActionDescriptor {
-    	public static final String ACTION_ID = "MarkSelectedFile";
-    	
-		public String getId() { return ACTION_ID; }
+        public static final String ACTION_ID = "MarkSelectedFile";
 
-		public ActionCategory getCategory() { return ActionCategory.SELECTION; }
+        public String getId() {
+            return ACTION_ID;
+        }
 
-		public KeyStroke getDefaultAltKeyStroke() { return KeyStroke.getKeyStroke(KeyEvent.VK_INSERT, 0); }
+        public ActionCategory getCategory() {
+            return ActionCategory.SELECTION;
+        }
 
-		public KeyStroke getDefaultKeyStroke() { return KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0); }
+        public KeyStroke getDefaultAltKeyStroke() {
+            return KeyStroke.getKeyStroke(KeyEvent.VK_INSERT, 0);
+        }
 
-		public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
-			return new MarkSelectedFileAction(mainFrame, properties);
-		}
+        public KeyStroke getDefaultKeyStroke() {
+            return KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0);
+        }
+
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
+            return new MarkSelectedFileAction(mainFrame, properties);
+        }
     }
 }

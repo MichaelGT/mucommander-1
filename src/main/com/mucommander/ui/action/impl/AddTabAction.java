@@ -18,15 +18,16 @@
 
 package com.mucommander.ui.action.impl;
 
-import java.awt.event.KeyEvent;
-import java.util.Map;
+import com.mucommander.commons.file.impl.local.LocalFile;
+import com.mucommander.ui.action.AbstractActionDescriptor;
+import com.mucommander.ui.action.ActionCategory;
+import com.mucommander.ui.action.ActionDescriptor;
+import com.mucommander.ui.action.MuAction;
+import com.mucommander.ui.main.MainFrame;
 
 import javax.swing.KeyStroke;
-
-import com.mucommander.commons.file.impl.local.LocalFile;
-import com.mucommander.commons.runtime.OsFamily;
-import com.mucommander.ui.action.*;
-import com.mucommander.ui.main.MainFrame;
+import java.awt.event.KeyEvent;
+import java.util.Map;
 
 /**
  * This action adds a new tab in the active panel with the location
@@ -36,40 +37,43 @@ import com.mucommander.ui.main.MainFrame;
  */
 public class AddTabAction extends MuAction {
 
-	AddTabAction(MainFrame mainFrame, Map<String, Object> properties) {
+    AddTabAction(MainFrame mainFrame, Map<String, Object> properties) {
         super(mainFrame, properties);
     }
 
-	@Override
-	public void performAction() {
-		mainFrame.getActivePanel().getTabs().add(LocalFile.getUserHome());
-	}
+    @Override
+    public void performAction() {
+        mainFrame.getActivePanel().getTabs().add(LocalFile.getUserHome());
+    }
 
-	@Override
-	public ActionDescriptor getDescriptor() {
-		return new Descriptor();
-	}
+    @Override
+    public ActionDescriptor getDescriptor() {
+        return new Descriptor();
+    }
 
 
-	public static final class Descriptor extends AbstractActionDescriptor {
-		public static final String ACTION_ID = "AddTab";
-		public String getId() { return ACTION_ID; }
+    public static final class Descriptor extends AbstractActionDescriptor {
+        public static final String ACTION_ID = "AddTab";
 
-		public ActionCategory getCategory() { return ActionCategory.TAB; }
-
-		public KeyStroke getDefaultAltKeyStroke() { return null; }
-
-		public KeyStroke getDefaultKeyStroke() {
-            if (!OsFamily.MAC_OS_X.isCurrent()) {
-                return KeyStroke.getKeyStroke(KeyEvent.VK_T, KeyEvent.SHIFT_DOWN_MASK | KeyEvent.CTRL_DOWN_MASK);
-            } else {
-                return KeyStroke.getKeyStroke(KeyEvent.VK_T, KeyEvent.SHIFT_DOWN_MASK | KeyEvent.META_DOWN_MASK);
-            }
+        public String getId() {
+            return ACTION_ID;
         }
 
-		public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
-			return new AddTabAction(mainFrame, properties);
-		}
+        public ActionCategory getCategory() {
+            return ActionCategory.TAB;
+        }
+
+        public KeyStroke getDefaultAltKeyStroke() {
+            return null;
+        }
+
+        public KeyStroke getDefaultKeyStroke() {
+            return KeyStroke.getKeyStroke(KeyEvent.VK_T, KeyEvent.SHIFT_DOWN_MASK | CTRL_OR_META_DOWN_MASK);
+        }
+
+        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
+            return new AddTabAction(mainFrame, properties);
+        }
     }
 
 }
