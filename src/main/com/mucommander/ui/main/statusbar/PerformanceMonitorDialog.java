@@ -305,7 +305,7 @@ public class PerformanceMonitorDialog extends FocusDialog implements ActionListe
     /**
      * Minimum dialog size
      */
-    private static final Dimension MINIMUM_DIALOG_DIMENSION = new Dimension(300, 200);
+    private static final Dimension MINIMUM_DIALOG_DIMENSION = new Dimension(600, 400);
 
     /**
      * OperatingSystemMXBean reference
