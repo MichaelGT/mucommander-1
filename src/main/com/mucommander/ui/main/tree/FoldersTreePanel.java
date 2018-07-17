@@ -33,6 +33,7 @@ import com.mucommander.ui.event.LocationEvent;
 import com.mucommander.ui.event.LocationListener;
 import com.mucommander.ui.main.ConfigurableFolderFilter;
 import com.mucommander.ui.main.FolderPanel;
+import com.mucommander.ui.main.table.SortOrder;
 import com.mucommander.ui.theme.ColorChangedEvent;
 import com.mucommander.ui.theme.FontChangedEvent;
 import com.mucommander.ui.theme.ThemeCache;
@@ -114,7 +115,7 @@ public class FoldersTreePanel extends JPanel implements TreeSelectionListener,
                 new ConfigurableFolderFilter()
         );
 
-        FileComparator sort = new FileComparator(FileComparator.NAME_CRITERION, true, true, false);
+        FileComparator sort = new FileComparator(FileComparator.NAME_CRITERION, SortOrder.ASC, true, false);
         model = new FilesTreeModel(treeFileFilter, sort);
         tree = new JTree(model);
         tree.setFont(ThemeCache.tableFont);
@@ -146,9 +147,7 @@ public class FoldersTreePanel extends JPanel implements TreeSelectionListener,
         JMenuItem item = new JMenuItem(
                 ActionProperties.getActionLabel(RefreshAction.Descriptor.ACTION_ID),
                 KeyEvent.VK_R);
-        item.addActionListener(e -> {
-            model.refresh(tree.getSelectionPath());
-        });
+        item.addActionListener(e -> model.refresh(tree.getSelectionPath()));
         popup.add(item);
         tree.addMouseListener(new MouseAdapter() {
             @Override
@@ -176,6 +175,7 @@ public class FoldersTreePanel extends JPanel implements TreeSelectionListener,
     /**
      * Listens to certain configuration variables.
      */
+    @Override
     public void configurationChanged(ConfigurationEvent event) {
         String var = event.getVariable();
         if (var.equals(MuPreferences.SHOW_HIDDEN_FILES) ||

@@ -31,37 +31,52 @@ import java.util.Map;
  */
 public enum Column {
 
-    EXTENSION("extension", true, true, FileComparator.EXTENSION_CRITERION, "ToggleExtensionColumn", "SortByExtension"),
-    NAME("name", false, true, FileComparator.NAME_CRITERION, null, "SortByName"),
-    SIZE("size", true, true, FileComparator.SIZE_CRITERION, "ToggleSizeColumn", "SortBySize"),
-    DATE("date", true, true, FileComparator.DATE_CRITERION, "ToggleDateColumn", "SortByDate"),
-    PERMISSIONS("permissions", true, true, FileComparator.PERMISSIONS_CRITERION, "TogglePermissionsColumn", "SortByPermissions"),
-    OWNER("owner", true, false, FileComparator.OWNER_CRITERION, "ToggleOwnerColumn", "SortByOwner"),
-    GROUP("group", true, false, FileComparator.GROUP_CRITERION, "ToggleGroupColumn", "SortByGroup");
+    EXTENSION("extension", true, true, FileComparator.EXTENSION_CRITERION, "ToggleExtensionColumn", "SortByExtension", SortOrder.ASC),
+    NAME("name", false, true, FileComparator.NAME_CRITERION, null, "SortByName", SortOrder.ASC),
+    SIZE("size", true, true, FileComparator.SIZE_CRITERION, "ToggleSizeColumn", "SortBySize", SortOrder.DESC),
+    DATE("date", true, true, FileComparator.DATE_CRITERION, "ToggleDateColumn", "SortByDate", SortOrder.DESC),
+    PERMISSIONS("permissions", true, true, FileComparator.PERMISSIONS_CRITERION, "TogglePermissionsColumn", "SortByPermissions", SortOrder.ASC),
+    OWNER("owner", true, false, FileComparator.OWNER_CRITERION, "ToggleOwnerColumn", "SortByOwner", SortOrder.ASC),
+    GROUP("group", true, false, FileComparator.GROUP_CRITERION, "ToggleGroupColumn", "SortByGroup", SortOrder.ASC);
 
-    private static final Map<Integer, Column> ORDINAL_TO_ENUM_MAPPING = new HashMap<Integer,Column>(){{
+    private static final Map<Integer, Column> ORDINAL_TO_ENUM_MAPPING = new HashMap<Integer, Column>() {{
         for (Column column : Column.values()) {
             put(column.ordinal(), column);
         }
     }};
 
-    /** Standard minimum column width */
+    /**
+     * Standard minimum column width
+     */
     private final static int STANDARD_MINIMUM_WIDTH = 2 * CellLabel.CELL_BORDER_WIDTH;
 
+    private final String labelId;
     private final String label;
     private final int minimumWidth;
     private final boolean showByDefault;
     private final int fileComparatorCriterion;
     private final String toggleActionId;
     private final String sortByActionId;
+    private final SortOrder defaultSortOrder;
 
-    Column(String labelId, boolean hasMinimumWidth, boolean showByDefault, int fileComparatorCriterion, String toggleActionId, String sortByActionId) {
+    Column(String labelId, boolean hasMinimumWidth, boolean showByDefault, int fileComparatorCriterion, String toggleActionId, String sortByActionId, SortOrder defaultSortOrder) {
+        this.labelId = labelId;
         this.label = Translator.get(labelId);
         this.minimumWidth = hasMinimumWidth ? STANDARD_MINIMUM_WIDTH : 0;
         this.showByDefault = showByDefault;
         this.fileComparatorCriterion = fileComparatorCriterion;
         this.toggleActionId = toggleActionId;
         this.sortByActionId = sortByActionId;
+        this.defaultSortOrder = defaultSortOrder;
+    }
+
+    /**
+     * Returns this column's label id
+     *
+     * @return this column's label id
+     */
+    public String getLabelId() {
+        return labelId;
     }
 
     /**
@@ -107,7 +122,7 @@ public enum Column {
      * @return the column instance that has the specified {@link #ordinal()} value.
      */
     public static Column valueOf(int ordinal) {
-      return ORDINAL_TO_ENUM_MAPPING.get(ordinal);
+        return ORDINAL_TO_ENUM_MAPPING.get(ordinal);
     }
 
     /**
@@ -128,4 +143,14 @@ public enum Column {
     public String getSortByColumnActionId() {
         return sortByActionId;
     }
+
+    /**
+     * Returns default sort order for given column
+     *
+     * @return default sort order for given column
+     */
+    public SortOrder defaultSortOrder() {
+        return defaultSortOrder;
+    }
+
 }
