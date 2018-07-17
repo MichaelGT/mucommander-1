@@ -21,16 +21,19 @@ package com.mucommander.ui.main.table;
 
 import com.mucommander.ui.icon.IconManager;
 
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JTable;
+import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
-import java.awt.*;
+import java.awt.Component;
 
 
 /**
  * Custom table header renderer that displays an icon to indicate the current sort criterion and the sort order
- * (ascending or descending).  
+ * (ascending or descending).
  *
  * @author Maxence Bernard
  */
@@ -59,7 +62,7 @@ public class FileTableHeaderRenderer extends DefaultTableCellRenderer {
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         // Note: the label is returned by DefaultTableHeaderRenderer#getTableCellRendererComponent() is in fact this
-        JLabel label = (JLabel)super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        JLabel label = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
         if (table != null) {
             JTableHeader header = table.getTableHeader();
@@ -69,10 +72,10 @@ public class FileTableHeaderRenderer extends DefaultTableCellRenderer {
                 label.setFont(header.getFont());
             }
 
-            FileTable fileTable = (FileTable)table;
-            if (fileTable.getSortInfo().getCriterion()== Column.valueOf(fileTable.convertColumnIndexToModel(column))) {
+            FileTable fileTable = (FileTable) table;
+            if (fileTable.getSortInfo().getCriterion() == Column.valueOf(fileTable.convertColumnIndexToModel(column))) {
                 // This header is the currently selected one
-                label.setIcon(fileTable.getSortInfo().getAscendingOrder()? ASCENDING_ICON : DESCENDING_ICON);
+                label.setIcon(fileTable.getSortInfo().getOrder().isAsc() ? ASCENDING_ICON : DESCENDING_ICON);
             } else {
                 // The renderer component acts as a rubber-stamp, therefore the icon value needs to be set to null explicitely
                 // as it might still hold a previous value
@@ -85,8 +88,9 @@ public class FileTableHeaderRenderer extends DefaultTableCellRenderer {
         label.setBorder(border);
 
         // Add a tooltip as headers are sometimes too small for the text to fit entirely
-        label.setToolTipText((String)value);
+        label.setToolTipText((String) value);
 
         return label;
     }
+
 }
