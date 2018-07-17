@@ -33,23 +33,30 @@ import com.mucommander.conf.MuPreferences;
  */
 public class SortInfo implements Cloneable {
 
-    /** Current sort criterion */
+    /**
+     * Current sort criterion
+     */
     private Column criterion = Column.NAME;
 
-    /** Ascending/descending order */
-    private boolean ascendingOrder = true;
+    /**
+     * Ascending/descending order
+     */
+    private SortOrder order = SortOrder.ASC;
 
-    /** Should folders be displayed first, or mixed with regular files */
+    /**
+     * Should folders be displayed first, or mixed with regular files
+     */
     private boolean showFoldersFirst = MuConfigurations.getPreferences().getVariable(MuPreference.SHOW_FOLDERS_FIRST, MuPreferences.DEFAULT_SHOW_FOLDERS_FIRST);
 
-    /** Should Folders also get sorted or alway alphabetical ... only possible if Folders First enabled */
+    /**
+     * Should Folders also get sorted or alway alphabetical ... only possible if Folders First enabled
+     */
     private boolean foldersAlwaysAlphabetical = MuConfigurations.getPreferences().getVariable(MuPreference.FOLDERS_ALWAYS_ALPHABETICAL, MuPreferences.DEFAULT_FOLDERS_ALWAYS_ALPHABETICAL);
 
     private boolean showQuickSearchMatchesFirst = MuConfigurations.getPreferences().getVariable(MuPreference.SHOW_QUICK_SEARCH_MATCHES_FIRST, MuPreferences.DEFAULT_SHOW_QUICK_SEARCH_MATCHES_FIRST);
 
     SortInfo() {
     }
-
 
     /**
      * Returns the column used as a criterion to sort the table.
@@ -74,17 +81,17 @@ public class SortInfo implements Cloneable {
      *
      * @return true if the current sort order is ascending, false if it is descending
      */
-    public boolean getAscendingOrder() {
-        return ascendingOrder;
+    public SortOrder getOrder() {
+        return order;
     }
 
     /**
      * Sets the sort order of the column corresponding to the current criterion.
      *
-     * @param ascending true if the current sort order is ascending, false if it is descending
+     * @param order sort order of the column corresponding to the current criterion
      */
-    public void setAscendingOrder(boolean ascending) {
-        this.ascendingOrder = ascending;
+    public void setOrder(SortOrder order) {
+        this.order = order;
     }
 
     /**
@@ -143,8 +150,6 @@ public class SortInfo implements Cloneable {
         return showQuickSearchMatchesFirst;
     }
 
-
-
     ////////////////////////
     // Overridden methods //
     ////////////////////////
@@ -152,10 +157,11 @@ public class SortInfo implements Cloneable {
     @Override
     public SortInfo clone() {
         try {
-            return (SortInfo)super.clone();
-        } catch(CloneNotSupportedException e) {
+            return (SortInfo) super.clone();
+        } catch (CloneNotSupportedException e) {
             // Should never happen
             return null;
         }
     }
+
 }

@@ -48,6 +48,7 @@ import com.mucommander.ui.main.statusbar.StatusBar;
 import com.mucommander.ui.main.table.Column;
 import com.mucommander.ui.main.table.FileTable;
 import com.mucommander.ui.main.table.SortInfo;
+import com.mucommander.ui.main.table.SortOrder;
 import com.mucommander.ui.main.table.views.full.FileTableConfiguration;
 import com.mucommander.ui.main.tabs.ConfFileTableTab;
 import com.mucommander.ui.main.toolbar.ToolBar;
@@ -329,7 +330,7 @@ public class MainFrame extends JFrame implements LocationListener, IMacOsWindow 
         for (boolean isLeft = true; ; isLeft = false) {
             FileTable fileTable = isLeft ? leftTable : rightTable;
             fileTable.sortBy(Column.valueOf(MuConfigurations.getSnapshot().getVariable(MuSnapshot.getFileTableSortByVariable(0, isLeft), MuSnapshot.DEFAULT_SORT_BY).toUpperCase()),
-                    !MuConfigurations.getSnapshot().getVariable(MuSnapshot.getFileTableSortOrderVariable(0, isLeft), MuSnapshot.DEFAULT_SORT_ORDER).equals(MuSnapshot.SORT_ORDER_DESCENDING));
+                    SortOrder.valueOf(MuConfigurations.getSnapshot().getVariable(MuSnapshot.getFileTableSortOrderVariable(0, isLeft), SortOrder.ASC.name())));
 
             FolderPanel folderPanel = isLeft ? leftFolderPanel : rightFolderPanel;
             folderPanel.setTreeWidth(MuConfigurations.getSnapshot().getVariable(MuSnapshot.getTreeWidthVariable(0, isLeft), 150));

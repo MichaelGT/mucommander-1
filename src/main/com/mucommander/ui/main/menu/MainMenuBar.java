@@ -471,7 +471,7 @@ public class MainMenuBar extends JMenuBar implements ActionListener, MenuListene
             // Select the 'sort by' criterion currently in use in the active table
             final JRadioButtonMenuItem sortItem = sortByItems[activeTable.getSortInfo().getCriterion().ordinal()];
             sortItem.setSelected(true);
-            final ImageIcon sortIcon = activeTable.getSortInfo().getAscendingOrder() ? ASCENDING_ICON : DESCENDING_ICON;
+            final ImageIcon sortIcon = activeTable.getSortInfo().getOrder().isAsc() ? ASCENDING_ICON : DESCENDING_ICON;
             for (JRadioButtonMenuItem item : sortByItems) {
                 item.setIcon(item == sortItem ? sortIcon : null);
             }

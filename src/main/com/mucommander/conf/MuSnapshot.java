@@ -18,19 +18,6 @@
 
 package com.mucommander.conf;
 
-import java.awt.Dimension;
-import java.awt.HeadlessException;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.swing.JSplitPane;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.mucommander.commons.conf.Configuration;
 import com.mucommander.commons.conf.ConfigurationException;
 import com.mucommander.commons.file.FileURL;
@@ -43,6 +30,17 @@ import com.mucommander.ui.main.table.FileTable;
 import com.mucommander.ui.main.tabs.FileTableTab;
 import com.mucommander.ui.main.tabs.FileTableTabs;
 import com.mucommander.ui.viewer.text.TextViewer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.JSplitPane;
+import java.awt.Dimension;
+import java.awt.HeadlessException;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * muCommander specific wrapper for the <code>com.mucommander.conf</code> API which is used to save 'dynamic' configurations.
@@ -143,12 +141,6 @@ public class MuSnapshot {
     // -----------------------------------------------------------------------
     /** Subsection describing the folders view CONFIGURATION. */
     private static final String  FILE_TABLE_SECTION                = "file_table";
-    /** Describes an ascending sort order. */
-    private static final String  SORT_ORDER_ASCENDING               = "asc";
-    /** Describes a descending sort order. */
-    public static final String  SORT_ORDER_DESCENDING              = "desc";
-    /** Default 'sort order' column for the file table. */
-    public static final String  DEFAULT_SORT_ORDER                 = SORT_ORDER_ASCENDING;
     /** Name of the 'show column' variable. */
     private static final String SHOW_COLUMN                        = "show";
     /** Name of the 'column position' variable. */
@@ -156,7 +148,7 @@ public class MuSnapshot {
     /** Name of the 'column width' variable. */
     private static final String COLUMN_WIDTH                       = "width";
     /** Default 'sort by' column for the file table. */
-    public static final String  DEFAULT_SORT_BY                    = "name";
+    public static final String  DEFAULT_SORT_BY                    = Column.NAME.getLabelId();
     /** Identifier of the sort section in a file table's CONFIGURATION. */
     private static final String SORT                               = "sort";
     /** Identifier of the sort criteria in a file table's CONFIGURATION. */
@@ -685,7 +677,7 @@ public class MuSnapshot {
     private void setTableAttributes(int index, boolean isLeft, FileTable table) {
     	// Saves table sort order.
     	configuration.setVariable(MuSnapshot.getFileTableSortByVariable(index, isLeft), table.getSortInfo().getCriterion().toString().toLowerCase());
-    	configuration.setVariable(MuSnapshot.getFileTableSortOrderVariable(index, isLeft), table.getSortInfo().getAscendingOrder() ? MuSnapshot.SORT_ORDER_ASCENDING : MuSnapshot.SORT_ORDER_DESCENDING);
+    	configuration.setVariable(MuSnapshot.getFileTableSortOrderVariable(index, isLeft), table.getSortInfo().getOrder().name().toLowerCase());
     	
     	// Loop on columns
 		for (Column c : Column.values()) {
@@ -732,4 +724,5 @@ public class MuSnapshot {
         }
         return logger;
     }
+
 }
