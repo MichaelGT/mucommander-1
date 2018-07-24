@@ -18,13 +18,17 @@
 
 package com.mucommander.ui.encoding;
 
-import com.mucommander.utils.text.Translator;
 import com.mucommander.ui.dialog.DialogOwner;
-import ru.trolsoft.ui.TCheckBoxMenuItem;
+import com.mucommander.utils.text.Translator;
 import ru.trolsoft.ui.TMenuSeparator;
+import ru.trolsoft.ui.TRadioButtonMenuItem;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.ButtonGroup;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import java.awt.Dialog;
+import java.awt.Frame;
+import java.awt.Window;
 import java.util.WeakHashMap;
 
 /**
@@ -33,19 +37,25 @@ import java.util.WeakHashMap;
  * The menu contains a checkbox menu item for each of the preferred encodings, and a special item that invokes a dialog
  * that allows the list of preferred encodings to be customized.
  *
- * @see EncodingPreferences
  * @author Maxence Bernard
+ * @see EncodingPreferences
  */
 public class EncodingMenu extends JMenu {
 
-    /** Contains all registered encoding listeners, stored as weak references */
+    /**
+     * Contains all registered encoding listeners, stored as weak references
+     */
     protected final WeakHashMap<EncodingListener, ?> listeners = new WeakHashMap<>();
 
-    /** the dialog/frame that owns this component */
-    protected DialogOwner dialogOwner;
+    /**
+     * the dialog/frame that owns this component
+     */
+    private DialogOwner dialogOwner;
 
-    /** The encoding that is currently selected, may be null */
-    protected String selectedEncoding;
+    /**
+     * The encoding that is currently selected, may be null
+     */
+    private String selectedEncoding;
 
 
     /**
@@ -61,7 +71,7 @@ public class EncodingMenu extends JMenu {
      * Creates a new <code>EncodingMenu</code> with the specified encoding initially selected (may be <code>null</code>).
      * If the encoding is not one of the preferred encodings, it is added as the first encoding in the menu.
      *
-     * @param dialogOwner the frame that owns this menu
+     * @param dialogOwner      the frame that owns this menu
      * @param selectedEncoding the encoding initially selected, <code>null</code> for none
      */
     public EncodingMenu(final DialogOwner dialogOwner, String selectedEncoding) {
@@ -73,33 +83,32 @@ public class EncodingMenu extends JMenu {
         populateMenu();
     }
 
-
     /**
      * Adds a checkbox menu item for each of the preferred encodings, and a special item that invokes a dialog
      * that allows the list of preferred encodings to be customized.
      */
-    protected void populateMenu() {
+    private void populateMenu() {
         java.util.List<String> encodings = EncodingPreferences.getPreferredEncodings();
 
         // Add the current encoding if it is not in the list of preferred encodings
-        if(selectedEncoding!=null && !encodings.contains(selectedEncoding))
+        if (selectedEncoding != null && !encodings.contains(selectedEncoding))
             encodings.add(0, selectedEncoding);
 
         // Add preferred encodings to the menu
         //int nbEncodings = encodings.size();
-        JCheckBoxMenuItem item;
+        JMenuItem item;
         ButtonGroup group = new ButtonGroup();
-        for(String enc: encodings) {
-            item = new TCheckBoxMenuItem(enc);
+        for (String enc : encodings) {
+            item = new TRadioButtonMenuItem(enc);
 
             // Select the current encoding, if there is one
-            if(selectedEncoding!=null && selectedEncoding.equals(enc))
+            if (selectedEncoding != null && selectedEncoding.equals(enc))
                 item.setSelected(true);
 
             // Listen to checkbox actions
             item.addActionListener(e -> {
                 String oldEncoding = selectedEncoding;
-                selectedEncoding = ((JCheckBoxMenuItem)e.getSource()).getText();
+                selectedEncoding = ((JMenuItem) e.getSource()).getText();
                 if (!oldEncoding.equals(selectedEncoding)) {
                     // Notify listeners of the new encoding
                     fireEncodingListener(oldEncoding, EncodingMenu.this.selectedEncoding);
@@ -113,7 +122,7 @@ public class EncodingMenu extends JMenu {
         add(new TMenuSeparator());
 
         // 'Customize' menu item
-        JMenuItem customizeItem = new JMenuItem(Translator.get("customize")+"...");
+        JMenuItem customizeItem = new JMenuItem(Translator.get("customize") + "...");
         customizeItem.addActionListener(e -> {
             Window owner = dialogOwner.getOwner();
             if (owner instanceof Frame) {
@@ -137,28 +146,27 @@ public class EncodingMenu extends JMenu {
         return selectedEncoding;
     }
 
-
     //////////////////////
     // Listener methods //
     //////////////////////
 
     public void addEncodingListener(EncodingListener listener) {
-        synchronized(listeners) {
+        synchronized (listeners) {
             listeners.put(listener, null);
         }
     }
 
     public void removeEncodingListener(EncodingListener listener) {
-        synchronized(listeners) {
+        synchronized (listeners) {
             listeners.remove(listener);
         }
     }
 
-    protected void fireEncodingListener(String oldEncoding, String newEncoding) {
-        synchronized(listeners) {
+    private void fireEncodingListener(String oldEncoding, String newEncoding) {
+        synchronized (listeners) {
             for (EncodingListener listener : listeners.keySet())
                 listener.encodingChanged(this, oldEncoding, newEncoding);
         }
-
     }
+
 }

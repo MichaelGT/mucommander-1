@@ -18,9 +18,9 @@
 package com.mucommander.ui.viewer.text;
 
 import com.mucommander.commons.runtime.OsFamily;
-import com.mucommander.utils.text.Translator;
 import com.mucommander.ui.helper.MenuToolkit;
 import com.mucommander.ui.helper.MnemonicHelper;
+import com.mucommander.utils.text.Translator;
 import ru.trolsoft.calculator.CalculatorDialog;
 
 import javax.swing.JCheckBoxMenuItem;
@@ -38,7 +38,9 @@ public class TextMenuHelper {
     private final TextEditorImpl textEditorImpl;
     private final boolean editMode;
 
-    /** Menu bar */
+    /**
+     * Menu bar
+     */
     // Menus
     private JMenu menuEdit;
     private JMenu menuView;
@@ -66,7 +68,6 @@ public class TextMenuHelper {
     private JMenuItem miBuild;
     private JMenuItem miFormat;
 
-
     TextMenuHelper(TextEditorImpl textEditorImpl, boolean editMode) {
         this.textEditorImpl = textEditorImpl;
         this.editMode = editMode;
@@ -91,10 +92,8 @@ public class TextMenuHelper {
         miSelectAll = MenuToolkit.addMenuItem(menuEdit, Translator.get("text_editor.select_all"), menuItemMnemonicHelper, null, actionListener);
         menuEdit.addSeparator();
 
-        menuEdit.addSeparator();
-
         if (editMode) {
-            miFormat = MenuToolkit.addMenuItem(menuEdit, Translator.get("text_editor.format"), menuItemMnemonicHelper, KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.SHIFT_DOWN_MASK|getCtrlOrMetaMask()), actionListener);
+            miFormat = MenuToolkit.addMenuItem(menuEdit, Translator.get("text_editor.format"), menuItemMnemonicHelper, KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.SHIFT_DOWN_MASK | getCtrlOrMetaMask()), actionListener);
         }
 
         // Search menu
@@ -104,7 +103,7 @@ public class TextMenuHelper {
         miFindPrevious = MenuToolkit.addMenuItem(menuSearch, Translator.get("text_editor.find_previous"), menuItemMnemonicHelper, KeyStroke.getKeyStroke(KeyEvent.VK_F3, KeyEvent.SHIFT_DOWN_MASK), actionListener);
         if (editMode) {
             menuSearch.addSeparator();
-            miReplace = MenuToolkit.addMenuItem(menuSearch, Translator.get("text_editor.replace_menu"), menuItemMnemonicHelper, KeyStroke.getKeyStroke(KeyEvent.VK_F, getCtrlOrMetaMask()|KeyEvent.ALT_MASK), actionListener);
+            miReplace = MenuToolkit.addMenuItem(menuSearch, Translator.get("text_editor.replace_menu"), menuItemMnemonicHelper, KeyStroke.getKeyStroke(KeyEvent.VK_F, getCtrlOrMetaMask() | KeyEvent.ALT_MASK), actionListener);
         }
         menuSearch.addSeparator();
         miGotoLine = MenuToolkit.addMenuItem(menuSearch, Translator.get("text_viewer.goto_line"), menuItemMnemonicHelper, KeyStroke.getKeyStroke(KeyEvent.VK_G, getCtrlOrMetaMask()), actionListener);
@@ -118,12 +117,12 @@ public class TextMenuHelper {
         miToggleLineNumbers.setSelected(lineNumbers);
 
         menuView.addSeparator();
-        menuView.addSeparator();
+
         menuViewSyntax = new JMenu(Translator.get("text_editor.syntax"));
 
         menuView.add(menuViewSyntax);
         for (FileType fileType : FileType.values()) {
-            MenuToolkit.addCheckBoxMenuItem(menuViewSyntax, fileType.getName(), menuItemMnemonicHelper, null, actionListener);
+            MenuToolkit.addRadioButtonMenuItem(menuViewSyntax, fileType.getName(), menuItemMnemonicHelper, null, actionListener);
         }
 
         // Tools menu
@@ -135,7 +134,6 @@ public class TextMenuHelper {
     private int getCtrlOrMetaMask() {
         return OsFamily.MAC_OS_X.isCurrent() ? KeyEvent.META_MASK : KeyEvent.CTRL_MASK;
     }
-
 
     JMenu getEditMenu() {
         return menuEdit;
@@ -161,7 +159,7 @@ public class TextMenuHelper {
         // check style picker
         if (source instanceof JCheckBoxMenuItem) {
             for (int i = 0; i < menuViewSyntax.getItemCount(); i++) {
-                JCheckBoxMenuItem item = (JCheckBoxMenuItem) menuViewSyntax.getItem(i);
+                JMenuItem item = menuViewSyntax.getItem(i);
                 if (source == item) {
                     FileType fileType = FileType.getByName(item.getText());
                     textEditorImpl.setSyntaxType(fileType);
@@ -173,26 +171,26 @@ public class TextMenuHelper {
 
         if (source == miCopy) {
             textEditorImpl.copy();
-        } else if(source == miCut) {
+        } else if (source == miCut) {
             textEditorImpl.cut();
-        } else if(source == miPaste) {
+        } else if (source == miPaste) {
             textEditorImpl.paste();
-        } else if(source == miSelectAll) {
+        } else if (source == miSelectAll) {
             textEditorImpl.selectAll();
-        } else if(source == miFind) {
+        } else if (source == miFind) {
             textEditorImpl.find();
         } else if (source == miReplace) {
             textEditorImpl.replace();
-        } else if(source == miFindNext) {
+        } else if (source == miFindNext) {
             textEditorImpl.findNext();
-        } else if(source == miFindPrevious) {
+        } else if (source == miFindPrevious) {
             textEditorImpl.findPrevious();
-        } else if(source == miToggleLineWrap) {
-            if (e.getWhen() == 0) {  
+        } else if (source == miToggleLineWrap) {
+            if (e.getWhen() == 0) {
                 miToggleLineWrap.setSelected(!miToggleLineWrap.isSelected());
             }
             textViewerDelegate.wrapLines(miToggleLineWrap.isSelected());
-        } else if(source == miToggleLineNumbers) {
+        } else if (source == miToggleLineNumbers) {
             textViewerDelegate.showLineNumbers(miToggleLineNumbers.isSelected());
         } else if (source == miGotoLine) {
             textEditorImpl.gotoLine();
@@ -215,24 +213,11 @@ public class TextMenuHelper {
 
     public void setSyntax(FileType fileType) {
         for (int i = 0; i < menuViewSyntax.getItemCount(); i++) {
-            JCheckBoxMenuItem item = (JCheckBoxMenuItem) menuViewSyntax.getItem(i);
+            JMenuItem item = menuViewSyntax.getItem(i);
             item.setSelected(item.getText().equals(fileType.getName()));
         }
         updateEditActions();
     }
-
-
-    /*
-     * Check if last editor change fired by syntax change event ant will be ignored in document listener
-     * @return true if if last editor change fired by syntax change event ant will be ignored in document listener
-     */
-//    public boolean checkWaitChangeSyntaxEvent() {
-//        boolean result = waitChangeSyntaxEvent;
-//        updateEditActions();
-//        waitChangeSyntaxEvent = false;
-//        return result;
-//    }
-
 
     void updateEditActions() {
         if (!editMode) {
@@ -245,7 +230,7 @@ public class TextMenuHelper {
         miFormat.setVisible(ft == FileType.XML || ft == FileType.JSON);
     }
 
-    void setBuildable(boolean canBuild){
+    void setBuildable(boolean canBuild) {
         miBuild.setEnabled(canBuild);
     }
 
