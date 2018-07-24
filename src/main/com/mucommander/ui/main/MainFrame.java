@@ -330,7 +330,7 @@ public class MainFrame extends JFrame implements LocationListener, IMacOsWindow 
         for (boolean isLeft = true; ; isLeft = false) {
             FileTable fileTable = isLeft ? leftTable : rightTable;
             fileTable.sortBy(Column.valueOf(MuConfigurations.getSnapshot().getVariable(MuSnapshot.getFileTableSortByVariable(0, isLeft), MuSnapshot.DEFAULT_SORT_BY).toUpperCase()),
-                    SortOrder.valueOf(MuConfigurations.getSnapshot().getVariable(MuSnapshot.getFileTableSortOrderVariable(0, isLeft), SortOrder.ASC.name())));
+                    SortOrder.parse(MuConfigurations.getSnapshot().getVariable(MuSnapshot.getFileTableSortOrderVariable(0, isLeft), SortOrder.ASC.name())));
 
             FolderPanel folderPanel = isLeft ? leftFolderPanel : rightFolderPanel;
             folderPanel.setTreeWidth(MuConfigurations.getSnapshot().getVariable(MuSnapshot.getTreeWidthVariable(0, isLeft), 150));
