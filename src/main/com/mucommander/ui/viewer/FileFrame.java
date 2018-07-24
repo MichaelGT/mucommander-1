@@ -1,81 +1,85 @@
 package com.mucommander.ui.viewer;
 
-import java.awt.*;
-import java.awt.event.KeyEvent;
-
-
-import javax.swing.*;
-
 import com.mucommander.cache.WindowsStorage;
-import com.mucommander.ui.macosx.IMacOsWindow;
-import com.mucommander.ui.quicklist.QuickListContainer;
-import org.fife.ui.StatusBar;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.mucommander.commons.file.AbstractFile;
 import com.mucommander.ui.dialog.DialogToolkit;
 import com.mucommander.ui.dialog.InformationDialog;
 import com.mucommander.ui.helper.FocusRequester;
 import com.mucommander.ui.layout.AsyncPanel;
+import com.mucommander.ui.macosx.IMacOsWindow;
 import com.mucommander.ui.main.MainFrame;
+import com.mucommander.ui.quicklist.QuickListContainer;
+import org.fife.ui.StatusBar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.WindowConstants;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Image;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
+import java.awt.Point;
+import java.awt.event.KeyEvent;
 
 /**
  * This class is used as an abstraction for the {@link EditorFrame} and {@link ViewerFrame}.
- * 
+ *
  * @author Arik Hadas
  */
 public abstract class FileFrame extends JFrame implements QuickListContainer, IMacOsWindow {
-	private static final Logger LOGGER = LoggerFactory.getLogger(FileFrame.class);
 
-//	private final static Dimension WAIT_DIALOG_SIZE = new Dimension(400, 350);
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileFrame.class);
 
     /**
      * The file presenter within this frame
      */
-	private FilePresenter filePresenter;
+    private FilePresenter filePresenter;
 
     /**
      * The main frame from which this frame was initiated
      */
-	private MainFrame mainFrame;
-	
+    private MainFrame mainFrame;
+
     private Component returnFocusTo;
 
-
     FileFrame(MainFrame mainFrame, Image icon) {
-		this.mainFrame = mainFrame;
-
-		initLookAndFeel();
-
-		setIconImage(icon);
+        this.mainFrame = mainFrame;
 
         initLookAndFeel();
-		
-		// Call #dispose() on close (default is hide)
+
+        setIconImage(icon);
+
+        initLookAndFeel();
+
+        // Call #dispose() on close (default is hide)
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        
+
         setResizable(true);
 
         //FileViewersList.update();
         //initContentPane(file);
-	}
-	
-	void initContentPane(final AbstractFile file) {
-		try {
-			filePresenter = createFilePresenter(file);
-		} catch (UserCancelledException e) {
+    }
+
+    void initContentPane(final AbstractFile file) {
+        try {
+            filePresenter = createFilePresenter(file);
+        } catch (UserCancelledException e) {
             e.printStackTrace();
-			// May get a UserCancelledException if the user canceled (refused to confirm the operation after a warning)
-			return;
-		}
-		// If not suitable presenter was found for the given file
-		if (filePresenter == null) {
-			showGenericErrorDialog();
-			return;
-		}
-		AsyncPanel asyncPanel = new AsyncPanel() {
+            // May get a UserCancelledException if the user canceled (refused to confirm the operation after a warning)
+            return;
+        }
+        // If not suitable presenter was found for the given file
+        if (filePresenter == null) {
+            showGenericErrorDialog();
+            return;
+        }
+        AsyncPanel asyncPanel = new AsyncPanel() {
             @Override
             public void initTargetComponent() throws Exception {
                 // key dispatcher for Esc detection
@@ -95,7 +99,6 @@ public abstract class FileFrame extends JFrame implements QuickListContainer, IM
                 }
                 KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(keyEventDispatcher);
             }
-
 
             @Override
             public JComponent getTargetComponent(Exception e) {
@@ -124,7 +127,6 @@ public abstract class FileFrame extends JFrame implements QuickListContainer, IM
             }
         };
 
-
         // Add the AsyncPanel to the content pane
         JPanel contentPane = new JPanel(new BorderLayout());
         contentPane.add(asyncPanel, BorderLayout.CENTER);
@@ -148,43 +150,33 @@ public abstract class FileFrame extends JFrame implements QuickListContainer, IM
         FileViewersList.update();
     }
 
-	private void showGenericErrorDialog() {
-		InformationDialog.showErrorDialog(mainFrame, getGenericErrorDialogTitle(), getGenericErrorDialogMessage());
-	}
+    private void showGenericErrorDialog() {
+        InformationDialog.showErrorDialog(mainFrame, getGenericErrorDialogTitle(), getGenericErrorDialogMessage());
+    }
 
-//	/**
-//	 * Sets this file presenter to full screen
-//	 */
-//	public void setFullScreen(boolean on) {
-//		int currentExtendedState = getExtendedState();
-//		setExtendedState(on ? currentExtendedState | Frame.MAXIMIZED_BOTH : currentExtendedState & ~Frame.MAXIMIZED_BOTH);
-//}
+    /**
+     * Returns whether this frame is set to be displayed in full screen mode
+     *
+     * @return true if the frame is set to full screen, false otherwise
+     */
+    private boolean isFullScreen() {
+        return (getExtendedState() & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH;
+    }
 
-	/**
-	 * Returns whether this frame is set to be displayed in full screen mode
-	 * 
-	 * @return true if the frame is set to full screen, false otherwise
-	 */
-	public boolean isFullScreen() {
-		return (getExtendedState() & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH;
-	}
-
-	////////////////////////
+    ////////////////////////
     // Overridden methods //
     ////////////////////////
 
-
-
     @Override
     public void pack() {
-    	if (!isFullScreen()) {
-    		super.pack();
+        if (!isFullScreen()) {
+            super.pack();
 
-    		DialogToolkit.fitToScreen(this);
-    		DialogToolkit.fitToMinDimension(this, getMinimumSize());
+            DialogToolkit.fitToScreen(this);
+            DialogToolkit.fitToMinDimension(this, getMinimumSize());
 
-    		DialogToolkit.centerOnWindow(this, mainFrame);
-    	}
+            DialogToolkit.centerOnWindow(this, mainFrame);
+        }
     }
 
     @Override
@@ -192,18 +184,20 @@ public abstract class FileFrame extends JFrame implements QuickListContainer, IM
         try {
             filePresenter.saveStateOnClose();
             WindowsStorage.getInstance().put(this, filePresenter.getClass().getCanonicalName());
-        } catch (Throwable ignore) {}
+        } catch (Throwable ignore) {
+        }
         super.dispose();
         try {
             if (returnFocusTo != null) {
                 FocusRequester.requestFocus(returnFocusTo);
                 if (returnFocusTo instanceof FileFrame) {
-                    FocusRequester.requestFocus(((FileFrame)returnFocusTo).filePresenter);
+                    FocusRequester.requestFocus(((FileFrame) returnFocusTo).filePresenter);
                     //((FileFrame)returnFocusTo).filePresenter
                 }
             }
             FileViewersList.update();
-        } catch (Throwable ignore) {}
+        } catch (Throwable ignore) {
+        }
     }
 
     public FileFrame returnFocusTo(Component returnFocusTo) {
@@ -211,20 +205,18 @@ public abstract class FileFrame extends JFrame implements QuickListContainer, IM
         return this;
     }
 
-
     public Component getReturnFocusTo() {
         return returnFocusTo;
     }
 
-
     //////////////////////
     // Abstract methods //
     //////////////////////
-    
+
     protected abstract String getGenericErrorDialogTitle();
 
     protected abstract String getGenericErrorDialogMessage();
-    
+
     protected abstract FilePresenter createFilePresenter(AbstractFile file) throws UserCancelledException;
 
     public void setSearchedText(String searchedText) {
@@ -239,7 +231,6 @@ public abstract class FileFrame extends JFrame implements QuickListContainer, IM
         return filePresenter;
     }
 
-
     @Override
     public void setTitle(String title) {
         super.setTitle(title);
@@ -250,16 +241,19 @@ public abstract class FileFrame extends JFrame implements QuickListContainer, IM
         return mainFrame;
     }
 
+    @Override
     public Point calcQuickListPosition(Dimension dim) {
-        int x = Math.max((getWidth() - (int)dim.getWidth()) / 2, 0);
-        int y = Math.max((getHeight() - (int)dim.getHeight()) / 2, 0);
+        int x = Math.max((getWidth() - (int) dim.getWidth()) / 2, 0);
+        int y = Math.max((getHeight() - (int) dim.getHeight()) / 2, 0);
         return new Point(x, y);
     }
 
+    @Override
     public Component containerComponent() {
         return this;
     }
 
+    @Override
     public Component nextFocusableComponent() {
         return this;
     }
