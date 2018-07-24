@@ -100,7 +100,7 @@ class VolumeSpaceLabel extends JLabel implements ThemeListener {
      * @param percent distance between c1 and c2, comprised between 0 and 1.
      * @return an interpolated color value, located at percent between c1 and c2 in the RGB space.
      */
-    private static Color interpolateColor(Color c1, Color c2, float percent) {
+    static Color interpolateColor(Color c1, Color c2, float percent) {
         return new Color(
                 interpolate(c1.getRed(), c2.getRed(), percent),
                 interpolate(c1.getGreen(), c2.getGreen(), percent),
