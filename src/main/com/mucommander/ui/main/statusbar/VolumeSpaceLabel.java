@@ -1,12 +1,18 @@
 package com.mucommander.ui.main.statusbar;
 
 import com.mucommander.ui.border.MutableLineBorder;
-import com.mucommander.ui.theme.*;
+import com.mucommander.ui.theme.ColorChangedEvent;
+import com.mucommander.ui.theme.FontChangedEvent;
+import com.mucommander.ui.theme.Theme;
+import com.mucommander.ui.theme.ThemeListener;
+import com.mucommander.ui.theme.ThemeManager;
 import com.mucommander.utils.text.SizeFormat;
 import com.mucommander.utils.text.Translator;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JLabel;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
 
 /**
  * This label displays the amount of free and/or total space on a volume.
@@ -94,12 +100,16 @@ class VolumeSpaceLabel extends JLabel implements ThemeListener {
      * @param percent distance between c1 and c2, comprised between 0 and 1.
      * @return an interpolated color value, located at percent between c1 and c2 in the RGB space.
      */
-    Color interpolateColor(Color c1, Color c2, float percent) {
+    private static Color interpolateColor(Color c1, Color c2, float percent) {
         return new Color(
-                (int) (c1.getRed() + (c2.getRed() - c1.getRed()) * percent),
-                (int) (c1.getGreen() + (c2.getGreen() - c1.getGreen()) * percent),
-                (int) (c1.getBlue() + (c2.getBlue() - c1.getBlue()) * percent)
+                interpolate(c1.getRed(), c2.getRed(), percent),
+                interpolate(c1.getGreen(), c2.getGreen(), percent),
+                interpolate(c1.getBlue(), c2.getBlue(), percent)
         );
+    }
+
+    private static int interpolate(int v1, int v2, float percent) {
+        return v1 + (int) ((v2 - v1) * percent);
     }
 
     @Override

@@ -36,9 +36,10 @@ import java.awt.MediaTracker;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
 
+
 /**
  * Splash screen that gets displayed on muCommander startup.
- * <p>
+ *
  * <p>The splash screen is made of a logo image on top of which is displayed muCommander version number (in the top right corner)
  * and a loading message (in the lower left corner) which is updated by {@link com.mucommander.TrolCommander} to show startup progress.
  * It is then closed by {@link com.mucommander.TrolCommander} when muCommander is fully started and ready for use.
@@ -87,7 +88,6 @@ public class SplashScreen extends JWindow {
      * Number of pixels between the version information and the top of the splash image
      */
     private static final int VERSION_MARGIN_Y = 3;
-
     /**
      * Logger reference
      */
@@ -119,10 +119,23 @@ public class SplashScreen extends JWindow {
 
         // create a custom font
         this.customFont = new Font(FONT_NAME, FONT_STYLE, FONT_SIZE);
+        ImageIcon imageIcon = loadImageIcon();
 
+        if (visible) {
+            setContentPane(new JLabel(imageIcon));
+
+            setSizeFromImage(imageIcon);
+            DialogToolkit.centerOnScreen(this);
+
+            // Display the splash screen
+            setVisible(true);
+        }
+    }
+
+    private ImageIcon loadImageIcon() {
         // Resolve the URL of the splash logo image within the JAR file and create an ImageIcon
         // Note: DO NOT use IconManager to load the icon as it would trigger ConfigurationManager's initialization
-        // and we don't want that, we want SpashScreen to be displayed as soon as possible
+        // and we don't want that, we want SplashScreen to be displayed as soon as possible
         ImageIcon imageIcon = new ImageIcon(ResourceLoader.getResourceAsURL(SPLASH_IMAGE_PATH));
 
         // Wait for the image to be fully loaded
@@ -133,21 +146,15 @@ public class SplashScreen extends JWindow {
         } catch (InterruptedException e) {
             getLogger().error(e.getMessage(), e);
         }
+        return imageIcon;
+    }
 
-        if (visible) {
-            setContentPane(new JLabel(imageIcon));
-
-            // Set size manually instead of using pack(), because of a bug under 1.3.1/Win32 which
-            // eats a 1-pixel row of the image
-            int width = imageIcon.getIconWidth();
-            int height = imageIcon.getIconHeight();
-            setSize(width, height);
-
-            DialogToolkit.centerOnScreen(this);
-
-            // Display the splash screen
-            setVisible(true);
-        }
+    private void setSizeFromImage(ImageIcon imageIcon) {
+        // Set size manually instead of using pack(), because of a bug under 1.3.1/Win32 which
+        // eats a 1-pixel row of the image
+        int width = imageIcon.getIconWidth();
+        int height = imageIcon.getIconHeight();
+        setSize(width, height);
     }
 
     /**
