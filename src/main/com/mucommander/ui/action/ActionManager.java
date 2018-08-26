@@ -202,6 +202,7 @@ public class ActionManager {
         registerAction(new ShowRootFoldersQLAction.Descriptor());
         registerAction(new ShowRecentViewedFilesQLAction.Descriptor());
         registerAction(new ShowRecentEditedFilesQLAction.Descriptor());
+        registerAction(new ShowEditorBookmarksQLAction.Descriptor());
         registerAction(new ShowServerConnectionsAction.Descriptor());
         registerAction(new ShowTabsQLAction.Descriptor());
         registerAction(new SortByDateAction.Descriptor());
@@ -220,7 +221,7 @@ public class ActionManager {
         registerAction(new SwapFoldersAction.Descriptor());
         registerAction(new SwitchActiveTableAction.Descriptor());
         registerAction(new ToggleAutoSizeAction.Descriptor());
-//      registerAction(new ToggleColumnAction.Descriptor());
+//    	registerAction(new ToggleColumnAction.Descriptor());
         registerAction(new ToggleCommandBarAction.Descriptor());
         registerAction(new ToggleDateColumnAction.Descriptor());
         registerAction(new ToggleExtensionColumnAction.Descriptor());
@@ -237,6 +238,7 @@ public class ActionManager {
         registerAction(new ToggleTreeAction.Descriptor());
         registerAction(new UnmarkAllAction.Descriptor());
         registerAction(new UnmarkGroupAction.Descriptor());
+        registerAction(new MarkEmptyFilesAction.Descriptor());
         registerAction(new UnpackAction.Descriptor());
         registerAction(new ViewAction.Descriptor());
         registerAction(new ViewAsAction.Descriptor());

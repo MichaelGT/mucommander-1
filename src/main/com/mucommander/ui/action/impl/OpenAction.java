@@ -21,9 +21,7 @@ package com.mucommander.ui.action.impl;
 import com.mucommander.bookmark.Bookmark;
 import com.mucommander.bookmark.BookmarkManager;
 import com.mucommander.commons.file.AbstractFile;
-import com.mucommander.commons.file.FileProtocols;
 import com.mucommander.commons.file.FileURL;
-import com.mucommander.commons.file.impl.local.LocalFile;
 import com.mucommander.conf.MuConfigurations;
 import com.mucommander.conf.MuPreference;
 import com.mucommander.conf.MuPreferences;
@@ -104,7 +102,7 @@ public class OpenAction extends MuAction {
             openBrowsable(resolvedFile, destination);
         }
         // Opens local files using their native associations.
-        else if (isLocalFile(resolvedFile)) {
+        else if (resolvedFile.isLocalFile()) {
             try {
                 DesktopManager.open(resolvedFile);
                 RecentExecutedFilesQL.addFile(resolvedFile);
@@ -160,11 +158,6 @@ public class OpenAction extends MuAction {
         }
     }
 
-    private static boolean isLocalFile(AbstractFile file) {
-        return file.getURL().getScheme().equals(FileProtocols.FILE) && file.hasAncestor(LocalFile.class);
-    }
-
-
     private static boolean cdFollowsSymlinks() {
         return MuConfigurations.getPreferences().getVariable(MuPreference.CD_FOLLOWS_SYMLINKS, MuPreferences.DEFAULT_CD_FOLLOWS_SYMLINKS);
     }
@@ -198,7 +191,6 @@ public class OpenAction extends MuAction {
     public ActionDescriptor getDescriptor() {
         return new Descriptor();
     }
-
 
     public static final class Descriptor extends AbstractActionDescriptor {
 

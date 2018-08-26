@@ -38,6 +38,7 @@ import com.mucommander.ui.dnd.FileDropTargetListener;
 import com.mucommander.ui.event.LocationManager;
 import com.mucommander.ui.event.TableSelectionListener;
 import com.mucommander.ui.main.quicklist.BookmarksQL;
+import com.mucommander.ui.main.quicklist.EditorBookmarksQL;
 import com.mucommander.ui.main.quicklist.ParentFoldersQL;
 import com.mucommander.ui.main.quicklist.RecentEditedQL;
 import com.mucommander.ui.main.quicklist.RecentExecutedFilesQL;
@@ -464,7 +465,8 @@ public class FolderPanel extends JPanel implements FocusListener, QuickListConta
                     new RootFoldersQL(this),
                     new TabsQL(this),
                     new RecentViewedQL(this),
-                    new RecentEditedQL(this)
+                    new RecentEditedQL(this),
+                    new EditorBookmarksQL(this)
             };
         }
         fileTablePopups[index].show();

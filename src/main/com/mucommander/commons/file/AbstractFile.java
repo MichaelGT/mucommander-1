@@ -23,6 +23,7 @@ import com.mucommander.commons.file.compat.CompatURLStreamHandler;
 import com.mucommander.commons.file.filter.FileFilter;
 import com.mucommander.commons.file.filter.FilenameFilter;
 import com.mucommander.commons.file.impl.ProxyFile;
+import com.mucommander.commons.file.impl.local.LocalFile;
 import com.mucommander.commons.io.BufferPool;
 import com.mucommander.commons.io.ChecksumInputStream;
 import com.mucommander.commons.io.FileTransferException;
@@ -2019,17 +2020,16 @@ public abstract class AbstractFile implements FileAttributes, PermissionTypes, P
         }
     }
 
+    public boolean isLocalFile() {
+        return FileProtocols.FILE.equals(fileURL.getScheme()) && hasAncestor(LocalFile.class);
+    }
+
     /**
      *
      */
     private class MuPushbackInputStream extends PushbackInputStream implements HasProgress {
 
         private final InputStream src;
-
-//        public MuPushbackInputStream(InputStream in) {
-//            super(in);
-//            src = in;
-//        }
 
         MuPushbackInputStream(InputStream in, int size) {
             super(in, size);

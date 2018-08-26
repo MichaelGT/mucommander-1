@@ -24,59 +24,41 @@ import com.mucommander.ui.action.MuAction;
 import com.mucommander.ui.main.MainFrame;
 import com.mucommander.ui.main.QuickLists;
 
-import javax.swing.KeyStroke;
+import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.util.Map;
 
-/**
- * This action shows RecentViewedFilesQL on the current active FileTable.
- *
- * @author Oleg Trifonov
- */
-public class ShowRecentViewedFilesQLAction extends ShowQuickListAction {
-    ShowRecentViewedFilesQLAction(MainFrame mainFrame, Map<String, Object> properties) {
+public class ShowEditorBookmarksQLAction extends ShowQuickListAction {
+
+    ShowEditorBookmarksQLAction(MainFrame mainFrame, Map<String, Object> properties) {
         super(mainFrame, properties);
     }
 
     @Override
     public void performAction() {
-        openQuickList(QuickLists.RECENT_VIEWED_FILES);
+        openQuickList(QuickLists.EDITOR_BOOKMARKS);
     }
 
     @Override
     public ActionDescriptor getDescriptor() {
-        return new Descriptor();
+        return new ShowRecentEditedFilesQLAction.Descriptor();
     }
 
+
     public static final class Descriptor extends AbstractActionDescriptor {
+        public static final String ACTION_ID = "ShowEditorBookmarksQL";
 
-        public static final String ACTION_ID = "ShowRecentViewedFilesQL";
+        public String getId() { return ACTION_ID; }
 
-        @Override
-        public String getId() {
-            return ACTION_ID;
+        public ActionCategory getCategory() { return ActionCategory.NAVIGATION; }
+
+        public KeyStroke getDefaultAltKeyStroke() { return null; }
+
+        public KeyStroke getDefaultKeyStroke() { return KeyStroke.getKeyStroke(KeyEvent.VK_9, KeyEvent.ALT_DOWN_MASK); }
+
+        public MuAction createAction(MainFrame mainFrame, Map<String,Object> properties) {
+            return new ShowEditorBookmarksQLAction(mainFrame, properties);
         }
-
-        @Override
-        public ActionCategory getCategory() {
-            return ActionCategory.NAVIGATION;
-        }
-
-        @Override
-        public KeyStroke getDefaultAltKeyStroke() {
-            return null;
-        }
-
-        @Override
-        public KeyStroke getDefaultKeyStroke() {
-            return KeyStroke.getKeyStroke(KeyEvent.VK_7, KeyEvent.ALT_DOWN_MASK);
-        }
-
-        @Override
-        public MuAction createAction(MainFrame mainFrame, Map<String, Object> properties) {
-            return new ShowRecentViewedFilesQLAction(mainFrame, properties);
-        }
-
     }
 
 }
