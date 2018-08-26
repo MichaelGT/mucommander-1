@@ -10,6 +10,7 @@ import com.mucommander.ui.macosx.IMacOsWindow;
 import com.mucommander.ui.main.MainFrame;
 import com.mucommander.ui.quicklist.QuickListContainer;
 import org.fife.ui.StatusBar;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +58,6 @@ public abstract class FileFrame extends JFrame implements QuickListContainer, IM
 
         initLookAndFeel();
 
-        // Call #dispose() on close (default is hide)
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
         setResizable(true);
@@ -79,7 +79,34 @@ public abstract class FileFrame extends JFrame implements QuickListContainer, IM
             showGenericErrorDialog();
             return;
         }
-        AsyncPanel asyncPanel = new AsyncPanel() {
+        AsyncPanel asyncPanel = createAsyncPanel(file);
+
+        // Add the AsyncPanel to the content pane
+        JPanel contentPane = new JPanel(new BorderLayout());
+        contentPane.add(asyncPanel, BorderLayout.CENTER);
+
+        // Add status bar if exists
+        StatusBar statusBar = filePresenter.getStatusBar();
+        if (statusBar != null) {
+            contentPane.add(statusBar, BorderLayout.SOUTH);
+        }
+
+        setContentPane(contentPane);
+        //setSize(WAIT_DIALOG_SIZE);
+        //setFullScreenSize();
+        //setFullScreen(true);
+        if (!WindowsStorage.getInstance().init(this, filePresenter.getClass().getCanonicalName(), true)) {
+            setSize(800, 600);
+            DialogToolkit.centerOnWindow(this, mainFrame);
+        }
+
+        setVisible(true);
+        FileViewersList.update();
+    }
+
+    @NotNull
+    private AsyncPanel createAsyncPanel(AbstractFile file) {
+        return new AsyncPanel() {
             @Override
             public void initTargetComponent() throws Exception {
                 // key dispatcher for Esc detection
@@ -126,28 +153,6 @@ public abstract class FileFrame extends JFrame implements QuickListContainer, IM
                 filePresenter.restoreStateOnStartup();
             }
         };
-
-        // Add the AsyncPanel to the content pane
-        JPanel contentPane = new JPanel(new BorderLayout());
-        contentPane.add(asyncPanel, BorderLayout.CENTER);
-
-        // Add status bar if exists
-        StatusBar statusBar = filePresenter.getStatusBar();
-        if (statusBar != null) {
-            contentPane.add(statusBar, BorderLayout.SOUTH);
-        }
-
-        setContentPane(contentPane);
-        //setSize(WAIT_DIALOG_SIZE);
-        //setFullScreenSize();
-        //setFullScreen(true);
-        if (!WindowsStorage.getInstance().init(this, filePresenter.getClass().getCanonicalName(), true)) {
-            setSize(800, 600);
-            DialogToolkit.centerOnWindow(this, mainFrame);
-        }
-
-        setVisible(true);
-        FileViewersList.update();
     }
 
     private void showGenericErrorDialog() {
@@ -160,7 +165,7 @@ public abstract class FileFrame extends JFrame implements QuickListContainer, IM
      * @return true if the frame is set to full screen, false otherwise
      */
     private boolean isFullScreen() {
-        return (getExtendedState() & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH;
+        return (getExtendedState() & Frame.MAXIMIZED_BOTH) != 0;
     }
 
     ////////////////////////
@@ -171,10 +176,8 @@ public abstract class FileFrame extends JFrame implements QuickListContainer, IM
     public void pack() {
         if (!isFullScreen()) {
             super.pack();
-
             DialogToolkit.fitToScreen(this);
             DialogToolkit.fitToMinDimension(this, getMinimumSize());
-
             DialogToolkit.centerOnWindow(this, mainFrame);
         }
     }

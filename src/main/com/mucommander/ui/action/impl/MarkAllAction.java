@@ -80,7 +80,6 @@ public class MarkAllAction extends MuAction {
         return new Descriptor();
     }
 
-
     public static final class Descriptor extends AbstractActionDescriptor {
 
         public static final String ACTION_ID = "MarkAll";

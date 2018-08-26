@@ -211,6 +211,7 @@ public class MainMenuBar extends JMenuBar implements ActionListener, MenuListene
         MenuToolkit.addMenuItem(markMenu, ActionManager.getActionInstance(MarkAllAction.Descriptor.ACTION_ID, mainFrame), menuItemMnemonicHelper);
         MenuToolkit.addMenuItem(markMenu, ActionManager.getActionInstance(UnmarkAllAction.Descriptor.ACTION_ID, mainFrame), menuItemMnemonicHelper);
         MenuToolkit.addMenuItem(markMenu, ActionManager.getActionInstance(MarkExtensionAction.Descriptor.ACTION_ID, mainFrame), menuItemMnemonicHelper);
+        MenuToolkit.addMenuItem(markMenu, ActionManager.getActionInstance(MarkEmptyFilesAction.Descriptor.ACTION_ID, mainFrame), menuItemMnemonicHelper);
         MenuToolkit.addMenuItem(markMenu, ActionManager.getActionInstance(InvertMarkAction.Descriptor.ACTION_ID, mainFrame), menuItemMnemonicHelper);
 
         markMenu.add(new TMenuSeparator());
@@ -319,6 +320,7 @@ public class MainMenuBar extends JMenuBar implements ActionListener, MenuListene
         MenuToolkit.addMenuItem(quickListMenu, ActionManager.getActionInstance(ShowTabsQLAction.Descriptor.ACTION_ID, mainFrame), menuItemMnemonicHelper2);
         MenuToolkit.addMenuItem(quickListMenu, ActionManager.getActionInstance(ShowRecentViewedFilesQLAction.Descriptor.ACTION_ID, mainFrame), menuItemMnemonicHelper2);
         MenuToolkit.addMenuItem(quickListMenu, ActionManager.getActionInstance(ShowRecentEditedFilesQLAction.Descriptor.ACTION_ID, mainFrame), menuItemMnemonicHelper2);
+        MenuToolkit.addMenuItem(quickListMenu, ActionManager.getActionInstance(ShowEditorBookmarksQLAction.Descriptor.ACTION_ID, mainFrame), menuItemMnemonicHelper2);
         goMenu.add(quickListMenu);
 
         // Add Bonjour services menu

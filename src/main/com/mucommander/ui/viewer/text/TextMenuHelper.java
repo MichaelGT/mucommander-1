@@ -22,8 +22,9 @@ import com.mucommander.ui.helper.MenuToolkit;
 import com.mucommander.ui.helper.MnemonicHelper;
 import com.mucommander.utils.text.Translator;
 import ru.trolsoft.calculator.CalculatorDialog;
+import ru.trolsoft.ui.TRadioButtonMenuItem;
 
-import javax.swing.JCheckBoxMenuItem;
+import javax.swing.ButtonGroup;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
@@ -117,18 +118,26 @@ public class TextMenuHelper {
         miToggleLineNumbers.setSelected(lineNumbers);
 
         menuView.addSeparator();
-
         menuViewSyntax = new JMenu(Translator.get("text_editor.syntax"));
 
-        menuView.add(menuViewSyntax);
-        for (FileType fileType : FileType.values()) {
-            MenuToolkit.addRadioButtonMenuItem(menuViewSyntax, fileType.getName(), menuItemMnemonicHelper, null, actionListener);
-        }
+        addSyntaxMenu(actionListener, menuItemMnemonicHelper);
 
         // Tools menu
+        addToolsMenu(actionListener, menuItemMnemonicHelper);
+    }
+
+    private void addToolsMenu(ActionListener actionListener, MnemonicHelper menuItemMnemonicHelper) {
         menuTools = new JMenu(Translator.get("text_editor.tools"));
         miCalculator = MenuToolkit.addMenuItem(menuTools, Translator.get("Calculator.label"), menuItemMnemonicHelper, KeyStroke.getKeyStroke(KeyEvent.VK_F6, 0), actionListener);
         miBuild = MenuToolkit.addMenuItem(menuTools, Translator.get("text_editor.build"), menuItemMnemonicHelper, KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.META_DOWN_MASK), actionListener);
+    }
+
+    private void addSyntaxMenu(ActionListener actionListener, MnemonicHelper menuItemMnemonicHelper) {
+        menuView.add(menuViewSyntax);
+        ButtonGroup group = new ButtonGroup();
+        for (FileType fileType : FileType.values()) {
+            group.add(MenuToolkit.addRadioButtonMenuItem(menuViewSyntax, fileType.getName(), menuItemMnemonicHelper, null, actionListener));
+        }
     }
 
     private int getCtrlOrMetaMask() {
@@ -156,17 +165,8 @@ public class TextMenuHelper {
         if (source == null) {
             return false;
         }
-        // check style picker
-        if (source instanceof JCheckBoxMenuItem) {
-            for (int i = 0; i < menuViewSyntax.getItemCount(); i++) {
-                JMenuItem item = menuViewSyntax.getItem(i);
-                if (source == item) {
-                    FileType fileType = FileType.getByName(item.getText());
-                    textEditorImpl.setSyntaxType(fileType);
-                    setSyntax(fileType);
-                    return true;
-                }
-            }
+        if (checkSyntaxChangeAction(source)) {
+            return true;
         }
 
         if (source == miCopy) {
@@ -209,6 +209,21 @@ public class TextMenuHelper {
         }
         updateEditActions();
         return true;
+    }
+
+    private boolean checkSyntaxChangeAction(Object source) {
+        if (source instanceof TRadioButtonMenuItem) {
+            for (int i = 0; i < menuViewSyntax.getItemCount(); i++) {
+                JMenuItem item = menuViewSyntax.getItem(i);
+                if (source == item) {
+                    FileType fileType = FileType.getByName(item.getText());
+                    textEditorImpl.setSyntaxType(fileType);
+                    setSyntax(fileType);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public void setSyntax(FileType fileType) {
