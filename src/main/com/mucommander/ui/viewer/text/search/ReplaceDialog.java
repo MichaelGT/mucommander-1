@@ -17,14 +17,25 @@
  */
 package com.mucommander.ui.viewer.text.search;
 
+import com.jidesoft.hints.ListDataIntelliHints;
+import com.mucommander.cache.TextHistory;
 import org.fife.ui.rtextarea.SearchContext;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SpringLayout;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Frame;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
+import java.util.List;
 
 /**
  * @author Oleg Trifonov
@@ -35,13 +46,10 @@ public class ReplaceDialog extends AbstractSearchDialog {
     private JButton btnReplace;
     private JButton btnReplaceAll;
     private JTextField edtReplace;
-
-
     /**
      * Our search listener, cached so we can grab its selected text easily.
      */
     private SearchListener searchListener;
-
 
     public ReplaceDialog(Frame owner, SearchListener listener) {
         super(owner, i18n("text_editor.replace"), null);
@@ -61,6 +69,8 @@ public class ReplaceDialog extends AbstractSearchDialog {
         // Create the "Replace with" text field.
         edtReplace = new JTextField(20);
         edtReplace.getDocument().addDocumentListener(replaceDocumentListener);
+        List<String> history = TextHistory.getInstance().getList(TextHistory.Type.TEXT_SEARCH);
+        new ListDataIntelliHints<>(edtReplace, history).setCaseSensitive(true);
 
         // Create the "Replace with" label.
         JLabel lblReplace = new JLabel(i18n("text_editor.replace_with") + ":");
@@ -77,9 +87,9 @@ public class ReplaceDialog extends AbstractSearchDialog {
         searchPanel.add(lblReplace);
         searchPanel.add(temp2);
 
-        makeSpringCompactGrid(searchPanel, 2, 2,	//rows, cols
-                5, 0,		//initX, initY
-                6, 6);	//xPad, yPad
+        makeSpringCompactGrid(searchPanel, 2, 2,    //rows, cols
+                5, 0,        //initX, initY
+                6, 6);    //xPad, yPad
 
         // Make a panel containing the inherited search direction radio
         // buttons and the inherited search options.
@@ -127,7 +137,6 @@ public class ReplaceDialog extends AbstractSearchDialog {
         addSearchListener(listener);
     }
 
-
     @Override
     public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();
@@ -143,13 +152,12 @@ public class ReplaceDialog extends AbstractSearchDialog {
         }
     }
 
-
     @Override
     protected void handleSearchContextPropertyChanged(PropertyChangeEvent e) {
         String prop = e.getPropertyName();
 
         if (SearchContext.PROPERTY_REPLACE_WITH.equals(prop)) {
-            String newValue = (String)e.getNewValue();
+            String newValue = (String) e.getNewValue();
             if (newValue == null) {
                 newValue = "";
             }
@@ -163,7 +171,6 @@ public class ReplaceDialog extends AbstractSearchDialog {
         }
 
     }
-
 
     @Override
     protected FindReplaceButtonsEnableResult handleToggleButtons() {
@@ -205,8 +212,5 @@ public class ReplaceDialog extends AbstractSearchDialog {
         public void changedUpdate(DocumentEvent e) {
         }
     }
-
-
-
 
 }

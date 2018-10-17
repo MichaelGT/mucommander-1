@@ -21,33 +21,50 @@ package com.mucommander.ui.viewer.text;
 import com.mucommander.cache.TextHistory;
 import com.mucommander.commons.file.AbstractFile;
 import com.mucommander.commons.runtime.OsFamily;
-import com.mucommander.ui.viewer.text.search.*;
-import com.mucommander.ui.viewer.text.tools.ExecPanel;
-import com.mucommander.ui.viewer.text.tools.ExecUtils;
-import com.mucommander.ui.viewer.text.tools.ProcessParams;
-import com.mucommander.utils.text.Translator;
 import com.mucommander.ui.action.MuAction;
 import com.mucommander.ui.action.impl.EditAction;
 import com.mucommander.ui.action.impl.ViewAction;
 import com.mucommander.ui.main.quicklist.ViewedAndEditedFilesQL;
-import com.mucommander.ui.theme.*;
+import com.mucommander.ui.theme.ColorChangedEvent;
+import com.mucommander.ui.theme.FontChangedEvent;
+import com.mucommander.ui.theme.ThemeId;
+import com.mucommander.ui.theme.ThemeListener;
+import com.mucommander.ui.theme.ThemeManager;
 import com.mucommander.ui.viewer.EditorRegistrar;
 import com.mucommander.ui.viewer.FileFrame;
 import com.mucommander.ui.viewer.ViewerRegistrar;
+import com.mucommander.ui.viewer.text.search.FindDialog;
+import com.mucommander.ui.viewer.text.search.ReplaceDialog;
+import com.mucommander.ui.viewer.text.search.SearchEvent;
+import com.mucommander.ui.viewer.text.search.SearchListener;
+import com.mucommander.ui.viewer.text.tools.ExecPanel;
+import com.mucommander.ui.viewer.text.tools.ExecUtils;
+import com.mucommander.ui.viewer.text.tools.ProcessParams;
+import com.mucommander.utils.text.Translator;
 import org.fife.ui.rtextarea.SearchContext;
 import org.fife.ui.rtextarea.SearchEngine;
 import org.fife.ui.rtextarea.SearchResult;
 
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JComponent;
+import javax.swing.JSplitPane;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultEditorKit;
 import javax.swing.text.Document;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
 
 /**
  * Text editor implementation used by {@link TextViewer} and {@link TextEditor}.
@@ -58,14 +75,16 @@ class TextEditorImpl implements ThemeListener, ThemeId {
 
     private static final Insets INSETS = new Insets(4, 3, 4, 3);
 
-	FileFrame frame;
+    private FileFrame frame;
 
     private TextArea textArea;
 
     private SearchContext searchContext;
 
-	/** Indicates whether there is a line separator in the original file */
-	private boolean lineSeparatorExists;
+    /**
+     * Indicates whether there is a line separator in the original file
+     */
+    private boolean lineSeparatorExists;
 
     private StatusBar statusBar;
 
@@ -86,7 +105,6 @@ class TextEditorImpl implements ThemeListener, ThemeId {
     private ProcessParams buildParams;
 
     boolean replaceDialogMode = false;
-
 
     private KeyListener textAreaKeyListener = new KeyAdapter() {
         @Override
@@ -117,20 +135,19 @@ class TextEditorImpl implements ThemeListener, ThemeId {
     };
     private TextMenuHelper menuHelper;
 
-
     ////////////////////
-	// Initialization //
-	////////////////////
+    // Initialization //
+    ////////////////////
 
-	TextEditorImpl(boolean isEditable, StatusBar statusBar) {
-		// Initialize text area
+    TextEditorImpl(boolean isEditable, StatusBar statusBar) {
+        // Initialize text area
         this.textArea = createTextArea(isEditable);
         this.statusBar = statusBar;
         // Listen to theme changes to update the text area if it is visible
-		ThemeManager.addCurrentThemeListener(this);
-	}
+        ThemeManager.addCurrentThemeListener(this);
+    }
 
-	private TextArea createTextArea(boolean isEditable) {
+    private TextArea createTextArea(boolean isEditable) {
         TextArea textArea = new TextArea() {
             @Override
             public Insets getInsets() {
@@ -139,7 +156,7 @@ class TextEditorImpl implements ThemeListener, ThemeId {
         };
         textArea.setCurrentLineHighlightColor(ThemeManager.getCurrentColor(EDITOR_CURRENT_BACKGROUND_COLOR));
         textArea.setAntiAliasingEnabled(true);
-		textArea.setEditable(isEditable);
+        textArea.setEditable(isEditable);
         textArea.addKeyListener(textAreaKeyListener);
 
         try {
@@ -149,23 +166,23 @@ class TextEditorImpl implements ThemeListener, ThemeId {
         }
         //textArea.setCodeFoldingEnabled(true);
 
-		// Use theme colors and font
-		textArea.setForeground(ThemeManager.getCurrentColor(EDITOR_FOREGROUND_COLOR));
-		textArea.setCaretColor(ThemeManager.getCurrentColor(EDITOR_FOREGROUND_COLOR));
+        // Use theme colors and font
+        textArea.setForeground(ThemeManager.getCurrentColor(EDITOR_FOREGROUND_COLOR));
+        textArea.setCaretColor(ThemeManager.getCurrentColor(EDITOR_FOREGROUND_COLOR));
         Color background = ThemeManager.getCurrentColor(EDITOR_BACKGROUND_COLOR);
         textArea.setBackground(background);
 
         for (int i = 1; i <= textArea.getSecondaryLanguageCount(); i++) {
             textArea.setSecondaryLanguageBackground(i, background);
         }
-		textArea.setSelectedTextColor(ThemeManager.getCurrentColor(EDITOR_SELECTED_FOREGROUND_COLOR));
-		textArea.setSelectionColor(ThemeManager.getCurrentColor(EDITOR_SELECTED_BACKGROUND_COLOR));
-		textArea.setFont(ThemeManager.getCurrentFont(EDITOR_FONT));
+        textArea.setSelectedTextColor(ThemeManager.getCurrentColor(EDITOR_SELECTED_FOREGROUND_COLOR));
+        textArea.setSelectionColor(ThemeManager.getCurrentColor(EDITOR_SELECTED_BACKGROUND_COLOR));
+        textArea.setFont(ThemeManager.getCurrentFont(EDITOR_FONT));
         textArea.setCodeFoldingEnabled(true);
 
-		textArea.setWrapStyleWord(true);
+        textArea.setWrapStyleWord(true);
 
-		textArea.addMouseWheelListener(e -> {
+        textArea.addMouseWheelListener(e -> {
             boolean isCtrlPressed = (e.getModifiers() & KeyEvent.CTRL_MASK) != 0;
             if (isCtrlPressed) {
                 Font currentFont = textArea.getFont();
@@ -178,15 +195,15 @@ class TextEditorImpl implements ThemeListener, ThemeId {
             } else {
                 textArea.getParent().dispatchEvent(e);
             }
-		});
+        });
 
         textArea.addCaretListener(new TextEditorCaretListener(this));
         return textArea;
-	}
+    }
 
-	/////////////////
-	// Search code //
-	/////////////////
+    /////////////////
+    // Search code //
+    /////////////////
 
     void find() {
         SearchListener searchListener = new SearchListener() {
@@ -216,8 +233,7 @@ class TextEditorImpl implements ThemeListener, ThemeId {
         FindDialog dlg = new FindDialog(frame, searchListener);
         dlg.setSearchString(searchContext != null ? searchContext.getSearchFor() : "");
         dlg.showDialog();
-	}
-
+    }
 
     private void findMore(boolean forward) {
         if (searchContext == null) {
@@ -236,7 +252,8 @@ class TextEditorImpl implements ThemeListener, ThemeId {
                 pos += searchContext.getSearchFor().length();
             }
             textArea.setCaretPosition(pos);
-        } catch (IllegalArgumentException ignore) {}
+        } catch (IllegalArgumentException ignore) {
+        }
         SearchResult result = SearchEngine.find(textArea, searchContext);
         if (!result.wasFound()) {
             textArea.setCaretPosition(savedCaretPosition);
@@ -248,7 +265,7 @@ class TextEditorImpl implements ThemeListener, ThemeId {
         }
     }
 
-	void findNext() {
+    void findNext() {
         if (searchContext != null) {
             findMore(true);
             return;
@@ -258,7 +275,7 @@ class TextEditorImpl implements ThemeListener, ThemeId {
             setupSearchContext(FindDialog.getLastSearchStr());
         }
         find();
-	}
+    }
 
     void replace() {
         SearchListener searchListener = new SearchListener() {
@@ -267,8 +284,9 @@ class TextEditorImpl implements ThemeListener, ThemeId {
                 searchContext = e.getSearchContext();
 
                 String searchString = searchContext.getSearchFor();
+                String replaceWith = searchContext.getReplaceWith();
                 TextHistory.getInstance().add(TextHistory.Type.TEXT_SEARCH, searchString, true);
-                //frame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                TextHistory.getInstance().add(TextHistory.Type.TEXT_SEARCH, replaceWith, true);
                 search(e);
             }
 
@@ -315,7 +333,7 @@ class TextEditorImpl implements ThemeListener, ThemeId {
     }
 
 
-	void findPrevious() {
+    void findPrevious() {
         if (searchContext == null) {
             String last = FindDialog.getLastSearchStr();
             if (last != null) {
@@ -325,41 +343,40 @@ class TextEditorImpl implements ThemeListener, ThemeId {
         } else {
             findMore(false);
         }
-	}
+    }
 
     void gotoLine() {
         new GotoLineDialog(frame, textArea.getLineCount(), (line) -> textArea.gotoLine(line)).showDialog();
     }
 
+    public boolean isWrap() {
+        return textArea.getLineWrap();
+    }
 
-	public boolean isWrap() {
-		return textArea.getLineWrap();
-	}
+    ////////////////////////////
+    // Package-access methods //
+    ////////////////////////////
 
-	////////////////////////////
-	// Package-access methods //
-	////////////////////////////
+    void wrap(boolean isWrap) {
+        textArea.setLineWrap(isWrap);
+        textArea.repaint();
+    }
 
-	void wrap(boolean isWrap) {
-		textArea.setLineWrap(isWrap);
-		textArea.repaint();
-	}
+    void copy() {
+        textArea.copy();
+    }
 
-	void copy() {
-		textArea.copy();
-	}
+    void cut() {
+        textArea.cut();
+    }
 
-	void cut() {
-		textArea.cut();
-	}
+    void paste() {
+        textArea.paste();
+    }
 
-	void paste() {
-		textArea.paste();
-	}
-
-	void selectAll() {
-		textArea.selectAll();
-	}
+    void selectAll() {
+        textArea.selectAll();
+    }
 
     void undo() {
         textArea.undoLastAction();
@@ -369,13 +386,13 @@ class TextEditorImpl implements ThemeListener, ThemeId {
         textArea.redoLastAction();
     }
 
-	void requestFocus() {
-		textArea.requestFocus();
-	}
+    void requestFocus() {
+        textArea.requestFocus();
+    }
 
     TextArea getTextArea() {
-		return textArea;
-	}
+        return textArea;
+    }
 
     JComponent getEditorComponent() {
 //        if (splitPane == null) {
@@ -386,46 +403,47 @@ class TextEditorImpl implements ThemeListener, ThemeId {
         return textArea;
     }
 
-	void addDocumentListener(DocumentListener documentListener) {
-		textArea.getDocument().addDocumentListener(documentListener);
-	}
+    void addDocumentListener(DocumentListener documentListener) {
+        textArea.getDocument().addDocumentListener(documentListener);
+    }
 
-	void read(Reader reader) throws IOException {
-		// Feed the file's contents to text area
-		textArea.read(reader, null);
+    void read(Reader reader) throws IOException {
+        // Feed the file's contents to text area
+        textArea.read(reader, null);
 
-		// If there are more than one lines, there is a line separator
-		lineSeparatorExists = textArea.getLineCount() > 1;
+        // If there are more than one lines, there is a line separator
+        lineSeparatorExists = textArea.getLineCount() > 1;
 
-		// Move cursor to the top
+        // Move cursor to the top
 //		textArea.setCaretPosition(0);
 
-	}
+    }
 
-	void write(Writer writer) throws IOException {
-		Document document = textArea.getDocument();
+    void write(Writer writer) throws IOException {
+        Document document = textArea.getDocument();
 
-		// According to the documentation in DefaultEditorKit, the line separator is set to be as the system property
-		// if no other line separator exists in the file, but in practice it is not, so this is a workaround for it
-		if (!lineSeparatorExists)
-			document.putProperty(DefaultEditorKit.EndOfLineStringProperty, System.getProperty("line.separator"));
+        // According to the documentation in DefaultEditorKit, the line separator is set to be as the system property
+        // if no other line separator exists in the file, but in practice it is not, so this is a workaround for it
+        if (!lineSeparatorExists)
+            document.putProperty(DefaultEditorKit.EndOfLineStringProperty, System.getProperty("line.separator"));
 
-		try {
-			textArea.getUI().getEditorKit(textArea).write(new BufferedWriter(writer), document, 0, document.getLength());
-		} catch(BadLocationException e) {
-			throw new IOException(e.getMessage());
-		}
-	}
+        try {
+            textArea.getUI().getEditorKit(textArea).write(new BufferedWriter(writer), document, 0, document.getLength());
+        } catch (BadLocationException e) {
+            throw new IOException(e.getMessage());
+        }
+    }
 
-	//////////////////////////////////
-	// ThemeListener implementation //
-	//////////////////////////////////
+    //////////////////////////////////
+    // ThemeListener implementation //
+    //////////////////////////////////
 
-	/**
-	 * Receives theme color changes notifications.
-	 */
-	public void colorChanged(ColorChangedEvent event) {
-		switch (event.getColorId()) {
+    /**
+     * Receives theme color changes notifications.
+     */
+    @Override
+    public void colorChanged(ColorChangedEvent event) {
+        switch (event.getColorId()) {
             case EDITOR_FOREGROUND_COLOR:
                 textArea.setForeground(event.getColor());
                 break;
@@ -445,23 +463,22 @@ class TextEditorImpl implements ThemeListener, ThemeId {
             case EDITOR_CURRENT_BACKGROUND_COLOR:
                 textArea.setCurrentLineHighlightColor(event.getColor());
                 break;
-		}
-	}
+        }
+    }
 
-	/**
-	 * Receives theme font changes notifications.
-	 */
-	public void fontChanged(FontChangedEvent event) {
-		if (event.getFontId() == EDITOR_FONT) {
+    /**
+     * Receives theme font changes notifications.
+     */
+    @Override
+    public void fontChanged(FontChangedEvent event) {
+        if (event.getFontId() == EDITOR_FONT) {
             textArea.setFont(event.getFont());
         }
-	}
-
-
+    }
 
     void build() {
-	    if (buildParams == null) {
-	        return;
+        if (buildParams == null) {
+            return;
         }
         showBuildPanel();
 
@@ -475,7 +492,7 @@ class TextEditorImpl implements ThemeListener, ThemeId {
         if (splitPane == null) {
             splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
             splitPane.add(frame.getFilePresenter());
-            splitPane.setDividerLocation(frame.getHeight()*2/3);
+            splitPane.setDividerLocation(frame.getHeight() * 2 / 3);
             splitPane.setOneTouchExpandable(true);
             splitPane.setContinuousLayout(true);
             pnlBuild = new ExecPanel(this::closeBuildPanel);
@@ -498,15 +515,15 @@ class TextEditorImpl implements ThemeListener, ThemeId {
     }
 
     private void closeBuildPanel() {
-	    if (splitPane == null || pnlBuild == null) {
-	        return;
+        if (splitPane == null || pnlBuild == null) {
+            return;
         }
         if (splitPane.getDividerSize() > 0) {
-	        storedSplitDividerSize = splitPane.getDividerSize();
+            storedSplitDividerSize = splitPane.getDividerSize();
             storedSplitterPos = splitPane.getDividerLocation();
         }
-	    if (pnlBuild != null) {
-	        pnlBuild.setVisible(false);
+        if (pnlBuild != null) {
+            pnlBuild.setVisible(false);
         }
         splitPane.setDividerSize(0);
     }
@@ -541,7 +558,6 @@ class TextEditorImpl implements ThemeListener, ThemeId {
         new Thread(() -> Toolkit.getDefaultToolkit().beep()).start();
     }
 
-
     void setupSearchContext(String searchStr) {
         searchContext = new SearchContext(searchStr);
     }
@@ -558,14 +574,17 @@ class TextEditorImpl implements ThemeListener, ThemeId {
         this.frame = frame;
     }
 
+    public FileFrame getFrame() {
+        return frame;
+    }
+
     void selectIncludeFile(AbstractFile file) {
-	    this.selectedIncludeFile = file;
+        this.selectedIncludeFile = file;
     }
 
     AbstractFile getFile() {
-	    return file;
+        return file;
     }
-
 
     void setMenuHelper(TextMenuHelper menuHelper) {
         this.menuHelper = menuHelper;

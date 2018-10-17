@@ -201,7 +201,7 @@ public class TextMenuHelper {
         } else if (source == miFormat) {
             TextEditorUtils.formatCode(textEditorImpl);
         } else if (source == miCalculator) {
-            new CalculatorDialog(textEditorImpl.frame).showDialog();
+            new CalculatorDialog(textEditorImpl.getFrame()).showDialog();
         } else if (source == miBuild) {
             textEditorImpl.build();
         } else {
