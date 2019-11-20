@@ -26,33 +26,40 @@ import javax.swing.*;
 
 /**
  * Abstract preferences panel.
+ *
  * @author Maxence Bernard
  */
 public abstract class PreferencesPanel extends JPanel {
-    /** Preferences dialog that contains this panel. */
+    /**
+     * Preferences dialog that contains this panel.
+     */
     protected PreferencesDialog parent;
-    /** Panel's title. */
+    /**
+     * Panel's title.
+     */
     protected String title;
 
     /**
      * Creates a new preferences panel.
+     *
      * @param parent dialog that contains this panel.
      * @param title  panel's title.
      */
     public PreferencesPanel(PreferencesDialog parent, String title) {
         super();
-        this.title  = title;
+        this.title = title;
         this.parent = parent;
     }
 
     /**
      * Returns the panel's title.
+     *
      * @return the panel's title.
      */
     public String getTitle() {
         return title;
     }
-	
+
     /**
      * This method is called by PreferencesDialog after the user pressed 'OK'
      * to save new preferences.
@@ -61,6 +68,7 @@ public abstract class PreferencesPanel extends JPanel {
 
     /**
      * Checks whether this panel's data can be committed or whether it contains an error.
+     *
      * @return <code>true</code> if the panel's data can be committed, <code>false</code> otherwise.
      */
     boolean checkCommit() {
@@ -86,4 +94,5 @@ public abstract class PreferencesPanel extends JPanel {
     protected ValueList getListVariable(MuPreference preference, String separator) {
         return MuConfigurations.getPreferences().getListVariable(preference, separator);
     }
+
 }

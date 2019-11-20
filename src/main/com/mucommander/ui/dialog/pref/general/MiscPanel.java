@@ -18,24 +18,13 @@
 
 package com.mucommander.ui.dialog.pref.general;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-
-import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-
 import com.mucommander.bonjour.BonjourDirectory;
+import com.mucommander.commons.runtime.OsFamily;
 import com.mucommander.conf.MuConfigurations;
 import com.mucommander.conf.MuPreference;
 import com.mucommander.conf.MuPreferences;
 import com.mucommander.conf.MuPreferencesAPI;
 import com.mucommander.desktop.DesktopManager;
-import com.mucommander.utils.text.Translator;
 import com.mucommander.ui.action.impl.TerminalAction;
 import com.mucommander.ui.dialog.DialogOwner;
 import com.mucommander.ui.dialog.pref.PreferencesDialog;
@@ -48,6 +37,17 @@ import com.mucommander.ui.dialog.pref.component.PrefTextField;
 import com.mucommander.ui.layout.XAlignedComponentPanel;
 import com.mucommander.ui.layout.YBoxPanel;
 import com.mucommander.ui.notifier.AbstractNotifier;
+import com.mucommander.utils.text.Translator;
+
+import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 /**
  * 'Misc' preferences panel.
@@ -56,43 +56,71 @@ import com.mucommander.ui.notifier.AbstractNotifier;
  */
 class MiscPanel extends PreferencesPanel implements ItemListener {
 
-    /** Custom shell command text field */
+    /**
+     * Custom shell command text field
+     */
     private PrefTextField customShellField;
-	
-    /** 'Use custom shell' radio button */
+
+    /**
+     * 'Use custom shell' radio button
+     */
     private PrefRadioButton useCustomShellRadioButton;
 
-    /** 'Check for updates on startup' checkbox */
+    /**
+     * 'Check for updates on startup' checkbox
+     */
     private PrefCheckBox checkForUpdatesCheckBox;
 
-    /** 'Show confirmation dialog on quit' checkbox */
+    /**
+     * 'Show confirmation dialog on quit' checkbox
+     */
     private PrefCheckBox quitConfirmationCheckBox;
-    
-    /** 'Show splash screen' checkbox */
+
+    /**
+     * 'Show splash screen' checkbox
+     */
     private PrefCheckBox showSplashScreenCheckBox;
 
-    /** 'Enable system notifications' checkbox */
+    /**
+     * 'Enable system notifications' checkbox
+     */
     private PrefCheckBox systemNotificationsCheckBox;
 
-    /** 'Enable Bonjour services discovery' checkbox */
+    /**
+     * 'Enable Bonjour services discovery' checkbox
+     */
     private PrefCheckBox bonjourDiscoveryCheckBox;
 
-    /** Shell encoding auto-detect checkbox */
+    /**
+     * Shell encoding auto-detect checkbox
+     */
     private PrefCheckBox shellEncodingAutoDetectCheckbox;
 
-    /** Shell encoding select box. */
+    /**
+     * Shell encoding select box.
+     */
     private PrefEncodingSelectBox shellEncodingSelectBox;
 
-    /** Custom external terminal command text field */
+    /**
+     * Custom external terminal command text field
+     */
     private PrefTextField customExternalTerminalField;
 
-    /** 'Use custom external terminal' radio button */
+    /**
+     * 'External terminal type radio buttons
+     */
+    private PrefRadioButton useDefaultExternalTerminalRadioButton;
+    private PrefRadioButton useITerm2ExternalTerminalRadioButton;
     private PrefRadioButton useCustomExternalTerminalRadioButton;
 
-    /** Custom builtin terminal command text field */
+    /**
+     * Custom builtin terminal command text field
+     */
     private PrefTextField customTerminalShellField;
 
-    /** 'Use custom builtin terminal shell' radio button */
+    /**
+     * 'Use custom builtin terminal shell' radio button
+     */
     private PrefRadioButton useCustomTerminalShellRadioButton;
 
 
@@ -113,7 +141,7 @@ class MiscPanel extends PreferencesPanel implements ItemListener {
                 return !getVariable(MuPreference.SHELL_ENCODING).equals(getSelectedEncoding());
             }
         };
-        shellEncodingSelectBox.setEnabled(!autoDetect); 
+        shellEncodingSelectBox.setEnabled(!autoDetect);
 
         panel.add(shellEncodingSelectBox);
 
@@ -130,9 +158,9 @@ class MiscPanel extends PreferencesPanel implements ItemListener {
 
         JRadioButton useDefaultShellRadioButton = new JRadioButton(Translator.get("prefs_dialog.default_shell") + ':');
         useCustomShellRadioButton = new PrefRadioButton(Translator.get("prefs_dialog.custom_shell") + ':') {
-			public boolean hasChanged() {
-				return isSelected() != getVariable(MuPreference.USE_CUSTOM_SHELL, MuPreferences.DEFAULT_USE_CUSTOM_SHELL);
-			}
+            public boolean hasChanged() {
+                return isSelected() != getVariable(MuPreference.USE_CUSTOM_SHELL, MuPreferences.DEFAULT_USE_CUSTOM_SHELL);
+            }
         };
 
         // Use system default or custom shell ?
@@ -155,9 +183,9 @@ class MiscPanel extends PreferencesPanel implements ItemListener {
 
         // create a path field with auto-completion capabilities
         customShellField = new PrefFilePathField(getVariable(MuPreference.CUSTOM_SHELL, "")) {
-			public boolean hasChanged() {
-				return isEnabled() && !getText().equals(getVariable(MuPreference.CUSTOM_SHELL));
-			}
+            public boolean hasChanged() {
+                return isEnabled() && !getText().equals(getVariable(MuPreference.CUSTOM_SHELL));
+            }
         };
         customShellField.setEnabled(useCustomShellRadioButton.isSelected());
 
@@ -175,10 +203,22 @@ class MiscPanel extends PreferencesPanel implements ItemListener {
         externalTerminalPanel.setLabelLeftAligned(true);
         externalTerminalPanel.setBorder(BorderFactory.createTitledBorder(Translator.get("prefs_dialog.external_terminal")));
 
-        JRadioButton useDefaultExternalTerminalRadioButton = new JRadioButton(Translator.get("prefs_dialog.default_terminal") + ':');
+        useDefaultExternalTerminalRadioButton = new PrefRadioButton(Translator.get("prefs_dialog.default_terminal") + ':') {
+            public boolean hasChanged() {
+                return isSelected() != (getVariable(MuPreference.EXTERNAL_TERMINAL_TYPE, MuPreferences.DEFAULT_EXTERNAL_TERMINAL_TYPE.getType()) == MuPreferences.TerminalType.DEFAULT.getType());
+            }
+        };
+        useITerm2ExternalTerminalRadioButton = new PrefRadioButton(Translator.get("prefs_dialog.iterm2_terminal")) {
+            public boolean hasChanged() {
+                return isSelected() != (getVariable(MuPreference.EXTERNAL_TERMINAL_TYPE, MuPreferences.DEFAULT_EXTERNAL_TERMINAL_TYPE.getType()) == MuPreferences.TerminalType.ITERM2.getType());
+            }
+        };
+        if (!OsFamily.MAC_OS_X.isCurrent()) {
+            useITerm2ExternalTerminalRadioButton.setEnabled(false);
+        }
         useCustomExternalTerminalRadioButton = new PrefRadioButton(Translator.get("prefs_dialog.custom_terminal") + ':') {
             public boolean hasChanged() {
-                return isSelected() != getVariable(MuPreference.USE_CUSTOM_EXTERNAL_TERMINAL, MuPreferences.DEFAULT_USE_CUSTOM_EXTERNAL_TERMINAL);
+                return isSelected() != (getVariable(MuPreference.EXTERNAL_TERMINAL_TYPE, MuPreferences.DEFAULT_EXTERNAL_TERMINAL_TYPE.getType()) == MuPreferences.TerminalType.CUSTOM.getType());
             }
         };
 
@@ -190,22 +230,34 @@ class MiscPanel extends PreferencesPanel implements ItemListener {
         };
 
         externalTerminalPanel.addRow(useDefaultExternalTerminalRadioButton, new JLabel(TerminalAction.getDefaultTerminalCommand()), 5);
+        externalTerminalPanel.addRow(useITerm2ExternalTerminalRadioButton, 5);
         externalTerminalPanel.addRow(useCustomExternalTerminalRadioButton, customExternalTerminalField, 10);
 
         northPanel.add(externalTerminalPanel, 5);
         northPanel.addSpace(10);
 
-        // Use system default or custom external terminal ?
-        if (getVariable(MuPreference.USE_CUSTOM_EXTERNAL_TERMINAL, MuPreferences.DEFAULT_USE_CUSTOM_EXTERNAL_TERMINAL))
-            useCustomExternalTerminalRadioButton.setSelected(true);
-        else
-            useDefaultExternalTerminalRadioButton.setSelected(true);
+        MuPreferences.TerminalType terminalType = MuPreferences.TerminalType.valueOf((int) getVariable(MuPreference.EXTERNAL_TERMINAL_TYPE, MuPreferences.DEFAULT_EXTERNAL_TERMINAL_TYPE.getType()));
+        switch (terminalType) {
+            case DEFAULT:
+                useDefaultExternalTerminalRadioButton.setSelected(true);
+                break;
+            case ITERM2:
+                useITerm2ExternalTerminalRadioButton.setSelected(true);
+                break;
+            case CUSTOM:
+                useCustomExternalTerminalRadioButton.setSelected(true);
+                break;
+        }
+
         customExternalTerminalField.setEnabled(useCustomExternalTerminalRadioButton.isSelected());
 
+        useDefaultExternalTerminalRadioButton.addItemListener(this);
+        useITerm2ExternalTerminalRadioButton.addItemListener(this);
         useCustomExternalTerminalRadioButton.addItemListener(this);
 
         buttonGroup = new ButtonGroup();
         buttonGroup.add(useDefaultExternalTerminalRadioButton);
+        buttonGroup.add(useITerm2ExternalTerminalRadioButton);
         buttonGroup.add(useCustomExternalTerminalRadioButton);
 
 
@@ -268,10 +320,10 @@ class MiscPanel extends PreferencesPanel implements ItemListener {
 
         // 'Enable system notifications' option, displayed only if current platform supports system notifications
         if (AbstractNotifier.isAvailable()) {
-            systemNotificationsCheckBox = new PrefCheckBox(Translator.get("prefs_dialog.enable_system_notifications")+" ("+AbstractNotifier.getNotifier().getPrettyName()+")",
+            systemNotificationsCheckBox = new PrefCheckBox(Translator.get("prefs_dialog.enable_system_notifications") + " (" + AbstractNotifier.getNotifier().getPrettyName() + ")",
                     checkBox -> checkBox.isSelected() != getVariable(MuPreference.ENABLE_SYSTEM_NOTIFICATIONS, MuPreferences.DEFAULT_ENABLE_SYSTEM_NOTIFICATIONS));
             systemNotificationsCheckBox.setSelected(getVariable(MuPreference.ENABLE_SYSTEM_NOTIFICATIONS,
-                                                                                     MuPreferences.DEFAULT_ENABLE_SYSTEM_NOTIFICATIONS));
+                    MuPreferences.DEFAULT_ENABLE_SYSTEM_NOTIFICATIONS));
             northPanel.add(systemNotificationsCheckBox);
         }
 
@@ -283,15 +335,17 @@ class MiscPanel extends PreferencesPanel implements ItemListener {
         northPanel.add(bonjourDiscoveryCheckBox);
 
         add(northPanel, BorderLayout.NORTH);
-        
+
         customShellField.addDialogListener(parent);
-    	useCustomShellRadioButton.addDialogListener(parent);
+        useCustomShellRadioButton.addDialogListener(parent);
+        useDefaultExternalTerminalRadioButton.addDialogListener(parent);
+        useITerm2ExternalTerminalRadioButton.addDialogListener(parent);
         useCustomExternalTerminalRadioButton.addDialogListener(parent);
         customExternalTerminalField.addDialogListener(parent);
         useCustomTerminalShellRadioButton.addDialogListener(parent);
         customTerminalShellField.addDialogListener(parent);
-    	checkForUpdatesCheckBox.addDialogListener(parent);
-    	quitConfirmationCheckBox.addDialogListener(parent);
+        checkForUpdatesCheckBox.addDialogListener(parent);
+        quitConfirmationCheckBox.addDialogListener(parent);
         showSplashScreenCheckBox.addDialogListener(parent);
         bonjourDiscoveryCheckBox.addDialogListener(parent);
         shellEncodingAutoDetectCheckbox.addDialogListener(parent);
@@ -312,13 +366,12 @@ class MiscPanel extends PreferencesPanel implements ItemListener {
             customShellField.setEnabled(useCustomShellRadioButton.isSelected());
         } else if (source == shellEncodingAutoDetectCheckbox) {
             shellEncodingSelectBox.setEnabled(!shellEncodingAutoDetectCheckbox.isSelected());
-        } else if (source == useCustomExternalTerminalRadioButton) {
+        } else if (source == useCustomExternalTerminalRadioButton || source == useDefaultExternalTerminalRadioButton || source == useITerm2ExternalTerminalRadioButton) {
             customExternalTerminalField.setEnabled(useCustomExternalTerminalRadioButton.isSelected());
         } else if (source == useCustomTerminalShellRadioButton) {
             customTerminalShellField.setEnabled(useCustomTerminalShellRadioButton.isSelected());
         }
     }
-
 
     //////////////////////////////
     // PrefPanel implementation //
@@ -327,10 +380,10 @@ class MiscPanel extends PreferencesPanel implements ItemListener {
     @Override
     protected void commit() {
         MuPreferencesAPI pref = MuConfigurations.getPreferences();
-    	pref.setVariable(MuPreference.CHECK_FOR_UPDATE, checkForUpdatesCheckBox.isSelected());
+        pref.setVariable(MuPreference.CHECK_FOR_UPDATE, checkForUpdatesCheckBox.isSelected());
 
         // Saves the shell data.
-    	pref.setVariable(MuPreference.USE_CUSTOM_SHELL, useCustomShellRadioButton.isSelected());
+        pref.setVariable(MuPreference.USE_CUSTOM_SHELL, useCustomShellRadioButton.isSelected());
         pref.setVariable(MuPreference.CUSTOM_SHELL, customShellField.getText());
 
         // Saves the shell encoding data.
@@ -339,7 +392,18 @@ class MiscPanel extends PreferencesPanel implements ItemListener {
         if (!isAutoDetect) {
             pref.setVariable(MuPreference.SHELL_ENCODING, shellEncodingSelectBox.getSelectedEncoding());
         }
-        pref.setVariable(MuPreference.USE_CUSTOM_EXTERNAL_TERMINAL, useCustomExternalTerminalRadioButton.isSelected());
+
+        final MuPreferences.TerminalType terminalType;
+        if (useDefaultExternalTerminalRadioButton.isSelected()) {
+            terminalType = MuPreferences.TerminalType.DEFAULT;
+        } else if (useITerm2ExternalTerminalRadioButton.isSelected()) {
+            terminalType = MuPreferences.TerminalType.ITERM2;
+        } else if (useCustomExternalTerminalRadioButton.isSelected()) {
+            terminalType = MuPreferences.TerminalType.CUSTOM;
+        } else {
+            terminalType = MuPreferences.TerminalType.DEFAULT;
+        }
+        pref.setVariable(MuPreference.EXTERNAL_TERMINAL_TYPE, terminalType.getType());
         pref.setVariable(MuPreference.CUSTOM_EXTERNAL_TERMINAL, customExternalTerminalField.getText());
 
         pref.setVariable(MuPreference.TERMINAL_USE_CUSTOM_SHELL, useCustomTerminalShellRadioButton.isSelected());

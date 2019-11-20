@@ -93,46 +93,37 @@ public class TerminalAction extends ParentFolderAction {
     }
 
     private static String getConsoleCommand(AbstractFile folder) {
+        final MuPreferences.TerminalType terminalType = MuPreferences.TerminalType.valueOf(MuConfigurations.getPreferences().getVariable(MuPreference.EXTERNAL_TERMINAL_TYPE, MuPreferences.DEFAULT_EXTERNAL_TERMINAL_TYPE.getType()));
         String cmd;
-        if (MuConfigurations.getPreferences().getVariable(MuPreference.USE_CUSTOM_EXTERNAL_TERMINAL, MuPreferences.DEFAULT_USE_CUSTOM_EXTERNAL_TERMINAL)) {
+        if (terminalType == MuPreferences.TerminalType.CUSTOM) {
             cmd = MuConfigurations.getPreferences().getVariable(MuPreference.CUSTOM_EXTERNAL_TERMINAL);
         } else {
-            final FileURL fileURL = folder.getURL();
             if (OsFamily.MAC_OS_X.isCurrent()) {
                 try {
-                    final File startScript = File.createTempFile("muCommanderTerminalStart", ".scpt");
+                    final File startScript = File.createTempFile("trolCommanderTerminalStart", ".scpt");
                     startScript.deleteOnExit();
                     final List<String> script = new ArrayList<>();
-
-                    script.add("tell application \"Terminal\"");
-                    script.add("activate");
-                    script.add("my makeTab()");
-
-                    final String scheme = fileURL.getScheme();
-                    String path = null;
-                    if (folder.isArchive()) {
-                        path = fileURL.getParent().getPath();
-                    } else if (folder.hasAncestor(AbstractArchiveEntryFile.class)) {
-                        final AbstractArchiveFile parentArchive = folder.getParentArchive();
-                        if (parentArchive != null) {
-                            path = parentArchive.getParent().getURL().getPath();
-                        }
+                    if (terminalType == MuPreferences.TerminalType.DEFAULT) {
+                        script.add("tell application \"Terminal\"");
+                        script.add("activate");
+                        script.add("my makeTab()");
+                        script.add(createMacOsTerminalStartUpScript(folder, terminalType));
+                        script.add("end tell");
+                        script.add("on makeTab()");
+                        script.add("tell application \"System Events\" to keystroke \"t\" using {command down}");
+                        script.add("delay 0.2");
+                        script.add("end makeTab");
+                    } else if (terminalType == MuPreferences.TerminalType.ITERM2) {
+                        script.add("tell application \"iTerm2\"");
+                        script.add("  activate");
+                        script.add("  tell current window");
+                        script.add("    create tab with default profile");
+                        script.add("    tell current session");
+                        script.add(createMacOsTerminalStartUpScript(folder, terminalType));
+                        script.add("    end tell");
+                        script.add("  end tell");
+                        script.add("end tell");
                     }
-                    if (path == null) {
-                        path = fileURL.getPath();
-                    }
-                    if (FileProtocols.FILE.equalsIgnoreCase(scheme)) {
-                        script.add("do script \"cd " + path + "\" in tab 1 of front window");
-                    } else if (FileProtocols.SFTP.equalsIgnoreCase(scheme)) {
-                        script.add("do script \"ssh " + fileURL.getCredentials().getLogin() + "@" + fileURL.getHost() + " -t 'cd " + path + "; bash --login'\" in tab 1 of front window");
-                    }
-
-                    script.add("end tell");
-                    script.add("on makeTab()");
-                    script.add("tell application \"System Events\" to keystroke \"t\" using {command down}");
-                    script.add("delay 0.2");
-                    script.add("end makeTab");
-
                     Files.write(startScript.toPath(), script, Charset.forName(AppleScript.getScriptEncoding()), StandardOpenOption.CREATE);
                     cmd = "osascript " + startScript.getAbsolutePath();
                 } catch (IOException e) {
@@ -144,6 +135,37 @@ public class TerminalAction extends ParentFolderAction {
             }
         }
         return cmd.replace("$p", folder.getAbsolutePath());
+    }
+
+    private static String createMacOsTerminalStartUpScript(AbstractFile folder, MuPreferences.TerminalType terminalType) {
+        final FileURL fileURL = folder.getURL();
+        final String scheme = fileURL.getScheme();
+        String path = null;
+        if (folder.isArchive()) {
+            path = fileURL.getParent().getPath();
+        } else if (folder.hasAncestor(AbstractArchiveEntryFile.class)) {
+            final AbstractArchiveFile parentArchive = folder.getParentArchive();
+            if (parentArchive != null) {
+                path = parentArchive.getParent().getURL().getPath();
+            }
+        }
+        if (path == null) {
+            path = fileURL.getPath();
+        }
+        if (FileProtocols.FILE.equalsIgnoreCase(scheme)) {
+            if (terminalType == MuPreferences.TerminalType.DEFAULT) {
+                return "do script \"cd " + path + "\" in tab 1 of front window";
+            } else if (terminalType == MuPreferences.TerminalType.ITERM2) {
+                return "      write text \"cd " + path + "\"";
+            }
+        } else if (FileProtocols.SFTP.equalsIgnoreCase(scheme)) {
+            if (terminalType == MuPreferences.TerminalType.DEFAULT) {
+                return "do script \"ssh " + fileURL.getCredentials().getLogin() + "@" + fileURL.getHost() + " -t 'cd " + path + "; bash --login'\" in tab 1 of front window";
+            } else if (terminalType == MuPreferences.TerminalType.ITERM2) {
+                return "      write text \"ssh " + fileURL.getCredentials().getLogin() + "@" + fileURL.getHost() + " -t 'cd " + path + "; bash --login'\" in tab 1 of front window";
+            }
+        }
+        return "";
     }
 
     @Override
